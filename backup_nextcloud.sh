@@ -15,8 +15,8 @@
 #  $ chown -R www-data:www-data  /nextcloud/data
 #
 #   Change file attributes for data folder
-#     sudo find /nextcloud/quenchinnovations/ -type d -exec chmod 755 {} \;
-#     sudo find /nextcloud/quenchinnovations/ -type f -exec chmod 750 {} \;
+#     sudo find /nextcloud/mydeskweb.com/ -type d -exec chmod 755 {} \;
+#     sudo find /nextcloud/mydeskweb.com/ -type f -exec chmod 750 {} \;
 #  
 #===================================================================
 #

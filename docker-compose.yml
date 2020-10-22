@@ -1,0 +1,90 @@
+# file to create NextCloud using MariaDB and ngInx
+version: '3' 
+
+services:
+
+  proxy:
+  #  original image from internet documents, uncomment to create a new docker container
+  #  image: jwilder/nginx-proxy:alpine
+  # image modified to allow upload big files
+  #  image: nextcloud-proxy
+  # find following image on AWS->ECR>Repositories > nextcloud
+  # you have to login first before pull the image see pushCommandsFromAWS.md
+  #image: 690049365056.dkr.ecr.us-east-1.amazonaws.com/nextcloud:nextcloud-proxy
+    image: jwilder/nginx-proxy:alpine
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
+    container_name: nextcloud-proxy-edited
+    networks:
+      - nextcloud_network
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /nextcloud/mydeskweb.com/proxy/conf.d:/etc/nginx/conf.d:rw
+      - /nextcloud/mydeskweb.com/vhost.d:/etc/nginx/vhost.d:rw
+      - /nextcloud/mydeskweb.com/proxy/html:/usr/share/nginx/html:rw
+      - /nextcloud/mydeskweb.com/proxy/certs:/etc/nginx/certs:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    restart: unless-stopped
+  
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: nextcloud-letsencrypt
+    depends_on:
+      - proxy
+    networks:
+      - nextcloud_network
+    volumes:
+      - /nextcloud/mydeskweb.com/proxy/certs:/etc/nginx/certs:rw
+      - /nextcloud/mydeskweb.com/proxy/vhost.d:/etc/nginx/vhost.d:rw
+      - /nextcloud/mydeskweb.com/proxy/html:/usr/share/nginx/html:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+
+  db:
+    image: mariadb
+    container_name: mariadb-mydeskweb.com
+    networks:
+      - nextcloud_network
+    volumes:
+      - db:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - MYSQL_ROOT_PASSWORD=CapitanAmerica#2020
+      - MYSQL_PASSWORD=admin
+      - MYSQL_DATABASE=mydeskweb
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=db
+    restart: unless-stopped
+  
+  mydeskweb:
+    image: nextcloud:latest
+    container_name: nextcloud-mydeskweb.com
+    networks:
+      - nextcloud_network
+    depends_on:
+      - letsencrypt
+      - proxy
+      - db
+    volumes:
+      - /nextcloud/mydeskweb.com/html:/var/www/html
+      - /nextcloud/mydeskweb.com/config:/var/www/html/config
+      - /nextcloud/mydeskweb.com/custom_apps:/var/www/html/custom_apps
+      - /nextcloud/mydeskweb.com/data:/var/www/html/data
+      - /nextcloud/mydeskweb.com/themes:/var/www/html/themes
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - VIRTUAL_HOST=mydeskweb.com
+      - LETSENCRYPT_HOST=mydeskweb.com
+      - LETSENCRYPT_EMAIL=pablitott@gmail.com
+    restart: unless-stopped
+
+volumes:
+  nextcloud:
+  db:
+
+networks:
+  nextcloud_network:

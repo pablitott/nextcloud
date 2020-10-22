@@ -27,7 +27,7 @@
       - LETSENCRYPT_HOST=mydeskweb.com
       - LETSENCRYPT_EMAIL=pablitott@gmail.com
       - NEXTCLOUD_ADMIN_USER=admin
-      - NEXTCLOUD_ADMIN_PASSWORD=CapitanAmerica#2020-
+      - NEXTCLOUD_ADMIN_PASSWORD=CapitanAmerica#2020
       - MYSQL_DATABASE=db
       - MYSQL_USER
       - MYSQL_PASSWORD 
