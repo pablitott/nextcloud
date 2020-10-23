@@ -57,6 +57,9 @@ trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 # echo an error message before exiting
 trap showerror exit
 #Send an email message at the end of the process
+
+# occCmd maintenance:mode --on
+
 serverName="mydeskweb"
 CloudServer="mydeskweb.com"
 
@@ -79,7 +82,7 @@ if [ -z "$USER" ] ; then
 fi
 
 #set the current_date_format for the day of the week
-BACKUP_TO_RESTORE=3
+BACKUP_TO_RESTORE=2
 DATA_ROOT="/nextcloud"
 DATA_SERVER=$DATA_ROOT/$CloudServer/data
 THEMES_SERVER=$DATA_ROOT/$CloudServer/themes
@@ -121,17 +124,21 @@ sudo tar -xpf $TAR_FILE -C $ARCHIVE_STORE
 # for full command lines see docker-notes.md
 docker exec -it mariadb-mydeskweb.com mysql -u$DB_ROOT_USER -p"$DB_ROOT_PWD" -e "DROP DATABASE $DB_NAME"
 docker exec -it mariadb-mydeskweb.com mysql -u$DB_ROOT_USER -p"$DB_ROOT_PWD" -e "CREATE DATABASE $DB_NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"
-docker exec -it mariadb-mydeskweb.com mysql -u$DB_ROOT_USER -p"$DB_ROOT_PWD" -e "GRANT ALL PRIVILEGES on $DB_NAME.* to $DB_USER@localhost"
+
+# docker exec -it mariadb-mydeskweb.com mysql -u$DB_ROOT_USER -p"$DB_ROOT_PWD" -e "CREATE USER nextcloud IDENTIFIED BY admin"
+docker exec -it mariadb-mydeskweb.com mysql -u$DB_ROOT_USER -p"$DB_ROOT_PWD" -e "GRANT ALL PRIVILEGES on $DB_NAME.* to $DB_USER"
 docker exec -i mariadb-mydeskweb.com mysql -u$DB_USER -p$DB_PASSWORD $DB_NAME < $ARCHIVE_STORE/$DB_FILE
 
-
 #restore original files
+
+writeLogLine "$output_yellow restart docker-compose $output_reset"
 docker-compose down
 echo "sudo rm -r $DATA_SERVER"
 echo "sudo cp -rp $ARCHIVE_SERVER_DATA $DATA_SERVER"
 sudo rm -r $DATA_SERVER
 sudo cp -rp $ARCHIVE_SERVER_DATA $DATA_SERVER
 docker-compose up -d
+
 occCmd maintenance:mode --off | tee -a $logfile
 
 #Remove Archive folder without condition

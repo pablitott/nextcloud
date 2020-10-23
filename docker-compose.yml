@@ -10,11 +10,10 @@ services:
   #  image: nextcloud-proxy
   # find following image on AWS->ECR>Repositories > nextcloud
   # you have to login first before pull the image see pushCommandsFromAWS.md
-  #image: 690049365056.dkr.ecr.us-east-1.amazonaws.com/nextcloud:nextcloud-proxy
-    image: jwilder/nginx-proxy:alpine
+    image: 690049365056.dkr.ecr.us-east-1.amazonaws.com/nextcloud:nextcloud-proxy
     labels:
       - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
-    container_name: nextcloud-proxy-edited
+    container_name: nextcloud-proxy
     networks:
       - nextcloud_network
     ports:

@@ -50,7 +50,7 @@ function backup_home(){
   fi
 
   writeLogLine "$output_blue packing $USER Home to $ARCHIVE_FILE, exclude hidden folders $output_reset"
-  sudo tar --exclude=".*" --exclude="*.tarls" $tarOptions  $ARCHIVE_FILE /home/$USER 
+  sudo tar --exclude=".*" --exclude="*.tar" $tarOptions  $ARCHIVE_FILE ./ 
   unset verbose
 }
 #================================================================================

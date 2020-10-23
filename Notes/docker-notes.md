@@ -27,7 +27,7 @@
       - LETSENCRYPT_HOST=mydeskweb.com
       - LETSENCRYPT_EMAIL=pablitott@gmail.com
       - NEXTCLOUD_ADMIN_USER=admin
-      - NEXTCLOUD_ADMIN_PASSWORD=CapitanAmerica#2020
+      - NEXTCLOUD_ADMIN_PASSWORD=**************
       - MYSQL_DATABASE=db
       - MYSQL_USER
       - MYSQL_PASSWORD 
@@ -87,10 +87,13 @@ docker save --output
 ```
 ### Restore database
 ```
-docker exec -it mariadb-mydeskweb.com mysql -uroot -p"CapitanAmerica#2020" -e "DROP DATABASE mydeskweb"
-docker exec -it mariadb-mydeskweb.com mysql -uroot -p"CapitanAmerica#2020" -e "CREATE DATABASE mydeskweb CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"
-docker exec -it mariadb-mydeskweb.com mysql -uroot -p"CapitanAmerica#2020" -e "GRANT ALL PRIVILEGES on mydeskweb.* to nextcloud@localhost"
-docker exec -i mariadb-mydeskweb.com mysql -unextcloud -padmin mydeskweb < /temp/repository/mydeskweb_db.sql
+change root-password by your root password below
+change db-password by the nextcloud db user password below
+docker exec -it mariadb-mydeskweb.com mysql -uroot -p"root-password" -e "DROP DATABASE mydeskweb"
+docker exec -it mariadb-mydeskweb.com mysql -uroot -p"root-password" -e "CREATE DATABASE mydeskweb CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"
+docker exec -it mariadb-mydeskweb.com mysql -uroot -p"root-password" -e "GRANT ALL PRIVILEGES on mydeskweb.* to nextcloud@localhost"
+docker exec -i mariadb-mydeskweb.com mysql -unextcloud -pdb-password mydeskweb < /temp/repository/mydeskweb_db.sql
+
 ```
 
 ### To use the Nextcloud command-line interface (aka. occ command):
