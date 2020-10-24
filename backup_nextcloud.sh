@@ -27,10 +27,10 @@ function showerror (){
 
   if [ $? == 0 ]; then
     writeLogLine "$output_green backup succeed $output_reset"
-    [ $notifyStatus == 1 ] && python2.7 ~/sendMail.py "Backup Succeed" $logfile
+    [ $notifyStatus == 1 ] && python2.7 ./sendMail.py "Backup Succeed" $logfile
   else
     writeLogLine "$output_red \"${last_command}\" \n$output_yellow command failed with exit code $?. $output_reset"
-    [ $notifyStatus == 1 ] &&  python2.7 ~/sendMail.py "Backup failed" $logfile
+    [ $notifyStatus == 1 ] &&  python2.7 ./sendMail.py "Backup failed" $logfile
   fi
 
   end_time="$(date -u +%s)"
@@ -48,8 +48,8 @@ function backup_home(){
     tarOptions='-cf'
     [ ! -z $verbose ] && tarOptions="-cvf"
   fi
-
-  writeLogLine "$output_blue packing $USER Home to $ARCHIVE_FILE, exclude hidden folders $output_reset"
+  currentDir=pwd
+  writeLogLine "$output_blue packing $currentDir Home to $ARCHIVE_FILE, exclude hidden folders $output_reset"
   sudo tar --exclude=".*" --exclude="*.tar" $tarOptions  $ARCHIVE_FILE ./ 
   unset verbose
 }
@@ -99,17 +99,10 @@ function backup_files(){
  }
 #================================================================================
 function backup_image(){
-  IMAGE_NEXTCLOUD="$ARCHIVE_STORE/nextcloud-image_$(date +$CURRENT_TIME_FORMAT).tar"
-  IMAGE_MARIADB="$ARCHIVE_STORE/mariadb-image_$(date +$CURRENT_TIME_FORMAT).tar"
-  IMAGE_LETSENCRYPT="$ARCHIVE_STORE/letsencrypt-image_$(date +$CURRENT_TIME_FORMAT).tar"
-  IMAGE_PROXY="$ARCHIVE_STORE/proxy-image_$(date +$CURRENT_TIME_FORMAT).tar"
-
-  writeLogLine "$output_blue compressing images as $IMAGE_NEXTCLOUD $output_reset"
-
-  docker save --output $IMAGE_PROXY 690049365056.dkr.ecr.us-east-1.amazonaws.com/nextcloud:nextcloud-proxy
-  docker save --output $IMAGE_NEXTCLOUD nextcloud
-  docker save --output $IMAGE_MARIADB mariadb
-  docker save --output $IMAGE_LETSENCRYPT jrcs/letsencrypt-nginx-proxy-companion
+  dockerImages="$ARCHIVE_STORE/$serverName-images_$(date +$CURRENT_TIME_FORMAT).tar"
+  #dockerImages="$ARCHIVE_STORE/$serverName.tar"
+  writeLogLine "$output_blue compressing images as $dockerImages $output_reset"
+  docker save $(docker images -q) -o $dockerImages
 }
 #================================================================================
 function occCmd(){
@@ -184,8 +177,8 @@ occCmd maintenance:mode --on | tee -a $logfile
 
 removeFolder "$BACKUP_ROOT"
 createFolder $ARCHIVE_STORE
-
-backup_image
+#do not backup the images in a regular backup
+# backup_image
 backup_database
 backup_home verbose
 backup_files

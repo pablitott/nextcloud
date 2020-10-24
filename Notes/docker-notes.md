@@ -170,5 +170,14 @@ e4c973a42bdb        mariadb                                  "docker-entrypoint.
 e
 
 ```
+### format docker outputs
+```
+  Images
+  docker image list --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}"
+  Containers
+  
+  docker ps --format '{{.Image}}'
+  docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Size}}"
 
+```
 [basics markdown guide](https://www.markdownguide.org/basic-syntax/)
