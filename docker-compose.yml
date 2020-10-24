@@ -2,7 +2,6 @@
 version: '3' 
 
 services:
-
   proxy:
   #  original image from internet documents, uncomment to create a new docker container
   #  image: jwilder/nginx-proxy:alpine
@@ -80,6 +79,19 @@ services:
       - LETSENCRYPT_HOST=mydeskweb.com
       - LETSENCRYPT_EMAIL=pablitott@gmail.com
     restart: unless-stopped
+  # questInnovations is an apache website for testing purposes
+  questinnovations:
+    image: php:7.4-apache
+    container_name: questinnovations.net 
+    networks:
+      - nextcloud_network
+    expose:
+      - 80
+    environment:
+      VIRTUAL_HOST: questinnovations.net
+    volumes:
+        - /nextcloud/www/questinnovations.net:/var/www/html
+
 
 volumes:
   nextcloud:

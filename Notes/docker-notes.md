@@ -174,10 +174,15 @@ e
 ```
   Images
   docker image list --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}"
+
   Containers
-  
   docker ps --format '{{.Image}}'
   docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Size}}"
-
+  docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Size}}" -a --filter name=mariadb
 ```
-[basics markdown guide](https://www.markdownguide.org/basic-syntax/)
+### Install vault
+   [Vault source](https://learn.hashicorp.com/tutorials/vault/getting-started-install)<br/>
+   [Vault docker](https://hub.docker.com/_/vault)
+
+## Markdown 
+   [basics markdown guide](https://www.markdownguide.org/basic-syntax/)
