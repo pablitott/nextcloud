@@ -28,7 +28,7 @@ services:
     restart: unless-stopped
   
   letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion
+    image: jrcs/letsencrypt-nginx-proxy-companion:latest
     container_name: nextcloud-letsencrypt
     depends_on:
       - proxy
@@ -84,7 +84,7 @@ services:
     restart: unless-stopped
 
   questinnovations:
-    image: php:7.4-apache
+    image: nginx
     container_name: questinnovations.net
     networks:
       - nextcloud_network
@@ -96,7 +96,7 @@ services:
       - LETSENCRYPT_HOST=questinnovations.net
       - LETSENCRYPT_EMAIL=pablo.trujillo.tapia@hotmail.com
     volumes:
-        - /nextcloud/www/ptrujillo/questinnovations.net:/var/www/html
+        - /nextcloud/www/ptrujillo/questinnovations.net:/usr/share/nginx/html:ro
     depends_on:
       - letsencrypt
       - proxy
@@ -111,18 +111,22 @@ services:
       - "21:21"
       - "30000-30009:30000-30009"
     volumes: # remember to replace /folder_on_disk/ with the path to where you want to store the files on the host machine
-#      - "/folder_on_disk/data:/home/username/"
-      - /nextcloud/www/ptrujillo/questinnovations.net:/home/ubuntu
+    #      - "/folder_on_disk/data:/home/username/"
+      - /nextcloud/www/questinnovations.net:/home/ftpusers/ptrujillo
+      - /nextcloud/www/paveltrujillo.info:/home/ftpusers/pavelt
+      - /nextcloud/www/paveltrujillo.info:/home/ftpusers/bob
       - "/etc/ssl/private/:/etc/pure-ftpd/passwd"
 # uncomment for ssl/tls, see https://github.com/stilliard/docker-pure-ftpd#tls
-#      - "/folder_on_disk/ssl:/etc/ssl/private/"
+      - "/etc/ssl/private:/etc/ssl/private/"
     environment:
       PUBLICHOST: "mydeskweb.com"
-      FTP_USER_NAME: ubuntu
-      FTP_USER_PASS: tutp610125
-      FTP_USER_HOME: /home/ubuntu
+      FTP_USER_NAME: pavelt
+      FTP_USER_PASS: batlink1977
+      FTP_USER_HOME: /home/pavelt
+      PURE_PASSWDFILE: /etc/pure-ftpd/passwd/pureftpd.passwd
 # also for ssl/tls:
-#      ADDED_FLAGS: "--tls=2"
+      ADDED_FLAGS: "--tls=2"
+      TLS_USE_DSAPRAM: "true"
     restart: always
     networks:
       nextcloud_network:

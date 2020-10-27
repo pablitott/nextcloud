@@ -1,7 +1,7 @@
 
 # Nextcloud in Docker containers
 ---
-[Install nextcloud server using Docker images](https://hub.docker.com/_/nextcloud)
+[Install nextcloud server using Docker images](https://hub.docker.com/_/nextcloud)<br/>
 [How to install NextCloud in your server with Docker](https://blog.ssdnodes.com/blog/installing-nextcloud-docker/)
 
 ---
@@ -180,6 +180,8 @@ e
   docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Size}}"
   docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Size}}" -a --filter name=mariadb
 ```
+*recomended use:* alias dps='docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Size}}\t{{.Image}}"'
+
 ### Install vault
    [Vault source](https://learn.hashicorp.com/tutorials/vault/getting-started-install)<br/>
    [Vault docker](https://hub.docker.com/_/vault)
