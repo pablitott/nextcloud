@@ -67,6 +67,9 @@ services:
       - letsencrypt
       - proxy
       - db
+    expose:
+      - 80
+      - 443
     volumes:
       - /nextcloud/mydeskweb.com/html:/var/www/html
       - /nextcloud/mydeskweb.com/config:/var/www/html/config
@@ -79,18 +82,50 @@ services:
       - LETSENCRYPT_HOST=mydeskweb.com
       - LETSENCRYPT_EMAIL=pablitott@gmail.com
     restart: unless-stopped
-  # questInnovations is an apache website for testing purposes
+
   questinnovations:
     image: php:7.4-apache
-    container_name: questinnovations.net 
+    container_name: questinnovations.net
     networks:
       - nextcloud_network
     expose:
       - 80
+      - 443
     environment:
-      VIRTUAL_HOST: questinnovations.net
+      - VIRTUAL_HOST=questinnovations.net
+      - LETSENCRYPT_HOST=questinnovations.net
+      - LETSENCRYPT_EMAIL=pablo.trujillo.tapia@hotmail.com
     volumes:
-        - /nextcloud/www/questinnovations.net:/var/www/html
+        - /nextcloud/www/ptrujillo/questinnovations.net:/var/www/html
+    depends_on:
+      - letsencrypt
+      - proxy
+    restart: unless-stopped
+
+
+
+  ftpd_server:
+    image: stilliard/pure-ftpd
+    container_name: pure-ftpd
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+    volumes: # remember to replace /folder_on_disk/ with the path to where you want to store the files on the host machine
+#      - "/folder_on_disk/data:/home/username/"
+      - /nextcloud/www/ptrujillo/questinnovations.net:/home/ubuntu
+      - "/etc/ssl/private/:/etc/pure-ftpd/passwd"
+# uncomment for ssl/tls, see https://github.com/stilliard/docker-pure-ftpd#tls
+#      - "/folder_on_disk/ssl:/etc/ssl/private/"
+    environment:
+      PUBLICHOST: "mydeskweb.com"
+      FTP_USER_NAME: ubuntu
+      FTP_USER_PASS: tutp610125
+      FTP_USER_HOME: /home/ubuntu
+# also for ssl/tls:
+#      ADDED_FLAGS: "--tls=2"
+    restart: always
+    networks:
+      nextcloud_network:
 
 
 volumes:
