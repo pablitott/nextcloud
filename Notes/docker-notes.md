@@ -36,7 +36,7 @@
     restart: unless-stopped
 
 ```
-![Tux, Linux](tux.png)
+![Tux, Linux](../images/tux.png)
 ## Useful nextcloud commands to use in docker
 
 Stop the container(s) using the following command
@@ -185,6 +185,10 @@ e
 ### Install vault
    [Vault source](https://learn.hashicorp.com/tutorials/vault/getting-started-install)<br/>
    [Vault docker](https://hub.docker.com/_/vault)
+
+## Docker compose resources
+Limit the resources to use by a container<br/>
+[Resources](https://docs.docker.com/compose/compose-file/#resources)
 
 ## Markdown 
    [basics markdown guide](https://www.markdownguide.org/basic-syntax/)

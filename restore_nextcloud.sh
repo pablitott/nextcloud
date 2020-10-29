@@ -12,11 +12,11 @@
 #  tar -tvf nc_backup_1.tar
 #
 #  change the ownership using
-#  $ chown -R www-data:www-data  /nextcloud/data
+#  $ chown -R www-data:www-data  /nextcloud/mydeskweb.com/
 #
 #   Change file attributes for data folder
-#     sudo find /nextcloud/quenchinnovations/ -type d -exec chmod 755 {} \;
-#     sudo find /nextcloud/quenchinnovations/ -type f -exec chmod 750 {} \;
+#     sudo find /nextcloud/mydeskweb.com/ -type d -exec chmod 755 {} \;
+#     sudo find /nextcloud/mydeskweb.com/ -type f -exec chmod 750 {} \;
 #  
 # In case need to create the mysql.user 
 # docker exec -it mariadb-mydeskweb.com mysql -uroot -p"CapitanAmerica#2020" -e "CREATE USER 'nextcloud'@localhost IDENTIFIED BY 'admin'"
@@ -59,7 +59,10 @@ trap showerror exit
 #Send an email message at the end of the process
 
 # occCmd maintenance:mode --on
-
+if [ -z $1 ]; then
+  writeLogLine "$output_red must define backup number 1-5 $output_reset"
+  exit 1
+fi
 serverName="mydeskweb"
 CloudServer="mydeskweb.com"
 
@@ -82,13 +85,12 @@ if [ -z "$USER" ] ; then
 fi
 
 #set the current_date_format for the day of the week
-BACKUP_TO_RESTORE=2
+BACKUP_TO_RESTORE=$1
 DATA_ROOT="/nextcloud"
-DATA_SERVER=$DATA_ROOT/$CloudServer/data
-THEMES_SERVER=$DATA_ROOT/$CloudServer/themes
-CUSTOM_APPS=$DATA_ROOT/$CloudServer/custom_apps
-
-
+SERVER_ROOT=$DATA_ROOT/$CloudServer
+DATA_SERVER=$SERVER_ROOT/data
+THEMES_SERVER=$SERVER_ROOT/themes
+CUSTOM_APPS=$SERVER_ROOT/custom_apps
 
 BACKUP_ROOT=/temp
 ARCHIVE_STORE=$BACKUP_ROOT/repository
@@ -129,17 +131,23 @@ docker exec -it mariadb-mydeskweb.com mysql -u$DB_ROOT_USER -p"$DB_ROOT_PWD" -e 
 docker exec -it mariadb-mydeskweb.com mysql -u$DB_ROOT_USER -p"$DB_ROOT_PWD" -e "GRANT ALL PRIVILEGES on $DB_NAME.* to $DB_USER"
 docker exec -i mariadb-mydeskweb.com mysql -u$DB_USER -p$DB_PASSWORD $DB_NAME < $ARCHIVE_STORE/$DB_FILE
 
+
 #restore original files
 
 writeLogLine "$output_yellow restart docker-compose $output_reset"
 docker-compose down
-echo "sudo rm -r $DATA_SERVER"
-echo "sudo cp -rp $ARCHIVE_SERVER_DATA $DATA_SERVER"
-sudo rm -r $DATA_SERVER
-sudo cp -rp $ARCHIVE_SERVER_DATA $DATA_SERVER
+
+writeLogLine "$output_yellow remove $SERVER_ROOT $output_reset"
+sudo rm -r $SERVER_ROOT
+
+writeLogLine "$output_yellow restore $SERVER_ROOT from $ARCHIVE_SERVER  $output_reset"
+echo "sudo cp -rp $ARCHIVE_SERVER $SERVER_ROOT"
+sudo cp -rp $ARCHIVE_SERVER $SERVER_ROOT
+
 docker-compose up -d
 
 occCmd maintenance:mode --off | tee -a $logfile
+writeLogLine "$output_blue docker-compose is up $output_reset"
 
 #Remove Archive folder without condition
 removeFolder $BACKUP_ROOT

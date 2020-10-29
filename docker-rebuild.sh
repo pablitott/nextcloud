@@ -11,11 +11,13 @@ docker volume rm $(docker volume ls -q)
 
 #following commands are optional for full clean
 #delete current images
+
+# I think is no needed all the time, next time run it using force option
 docker rmi $(docker images -a -q)
 #Restart the containers using the following command:
 
 #Delete the folders created as /nextcloud/...
-
-docker-compose up -d
+#aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 690049365056.dkr.ecr.us-east-1.amazonaws.com
+#docker-compose up -d
 
 
