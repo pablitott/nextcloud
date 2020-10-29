@@ -139,7 +139,7 @@ trap showerror exit
 notifyStatus=0
 serverName="mydeskweb"
 CloudServer=$serverName.com
-logfile="$serverName-Backup.log"
+logfile="$serverName-BackupLog.txt"
 envFile=$serverName.env
 
 [ -f $logfile ] && rm $logfile
