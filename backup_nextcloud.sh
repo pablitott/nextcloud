@@ -19,26 +19,10 @@
 #     sudo find /nextcloud/mydeskweb.com/ -type f -exec chmod 750 {} \;
 #  
 #===================================================================
+#
 #    TODO: 
 #    - Configure symbolic links as per in step 5: https://linuxize.com/post/how-to-install-and-configure-nextcloud-on-ubuntu-18-04/
 #====================================================================
-#   TODO:
-#   - include environment variables from mydeskweb.env using
-#   export $(grep -v '^#' mydeskweb.env | xargs)
-#   unset $(grep -v '^#' mydeskweb.env | sed -E 's/(.*)=.*/\1/' | xargs)
-#
-#   set -o allexport
-#   source mydeskweb.env
-#   set +o allexport
-#   unset $(grep -v '^#' mydeskweb.env | sed -E 's/(.*)=.*/\1/' | xargs)
-
-#   set -a 
-#   . ./mydeskweb.env
-#   set +a
-#   unset $(grep -v '^#' mydeskweb.env | sed -E 's/(.*)=.*/\1/' | xargs)
-
-#====================================================================
-
 function showerror (){
 
   if [ $? == 0 ]; then
@@ -52,7 +36,7 @@ function showerror (){
   end_time="$(date -u +%s)"
   elapsed="$(($end_time-$start_time))"
   writeLogLine "$output_yellow Total $elapsed seconds elapsed for process $output_reset"
-  unset $(grep -v '^#' $envFile | sed -E 's/(.*)=.*/\1/' | xargs)
+
 }
 #================================================================================
 function backup_home(){
@@ -81,7 +65,8 @@ function backup_database(){
     [ ! -z $verbose ] && tarOptions="-cvf"
   fi
   writeLogLine "$output_blue packing MySql database $output_reset"
-  docker exec -it mariadb-$CloudServer mysqldump --single-transaction -u $MYSQL_USER -p"$MYSQL_PASSWORD" $MYSQL_DATABASE > ./"$serverName"_db.sql
+  docker exec -it mariadb-$CloudServer mysqldump --single-transaction -u $DB_NAME -p"$DB_PASSWORD" $serverName > ./"$serverName"_db.sql
+
   sudo tar $tarOptions $ARCHIVE_FILE ./"$serverName"_db.sql
   rm ./"$serverName"_db.sql
   unset verbose
@@ -114,8 +99,8 @@ function backup_files(){
  }
 #================================================================================
 function backup_image(){
-  dockerImages="$BACKUP_REPOSITORY/$serverName-images_$(date +$CURRENT_TIME_FORMAT).tar"
-  #dockerImages="$BACKUP_REPOSITORY/$serverName.tar"
+  dockerImages="$ARCHIVE_STORE/$serverName-images_$(date +$CURRENT_TIME_FORMAT).tar"
+  #dockerImages="$ARCHIVE_STORE/$serverName.tar"
   writeLogLine "$output_blue compressing images as $dockerImages $output_reset"
   docker save $(docker images -q) -o $dockerImages
 }
@@ -136,12 +121,11 @@ trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 # echo an error message before exiting
 trap showerror exit
 #Send an email message at the end of the process
-notifyStatus=0
+notifyStatus=1
 serverName="mydeskweb"
-CloudServer=$serverName.com
-logfile="$serverName-Backup.log"
-envFile=$serverName.env
+CloudServer="mydeskweb.com"
 
+logfile="backup_log.txt"
 [ -f $logfile ] && rm $logfile
 [ "$1" == "-full" ] && FULL_BACKUP=1
 
@@ -160,11 +144,29 @@ if [ -z "$USER" ] ; then
 fi
 
 #set the current_date_format for the day of the week
+CURRENT_TIME_FORMAT="%w"
+DATA_ROOT="/nextcloud"
+BACKUP_ROOT=/temp
+ARCHIVE_STORE=$BACKUP_ROOT/repository
 
-#Set environment variables defined in mydeskweb.env
-set -a; source $envFile; set +a
+writeLogLine "BACKUP_ROOT: $BACKUP_ROOT"
+writeLogLine "DATA_ROOT: $DATA_ROOT"
+writeLogLine "ARCHIVE_STORE: $ARCHIVE_STORE"
 
+#database values
+DB_NAME="nextcloud"
+DB_USER="nextcloud"
+DB_PASSWORD="admin"
+DB_ROOT_USER="root"
+DB_ROOT_PWD="CapitanAmerica#2020"
+
+ARCHIVE_FILE="$ARCHIVE_STORE/nc_backup_$(date +$CURRENT_TIME_FORMAT).tar"
 writeLogLine " ARCHIVE_FILE: $ARCHIVE_FILE"
+
+IMAGE_NEXTCLOUD=nextcloud-mydeskweb.com
+IMAGE_MARIADB=mariadb
+IMAGE_LETSENCRYPT=nextcloud-letsencrypt
+IMAGE_PROXY=nextcloud-proxy-edited
 
 FOLDERS_DATA_BACKUP=(
 "$DATA_ROOT/$CloudServer/"
@@ -174,26 +176,24 @@ FOLDERS_DATA_BACKUP=(
 occCmd maintenance:mode --on | tee -a $logfile
 
 removeFolder "$BACKUP_ROOT"
-createFolder "$BACKUP_REPOSITORY"
+createFolder $ARCHIVE_STORE
 #do not backup the images in a regular backup
 # backup_image
-
 backup_database
 backup_home verbose
 backup_files
 
 occCmd maintenance:mode --off | tee -a $logfile
-for file in $BACKUP_REPOSITORY/*.tar
+for file in $ARCHIVE_STORE/*.tar
 do
     writeLogLine "$output_green $(basename $file) Size: $(stat --printf='%s' $file | numfmt --to=iec) $output_reset"
-    aws s3 cp $file $BACKUP_S3BUCKET/$NICKNAME/$CloudServer/
+    aws s3 cp $file s3://s3quenchinnovations/backups/$NICKNAME/$CloudServer/
 done
 
 #Remove Archive folder without condition
 removeFolder $BACKUP_ROOT
 
 writeLogLine "$output_reset end of job $output_reset"
-
 exit 0
 
 

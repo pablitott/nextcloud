@@ -75,11 +75,6 @@ docker save --output
   Not implemented yet
 ```
 
-### set/unset predefined environment variables
-```
-   export $(grep -v '^#' mydeskweb.env | xargs)
-   unset $(grep -v '^#' mydeskweb.env | sed -E 's/(.*)=.*/\1/' | xargs)
-```
 ### Backup a database
 ```
    docker run -it mariadb bash
@@ -106,7 +101,7 @@ docker exec -i mariadb-mydeskweb.com mysql -unextcloud -pdb-password mydeskweb <
     $ docker exec --user www-data CONTAINER_ID php occ
     $ docker exec --user www-data nextcloud-mydeskweb.com php occ config:system:get trusted_domains
         or for docker-compose:
-    $ docker-compose exec --user www-data nextcloud-mydeskweb.com php 
+    $ docker-compose exec --user www-data app php 
 ```
 
 ### renew ssh certificates

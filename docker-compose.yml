@@ -51,11 +51,18 @@ services:
       - db:/var/lib/mysql
       - /etc/localtime:/etc/localtime:ro
     environment:
+      - MYSQL_ROOT_PASSWORD=CapitanAmerica#2020
       - MYSQL_HOST=db
+        #actually secrets is only supported for MYSQL_PASSWORD, MYSQL_DATABASE, MYSQL_USER
+      - MYSQL_PASSWORD_FILE=/run/secrets/secret_mysql_password
+      - MYSQL_DATABASE_FILE=/run/secrets/secret_mysql_database
+      - MYSQL_USER_FILE=/run/secrets/secret_mysql_user
     restart: unless-stopped
-    env_file:
-      - mydeskweb.env
-
+    secrets:
+      - secret_mysql_password
+      - secret_mysql_database
+      - secret_mysql_user
+  
   mydeskweb:
     image: nextcloud:latest
     container_name: nextcloud-mydeskweb.com
@@ -80,8 +87,6 @@ services:
       - VIRTUAL_HOST=mydeskweb.com
       - LETSENCRYPT_HOST=mydeskweb.com
       - LETSENCRYPT_EMAIL=pablitott@gmail.com
-      - PHP_UPLOAD_MAX_FILE_SIZE=16G
-      - PHP_POST_MAX_SIZE=16G
     restart: unless-stopped
 
   questinnovations:
