@@ -16,7 +16,7 @@
       - proxy
       - db
     volumes:
-      - /nextcloud/mydeskweb.com/html:/var/www/html
+      - nextcloud:/var/www/html
       - /nextcloud/mydeskweb.com/config:/var/www/html/config
       - /nextcloud/mydeskweb.com/custom_apps:/var/www/html/custom_apps
       - /nextcloud/mydeskweb.com/data:/var/www/html/data

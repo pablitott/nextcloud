@@ -1,4 +1,18 @@
+#================================================================
 # file to create NextCloud using MariaDB and ngInx
+#
+#  TODO:
+#  Add following lines 
+# deploy:
+#   resources:
+#     limits:
+#       cpus: '0.50'
+#      memory: 50M
+#     reservations:
+#       cpus: '0.25'
+#      memory: 20M
+#================================================================
+
 version: '3.2' 
 
 services:
@@ -42,48 +56,46 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
 
-  db:
-    image: mariadb
-    container_name: mariadb-mydeskweb.com
-    networks:
-      - nextcloud_network
-    volumes:
-      - db:/var/lib/mysql
-      - /etc/localtime:/etc/localtime:ro
-    environment:
-      - MYSQL_HOST=db
-    restart: unless-stopped
-    env_file:
-      - mydeskweb.env
-
-  mydeskweb:
+  quenchinnovations:
     image: nextcloud:latest
-    container_name: nextcloud-mydeskweb.com
+    container_name: quenchinnovations.net
     networks:
       - nextcloud_network
     depends_on:
       - letsencrypt
       - proxy
-      - db
-    expose:
-      - 80
-      - 443
+      - db_quenchinnovations
     volumes:
       # use html path instead of nextcloud volume as the original doc for backup purposes
-      - /nextcloud/mydeskweb.com/html:/var/www/html
-      - /nextcloud/mydeskweb.com/config:/var/www/html/config
-      - /nextcloud/mydeskweb.com/custom_apps:/var/www/html/custom_apps
-      - /nextcloud/mydeskweb.com/data:/var/www/html/data
-      - /nextcloud/mydeskweb.com/themes:/var/www/html/themes
+      - vol_nc_qi:/var/www/html
+      - /nextcloud/quenchinnovations.net/config:/var/www/html/config
+      - /nextcloud/quenchinnovations.net/custom_apps:/var/www/html/custom_apps
+      - /nextcloud/quenchinnovations.net/data:/var/www/html/data
+      - /nextcloud/quenchinnovations.net/themes:/var/www/html/themes
       - /etc/localtime:/etc/localtime:ro
     environment:
-      - VIRTUAL_HOST=mydeskweb.com
-      - LETSENCRYPT_HOST=mydeskweb.com
+      - VIRTUAL_HOST=quenchinnovations.net
+      - LETSENCRYPT_HOST=quenchinnovations.net
       - LETSENCRYPT_EMAIL=pablitott@gmail.com
-      - PHP_UPLOAD_MAX_FILE_SIZE=16G
-      - PHP_POST_MAX_SIZE=16G
     restart: unless-stopped
 
+  db_quenchinnovations:
+    image: mariadb
+    container_name: mariadb-quenchinnovations
+    networks:
+      - nextcloud_network
+    volumes:
+      - vol_db_qi:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor
+      # used on frist screen
+      - MYSQL_PASSWORD=mysql
+      - MYSQL_DATABASE=quenchinnovations
+      - MYSQL_USER=nextclouduser
+        # database host = db
+    restart: unless-stopped
+    
   questinnovations:
     image: nginx
     container_name: questinnovations.net
@@ -92,21 +104,13 @@ services:
     expose:
       - 80
       - 443
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 50M
-        reservations:
-          cpus: '0.25'
-          memory: 20M
     environment:
       - VIRTUAL_HOST=questinnovations.net
       - LETSENCRYPT_HOST=questinnovations.net
       - LETSENCRYPT_EMAIL=pablitott@gmail.com
     volumes:
-        - /nextcloud/www/questinnovations.net:/usr/share/nginx/html:ro
-        - /etc/localtime:/etc/localtime:ro
+      - /nextcloud/www/questinnovations.net:/usr/share/nginx/html:ro
+      - /etc/localtime:/etc/localtime:ro
     depends_on:
       - letsencrypt
       - proxy
@@ -120,14 +124,6 @@ services:
     expose:
       - 80
       - 443
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 50M
-        reservations:
-          cpus: '0.25'
-          memory: 20M
     environment:
       - VIRTUAL_HOST=paveltrujillo.info
       - LETSENCRYPT_HOST=paveltrujillo.info
@@ -149,9 +145,9 @@ services:
     volumes: 
       # remember to replace /folder_on_disk/ with the path to where you want to store the files on the host machine
       #      - "/folder_on_disk/data:/home/username/"
-      - /nextcloud/www/questinnovations.net:/home/ftpusers/ptrujillo
+      #- /nextcloud/www/questinnovations.net:/home/ftpusers/ptrujillo
       - /nextcloud/www/paveltrujillo.info:/home/ftpusers/pavelt
-      - /nextcloud/www/paveltrujillo.info:/home/ftpusers/bob
+      #- /nextcloud/www/paveltrujillo.info:/home/ftpusers/bob
       - "/etc/ssl/private/:/etc/pure-ftpd/passwd"
       # uncomment for ssl/tls, see https://github.com/stilliard/docker-pure-ftpd#tls
       - "/etc/ssl/private:/etc/ssl/private/"
@@ -172,15 +168,8 @@ services:
       nextcloud_network:
 
 volumes:
-  db:
-
+  vol_nc_qi:
+  vol_db_qi:
+    
 networks:
   nextcloud_network:
-
-secrets:
-  secret_mysql_password:
-    file: ./secrets/secret_mysql_password.txt
-  secret_mysql_database:
-    file: ./secrets/secret_mysql_database.txt
-  secret_mysql_user:
-    file: ./secrets/secret_mysql_user.txt

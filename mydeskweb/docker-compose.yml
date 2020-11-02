@@ -1,0 +1,52 @@
+version: '3.2' 
+
+services:
+
+  db_mydeskweb:
+    image: mariadb
+    container_name: mariadb-mydeskweb.com
+    networks:
+      - nextcloud_network
+    volumes:
+      - vol_db_mdw:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - MYSQL_ROOT_PASSWORD=CapitanAmerica#2020
+      # used on frist screen
+      - MYSQL_PASSWORD=admin
+      - MYSQL_DATABASE=mydeskweb
+      - MYSQL_USER=nextclouduser
+    restart: unless-stopped
+
+  mydeskweb:
+    image: nextcloud:latest
+    container_name: mydeskweb.com
+    networks:
+      - nextcloud_network
+    depends_on:
+      #- letsencrypt
+      #- proxy
+      - db_mydeskweb
+    expose:
+      - 80
+      - 443
+    volumes:
+      # use html path instead of nextcloud volume as the original doc for backup purposes
+      - vol_nc_mdw:/var/www/html
+      - /nextcloud/mydeskweb.com/config:/var/www/html/config
+      - /nextcloud/mydeskweb.com/custom_apps:/var/www/html/custom_apps
+      - /nextcloud/mydeskweb.com/data:/var/www/html/data
+      - /nextcloud/mydeskweb.com/themes:/var/www/html/themes
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - VIRTUAL_HOST=mydeskweb.com
+      - LETSENCRYPT_HOST=mydeskweb.com
+      - LETSENCRYPT_EMAIL=pablitott@gmail.com
+    restart: unless-stopped
+volumes:
+  vol_db_mdw:
+  vol_nc_mdw:
+    
+networks:
+  nextcloud_network:
+      

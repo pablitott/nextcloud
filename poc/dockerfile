@@ -1,0 +1,9 @@
+FROM nextcloud/latest
+
+# Install Apache
+# commands from https://davescripts.com/docker-container-how-to-change-php-settings-inline-replacements
+
+RUN sed -E -i -e 's/post_max_size = 8M/post_max_size = 16G/' /usr/local/etc/php/php.ini-production
+RUN sed -E -i -e 's/upload_max_filesize = 2M/upload_max_filesize = 16G/' /usr/local/etc/php/php.ini-production
+
+# Start Apache
