@@ -39,13 +39,9 @@
     restart: unless-stopped
 
 ```
-<<<<<<< HEAD
-![Tux, Linux](../images/tux.png)
-=======
 
 ![Tux, Linux](../images/tux.png)
 
->>>>>>> refs/remotes/origin/main
 ## Useful nextcloud commands to use in docker
 
 Stop the container(s) using the following command
@@ -93,18 +89,10 @@ docker save --output
 ```
 
 ### set/unset predefined environment variables
-<<<<<<< HEAD
-=======
-
->>>>>>> refs/remotes/origin/main
 ```
    export $(grep -v '^#' mydeskweb.env | xargs)
    unset $(grep -v '^#' mydeskweb.env | sed -E 's/(.*)=.*/\1/' | xargs)
 ```
-<<<<<<< HEAD
-=======
-
->>>>>>> refs/remotes/origin/main
 ### Backup a database
 
 ```
@@ -225,14 +213,6 @@ e
 
 ### Install vault
 
-<<<<<<< HEAD
-## Docker compose resources
-Limit the resources to use by a container<br/>
-[Resources](https://docs.docker.com/compose/compose-file/#resources)
-
-## Markdown 
-   [basics markdown guide](https://www.markdownguide.org/basic-syntax/)
-=======
 [Vault source](https://learn.hashicorp.com/tutorials/vault/getting-started-install)
 
 [Vault docker](https://hub.docker.com/_/vault)
@@ -244,4 +224,3 @@ Limit the resources to use by a container<br/> [Resources](https://docs.docker.c
 ## Markdown
 
 [basics markdown guide](https://www.markdownguide.org/basic-syntax/)
->>>>>>> refs/remotes/origin/main

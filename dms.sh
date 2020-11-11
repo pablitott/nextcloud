@@ -1,1 +1,1 @@
-function dms() { docker ps --format "{{.ID}}\t{{.Tag}}\t{{.Size}}"; }
+function dms(){ docker images list --format "{{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}"; }

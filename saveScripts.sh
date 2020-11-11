@@ -7,28 +7,17 @@
 # find  -not -path "./.git*" -type f -exec echo {} \;
 
 s3Target=s3://s3quenchinnovations/nextcloud/$NICKNAME/scripts
-<<<<<<< HEAD
-
-
-=======
->>>>>>> refs/remotes/origin/main
 for file in ./*
 do
     #echo $file
     aws s3 cp $file $s3Target/
 done
 
-<<<<<<< HEAD
-for file in ./Notes/* ./images/* ./home/ubuntu/*
-=======
 for file in ./Notes/*
->>>>>>> refs/remotes/origin/main
 do
     #echo $file
     aws s3 cp $file $s3Target/Notes/
 done
-<<<<<<< HEAD
-=======
 for file in ./images/*
 do
     #echo $file
@@ -40,5 +29,4 @@ do
     aws s3 cp $file $s3Target/home/$USER
 done
 
->>>>>>> refs/remotes/origin/main
 

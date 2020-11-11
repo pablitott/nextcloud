@@ -1,50 +1,3 @@
-<<<<<<< HEAD
-version: '3.2' 
-
-services:
-
-  quenchinnovations:
-    image: nextcloud:latest
-    container_name: quenchinnovations.net
-    networks:
-      - nextcloud_network
-    depends_on:
-      - letsencrypt
-      - proxy
-      - quenchinnovations_db
-    expose:
-      - 80
-      - 443
-    volumes:
-      # use html path instead of nextcloud volume as the original doc for backup purposes
-      - /nextcloud/quenchinnovations.net/html:/var/www/html
-      - /nextcloud/quenchinnovations.net/config:/var/www/html/config
-      - /nextcloud/quenchinnovations.net/custom_apps:/var/www/html/custom_apps
-      - /nextcloud/quenchinnovations.net/data:/var/www/html/data
-      - /nextcloud/quenchinnovations.net/themes:/var/www/html/themes
-      - /etc/localtime:/etc/localtime:ro
-    environment:
-      - VIRTUAL_HOST=quenchinnovations.net
-      - LETSENCRYPT_HOST=quenchinnovations.net
-      - LETSENCRYPT_EMAIL=pablitott@gmail.com
-    restart: unless-stopped
-    env_file:
-      - quenchinnovations.env
-
-  quenchinnovations_db:
-    image: mariadb
-    container_name: mariadb-quenchinnovations
-    networks:
-      - nextcloud_network
-    volumes:
-      - db:/var/lib/mysql
-      - /etc/localtime:/etc/localtime:ro
-    environment:
-      - MYSQL_HOST=mariadb-quenchinnovations
-    restart: unless-stopped
-    env_file:
-      - quenchinnovations.env
-=======
 #================================================================
 # file to create NextCloud using MariaDB and ngInx
 #================================================================
@@ -99,4 +52,3 @@ networks:
   default:
     external:
       name: nginx_nextcloud_network
->>>>>>> refs/remotes/origin/main

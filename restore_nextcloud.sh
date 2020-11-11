@@ -19,11 +19,7 @@
 #  tar -tvf nc_backup_1.tar 
 #
 #  change the ownership using
-<<<<<<< HEAD
-#  $ chown -R www-data:www-data  /nextcloud/mydeskweb.com/
-=======
 #  $ sudo chown -R www-data:www-data  /nextcloud/mydeskweb.com/
->>>>>>> refs/remotes/origin/main
 #
 #   Change file attributes for data folder
 #     sudo find /nextcloud/mydeskweb.com/ -type d -exec chmod 755 {} \;
@@ -40,17 +36,10 @@ function showerror (){
 
   if [ $? == 0 ]; then
     writeLogLine "$_color_green_ Restore succeed $output_reset"
-<<<<<<< HEAD
-    [ ! -z $notifyStatus ] && python2.7 ~/sendMail.py "Backup Succeed" $logfile
-  else
-    writeLogLine "$_color_red_ \"${last_command}\" \n$_color_yellow_ command failed with exit code $?."
-    [ ! -z $notifyStatus ] &&  python2.7 ~/sendMail.py "Restore failed" $logfile
-=======
     #[ ! -z $notifyStatus ] && python2.7 ~/sendMail.py "Backup Succeed" $logfile
   else
     writeLogLine "$_color_red_ \"${last_command}\" \n$_color_yellow_ command failed with exit code $?."
     #[ ! -z $notifyStatus ] &&  python2.7 ~/sendMail.py "Restore failed" $logfile
->>>>>>> refs/remotes/origin/main
   fi
 
   end_time="$(date -u +%s)"
@@ -202,17 +191,12 @@ if [ -z $2 ]; then
 fi
 backupToRestore=$2
 logfile="$PWD/restore-$serverName.log"
-<<<<<<< HEAD
-environmentFile=$serverName.env
-set -a; source $environmentFile ; set +a
-=======
 
 environmentFile=$serverName.env
 echo $environmentFile
 
 set -a; source $environmentFile ; set +a
 set -a; source backup_nextcloud.env; set +a
->>>>>>> refs/remotes/origin/main
 
 [ -f $logfile ] && rm $logfile
 
@@ -220,11 +204,7 @@ writeLogLine "START Restore process on $serviceName"
 start_time="$(date -u +%s)"
 
 FOLDERS_DATA_BACKUP=(
-<<<<<<< HEAD
-"$FOLDER_ROOT/$serviceName/data"
-=======
 "$FOLDER_ROOT/$serviceName"
->>>>>>> refs/remotes/origin/main
 )
 #"$FOLDER_ROOT/$serviceName"
 #"$FOLDER_ROOT/$serviceName/custom_apps"
@@ -237,14 +217,6 @@ occCmd maintenance:mode --on | tee -a $logfile
 removeFolder "$BACKUP_REPOSITORY"
 createFolder "$BACKUP_REPOSITORY"
 restoreTarFile="nc_backup_$(date +$backupToRestore).tar"
-<<<<<<< HEAD
-
-writeLogLine "Recover backup file from $BACKUP_S3BUCKET/$NICKNAME/$serviceName/$restoreTarFile" $_color_blue_
-aws s3 cp $BACKUP_S3BUCKET/$NICKNAME/$serviceName/$restoreTarFile $BACKUP_REPOSITORY/$restoreTarFile | tee -a  $logfile
-
-restore_database
-
-=======
 echo "NICKNAME: $NICKNAME"
 if [[ -z $NICKNAME ]]; then
   s3Bucket=$BACKUP_S3BUCKET/$serviceName/$restoreTarFile 
@@ -261,7 +233,6 @@ if [[ ! -f $BACKUP_REPOSITORY/$restoreTarFile ]]; then
 fi
 
 restore_database
->>>>>>> refs/remotes/origin/main
 writeLogLine "$output_blue shut down docker service $serviceName" $_color_blue_
 docker stop $serviceName | tee -a $logfile
 
