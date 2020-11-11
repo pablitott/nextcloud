@@ -1,0 +1,27 @@
+version: '3.2' 
+
+services:
+
+  paveltrujillo:
+    image: nginx
+    container_name: paveltrujillo.local
+    networks: 
+      default:
+    expose:
+      - 80
+      - 443
+    environment:
+      - VIRTUAL_HOST=paveltrujillo.local
+      - LETSENCRYPT_HOST=paveltrujillo.local
+      - LETSENCRYPT_EMAIL=pablitott@gmail.com
+    volumes:
+        - /nextcloud/www/paveltrujillo.local:/usr/share/nginx/html:ro
+        - /etc/localtime:/etc/localtime:ro
+    # depends_on:
+    #   - letsencrypt
+    #   - proxy
+    restart: unless-stopped
+networks: 
+  default:
+    external:
+      name: nginx_nextcloud_network

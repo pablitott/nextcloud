@@ -49,4 +49,6 @@ To add a new user, use the following syntax:
                     [-z <hhmm>-<hhmm>] [-m]
 
 ```
-for connecting using Windows
+for connecting using Windows you can use filezila (see following image)
+![filezilla for ftp for mydeskweb](../images/filezila.jpg)
+

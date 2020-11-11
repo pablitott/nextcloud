@@ -1,0 +1,42 @@
+#================================================================
+# file to create NextCloud using MariaDB and ngInx
+#================================================================
+
+version: '3.3'
+
+services:
+  proxy:
+    image: jwilder/nginx-proxy:alpine
+    container_name: nginx-proxy
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
+    networks:
+      - nextcloud_network
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /nextcloud/proxy/certs:/etc/nginx/certs:rw
+      - /nextcloud/proxy/vhost.d:/etc/nginx/vhost.d:rw
+      - /nextcloud/proxy/html:/usr/share/nginx/html:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    restart: unless-stopped
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion:latest
+    container_name: letsencrypt-proxy-companion
+    depends_on:
+      - proxy
+    networks:
+      - nextcloud_network
+    volumes:
+      - /nextcloud/proxy/certs:/etc/nginx/certs:rw
+      - /nextcloud/proxy/vhost.d:/etc/nginx/vhost.d:rw
+      - /nextcloud/proxy//html:/usr/share/nginx/html:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+
+networks:
+  nextcloud_network:

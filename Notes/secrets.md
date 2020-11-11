@@ -8,7 +8,7 @@ Create a container to store secrets
 ```
 2. Add a secret to Docker. The docker secret create command reads standard input because the last argument, which represents the file to read the secret from, is set to -.<br/>
     _Following command creates a file named my_secret_data with the "This is a secret" as a content_
->  printf "This is a secret" | docker secret create my_secret_data -_<br/>
+>  printf "This is a secret" | docker secret create my_secret_data -<br/>
 ```
       6nb3uklvc2rtikqedkz8p5q6d
 ```

@@ -1,19 +1,19 @@
 #Stop the container(s) using the following command
-docker-compose down
-
+docker stop $(docker ps -q -a  --filter Name=mydeskweb.com)
+docker stop $(docker ps -q -a  --filter Name=mariadb-mydeskweb)
 #Delete all containers using the following command:
 #docker rm -f $(docker ps -a -q)
-docker rm $(docker ps -a -q)
+docker rm  $(docker ps -q -a  --filter Name=mydeskweb.com)
+docker rm $(docker ps -q -a  --filter Name=mariadb-mydeskweb)
 
-#Delete all volumes using the following command:
-docker volume rm $(docker volume ls -q)
+docker volume rm nextcloud_vol_db_qi
+docker volume rm  nextcloud_vol_db_qi
 
-
-#following commands are optional for full clean
-#delete current images
 
 # I think is no needed all the time, next time run it using force option
-docker rmi $(docker images -a -q)
+#docker rmi $(docker images nextcloud -q -a)
+#docker rmi $(docker images mariadb -q -a)
+
 #Restart the containers using the following command:
 
 #Delete the folders created as /nextcloud/...
