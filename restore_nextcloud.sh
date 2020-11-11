@@ -19,7 +19,11 @@
 #  tar -tvf nc_backup_1.tar 
 #
 #  change the ownership using
+<<<<<<< HEAD
 #  $ chown -R www-data:www-data  /nextcloud/mydeskweb.com/
+=======
+#  $ sudo chown -R www-data:www-data  /nextcloud/mydeskweb.com/
+>>>>>>> refs/remotes/origin/main
 #
 #   Change file attributes for data folder
 #     sudo find /nextcloud/mydeskweb.com/ -type d -exec chmod 755 {} \;
@@ -36,10 +40,17 @@ function showerror (){
 
   if [ $? == 0 ]; then
     writeLogLine "$_color_green_ Restore succeed $output_reset"
+<<<<<<< HEAD
     [ ! -z $notifyStatus ] && python2.7 ~/sendMail.py "Backup Succeed" $logfile
   else
     writeLogLine "$_color_red_ \"${last_command}\" \n$_color_yellow_ command failed with exit code $?."
     [ ! -z $notifyStatus ] &&  python2.7 ~/sendMail.py "Restore failed" $logfile
+=======
+    #[ ! -z $notifyStatus ] && python2.7 ~/sendMail.py "Backup Succeed" $logfile
+  else
+    writeLogLine "$_color_red_ \"${last_command}\" \n$_color_yellow_ command failed with exit code $?."
+    #[ ! -z $notifyStatus ] &&  python2.7 ~/sendMail.py "Restore failed" $logfile
+>>>>>>> refs/remotes/origin/main
   fi
 
   end_time="$(date -u +%s)"
@@ -51,7 +62,64 @@ function showerror (){
 }
 #====================================================================
 function occCmd(){
-  docker-compose exec --user www-data $serverName php occ $*
+  docker exec -it --user www-data $serviceName php occ $*
+}
+#====================================================================
+function awsCmd(){
+  echo $*
+  docker run --rm -ti -v ~/.aws:/root/.aws -v $(pwd):/aws amazon/aws-cli $*
+}
+#====================================================================
+function restore_files(){
+  workingdir=$PWD 
+  writeLogLine "Restore user datafiles from $restoreTarFile" $_color_blue_
+  cd /
+  for FOLDER in ${FOLDERS_DATA_BACKUP[@]}
+  do
+      if [ -d "$FOLDER" ];
+      then
+        writeLogLine "$_color_yellow_ deleting $FOLDER... "
+        sudo rm -r $FOLDER
+      fi
+      writeLogLine "$_color_yellow_ restore $FOLDER... "
+      sudo tar -xpf $BACKUP_REPOSITORY/$restoreTarFile $FOLDER 
+  done
+  cd $workingdir
+  writeLogLine "End of Restore user datafiles" $_color_purple_
+}
+#====================================================================
+function restore_database(){
+  writeLogLine "Restore DataBase $MYSQL_DATABASE from $restore_db_file" $_color_purple_
+
+  writeLogLine "Restoring datafiles from $restoreTarFile to $PWD" $_color_yellow_
+  writeLogLine "Database file: $restore_db_file" $_color_yellow_
+
+  #sudo tar -xpf $BACKUP_REPOSITORY/$restoreTarFile $BACKUP_FOLDER/$restore_db_file
+  writeLogLine "tar -xpf $BACKUP_REPOSITORY/$restoreTarFile $BACKUP_DATABASE_FILE" $_color_yellow_
+  
+  if [[ ! -f $BACKUP_DATABASE_FILE ]]; then
+    sudo tar -xpf $BACKUP_REPOSITORY/$restoreTarFile $BACKUP_FOLDER/$BACKUP_DATABASE_FILE
+  fi
+  
+  # for full command lines see docker-notes.md
+  writeLogLine "DROP DATABASE $MYSQL_DATABASE" $_color_blue_
+  docker exec -it $DATABASE_SERVICE mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "DROP DATABASE IF EXISTS $MYSQL_DATABASE"
+
+  writeLogLine "CREATE DATABASE $MYSQL_DATABASE" $_color_blue_
+  docker exec -it $DATABASE_SERVICE mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE $MYSQL_DATABASE CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"
+
+  writeLogLine "DROP USER $MYSQL_USER" $_color_blue_
+  docker exec -it $DATABASE_SERVICE mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "DROP USER IF EXISTS '$MYSQL_USER'"
+
+  writeLogLine "CREATE USER $MYSQL_USER" $_color_blue_
+  docker exec -it $DATABASE_SERVICE mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE USER '$MYSQL_USER' IDENTIFIED BY '$MYSQL_PASSWORD'"
+  
+  writeLogLine "GRANT ALL PRIVILEGES on $MYSQL_DATABASE.* to $MYSQL_USER" $_color_blue_
+  docker exec -it $DATABASE_SERVICE mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES on $MYSQL_DATABASE.* to $MYSQL_USER"
+
+  writeLogLine "RESTORE $MYSQL_DATABASE FROM $BACKUP_FOLDER/$BACKUP_DATABASE_FILE IN SERVICE $DATABASE_SERVICE" $_color_yellow_
+  docker exec -i $DATABASE_SERVICE mysql -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < $BACKUP_FOLDER/$BACKUP_DATABASE_FILE
+  writeLogLine "End of Restore Database ..." $_color_purple_
 }
 #====================================================================
 function restore_files(){
@@ -120,7 +188,7 @@ serverName="${serviceName%.*}"
 #check if NICKNAME is defined, True if the length of string is zero
 if [ -z "$NICKNAME" ] ; then
     writeLogLine "$output_red NICKNAME is not defined, please define nickname accordingly $output_reset"
-    exit -1
+#    exit -1
 fi
 #check if USER is defined, True if the length of string is zero
 if [ -z "$USER" ] ; then
@@ -134,8 +202,17 @@ if [ -z $2 ]; then
 fi
 backupToRestore=$2
 logfile="$PWD/restore-$serverName.log"
+<<<<<<< HEAD
 environmentFile=$serverName.env
 set -a; source $environmentFile ; set +a
+=======
+
+environmentFile=$serverName.env
+echo $environmentFile
+
+set -a; source $environmentFile ; set +a
+set -a; source backup_nextcloud.env; set +a
+>>>>>>> refs/remotes/origin/main
 
 [ -f $logfile ] && rm $logfile
 
@@ -143,7 +220,11 @@ writeLogLine "START Restore process on $serviceName"
 start_time="$(date -u +%s)"
 
 FOLDERS_DATA_BACKUP=(
+<<<<<<< HEAD
 "$FOLDER_ROOT/$serviceName/data"
+=======
+"$FOLDER_ROOT/$serviceName"
+>>>>>>> refs/remotes/origin/main
 )
 #"$FOLDER_ROOT/$serviceName"
 #"$FOLDER_ROOT/$serviceName/custom_apps"
@@ -156,12 +237,31 @@ occCmd maintenance:mode --on | tee -a $logfile
 removeFolder "$BACKUP_REPOSITORY"
 createFolder "$BACKUP_REPOSITORY"
 restoreTarFile="nc_backup_$(date +$backupToRestore).tar"
+<<<<<<< HEAD
 
 writeLogLine "Recover backup file from $BACKUP_S3BUCKET/$NICKNAME/$serviceName/$restoreTarFile" $_color_blue_
 aws s3 cp $BACKUP_S3BUCKET/$NICKNAME/$serviceName/$restoreTarFile $BACKUP_REPOSITORY/$restoreTarFile | tee -a  $logfile
 
 restore_database
 
+=======
+echo "NICKNAME: $NICKNAME"
+if [[ -z $NICKNAME ]]; then
+  s3Bucket=$BACKUP_S3BUCKET/$serviceName/$restoreTarFile 
+else
+  s3Bucket=$BACKUP_S3BUCKET/$NICKNAME/$serviceName/$restoreTarFile 
+fi
+
+writeLogLine "Recover backup file from $s3Bucket" $_color_blue_
+writeLogLine "to $restoreTarFile" $_color_blue_
+
+if [[ ! -f $BACKUP_REPOSITORY/$restoreTarFile ]]; then
+  awsCmd s3 cp $s3Bucket $restoreTarFile
+  sudo mv $restoreTarFile $BACKUP_REPOSITORY/$restoreTarFile
+fi
+
+restore_database
+>>>>>>> refs/remotes/origin/main
 writeLogLine "$output_blue shut down docker service $serviceName" $_color_blue_
 docker stop $serviceName | tee -a $logfile
 

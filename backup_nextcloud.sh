@@ -49,16 +49,27 @@
 function showerror (){
 
   if [ $? == 0 ]; then
+<<<<<<< HEAD
     writeLogLine "$_color_green_ backup succeed "
     [ ! -z $notifyStatus ] && python2.7 ~/sendMail.py "Backup Succeed" $logfile
   else
     writeLogLine "$_color_red_ \"${last_command}\" \n$_color_yellow_ command failed with exit code $?. "
+=======
+    writeLogLine "backup succeed " $_color_green_
+    [ ! -z $notifyStatus ] && python2.7 ~/sendMail.py "Backup Succeed" $logfile
+  else
+    writeLogLine "\"${last_command}\" \n$_color_yellow_ command failed with exit code $?. " $_color_red_
+>>>>>>> refs/remotes/origin/main
     [ ! -z $notifyStatus ] &&  python2.7 ~/sendMail.py "Restore failed" $logfile
   fi
 
   end_time="$(date -u +%s)"
   [ ! -z $start_time ] && elapsed="$(($end_time-$start_time))"
+<<<<<<< HEAD
   [ ! -z $start_time ] && writeLogLine "$_color_yellow_ Total $elapsed seconds elapsed for process "
+=======
+  [ ! -z $start_time ] && writeLogLine "Total $elapsed seconds elapsed for process" $_color_yellow_ 
+>>>>>>> refs/remotes/origin/main
 
   # I think following lines no needed
   #  unset $(grep -v '^#' $environmentFile | sed -E 's/(.*)=.*/\1/' | xargs)
@@ -69,8 +80,13 @@ function backup_home(){
   verbose=$1
   tarOptions='-uf'
   [ ! -z $verbose ] && tarOptions="-uvf"
+<<<<<<< HEAD
   writeLogLine "tar using $tarOptions"
   writeLogLine "$_color_blue_ packing $PWD Home to $ARCHIVE_FILE, exclude hidden folders "
+=======
+  writeLogLine "tar using $tarOptions" $_color_yellow_
+  writeLogLine "packing $PWD Home to $ARCHIVE_FILE, exclude hidden folders" $_color_blue_
+>>>>>>> refs/remotes/origin/main
   sudo tar $tarOptions $ARCHIVE_FILE --exclude="./.*" --exclude="*.tar"   ./
   unset verbose
 }
@@ -85,9 +101,15 @@ function backup_database(){
     tarOptions="-cf"
     [ ! -z $verbose ] && tarOptions="-cvf"
   fi
+<<<<<<< HEAD
   writeLogLine "$_color_blue_ dump MySql $MYSQL_DATABASE database to $BACKUP_DATABASE_FILE "
   
   docker exec -it $DATABASE_SERVICE mysqldump --single-transaction -h$MYSQL_HOST -u$MYSQL_USER -p"$MYSQL_PASSWORD" $MYSQL_DATABASE > $BACKUP_REPOSITORY/$BACKUP_DATABASE_FILE
+=======
+  writeLogLine "packing DB $serverName.db to $BACKUP_DATABASE_FILE"
+  docker exec -it $DATABASE_SERVICE mysqldump --single-transaction -h$DATABASE_SERVICE -u$MYSQL_USER -p$MYSQL_PASSWORD $serverName > $BACKUP_REPOSITORY/$BACKUP_DATABASE_FILE
+ 
+>>>>>>> refs/remotes/origin/main
   sudo tar $tarOptions $ARCHIVE_FILE $BACKUP_REPOSITORY/$BACKUP_DATABASE_FILE
   unset verbose
   unset tarOptions
@@ -102,13 +124,19 @@ function backup_files(){
   do
     if [ -d "$FOLDER" ];
     then
+<<<<<<< HEAD
       writeLogLine "$_color_blue_ packing $FOLDER... "
       sudo tar $tarOptions $ARCHIVE_FILE $FOLDER
     else
       writeLogLine "$_color_yellow_ Skipping $FOLDER (does not exist!) "
+=======
+      writeLogLine "packing $FOLDER..." $_color_blue_
+      sudo tar $tarOptions $ARCHIVE_FILE $FOLDER
+    else
+      writeLogLine "Skipping $FOLDER (does not exist!)" $_color_yellow_
+>>>>>>> refs/remotes/origin/main
     fi
   done
-  writeLogLine "User: $USER"
   unset tarOptions
   unset verbose
  }
@@ -116,14 +144,23 @@ function backup_files(){
 function backup_image(){
   dockerImages="$BACKUP_REPOSITORY/$serverName-images_$(date +$CURRENT_TIME_FORMAT).tar"
   #dockerImages="$BACKUP_REPOSITORY/$serverName.tar"
+<<<<<<< HEAD
   writeLogLine "$_color_blue_ compressing images as $dockerImages "
+=======
+  writeLogLine "compressing images as $dockerImages " $_color_blue_
+>>>>>>> refs/remotes/origin/main
   docker save $(docker images -q) -o $dockerImages
 }
 #================================================================================
 function occCmd(){
-  docker-compose exec --user www-data $serverName php occ $*
+  docker exec -it --user www-data $serviceName php occ $*
 }
-#=================================================
+#================================================================================
+function awsCmd(){
+  echo $*
+  docker run --rm -ti -v ~/.aws:/root/.aws -v $(pwd):/aws amazon/aws-cli $*
+}
+#================================================================================
 #            include subroutines
 source ./writeLogLine.sh  &1>/dev/null     # write fancy output to console
 source ./folderMaintenance.sh              # create/remove folders
@@ -138,7 +175,11 @@ trap showerror exit
 #Send an email message at the end of the process
 # notifyStatus=0
 if [ -z $1 ] ; then
+<<<<<<< HEAD
     writeLogLine "$_color_red_ ServerName to be backup is not defined, please define ServerName accordingly "
+=======
+    writeLogLine "ServerName to be backup is not defined, please define ServerName accordingly" $_color_red_
+>>>>>>> refs/remotes/origin/main
     exit -1
 fi
 
@@ -147,16 +188,25 @@ serverName="${serviceName%.*}"
 
 #check if NICKNAME is defined, True if the length of string is zero
 if [ -z "$NICKNAME" ] ; then
+<<<<<<< HEAD
     writeLogLine "$_color_red_ NICKNAME is not defined, please define nickname accordingly "
+=======
+    writeLogLine "NICKNAME is not defined, please define nickname accordingly" $_color_red_
+>>>>>>> refs/remotes/origin/main
     exit -1
 fi
 #check if USER is defined, True if the length of string is zero
 if [ -z "$USER" ] ; then
+<<<<<<< HEAD
     writeLogLine "$_color_red_ USER is not defined, please define $USER accordingly "
+=======
+    writeLogLine "USER is not defined, please define $USER accordingly" $_color_red_
+>>>>>>> refs/remotes/origin/main
     exit -1
 fi
 [ "$2" == "-full" ] && FULL_BACKUP=1
 
+<<<<<<< HEAD
 logfile="$PWD/restor-e$serverName.log"
 environmentFile=$serverName.env
 
@@ -171,6 +221,21 @@ start_time="$(date -u +%s)"
 
 FOLDERS_DATA_BACKUP=(
 "$DATA_ROOT/$NEXTCLOUD_TRUSTED_DOMAINS"
+=======
+logfile="$PWD/restore-$serverName.log"
+environmentFile=$serverName.env
+
+set -a; source $environmentFile; set +a
+set -a; source backup_nextcloud.env; set +a
+
+[ -f $logfile ] && rm $logfile
+
+writeLogLine "START Backup process on $NEXTCLOUD_TRUSTED_DOMAINS" $_color_purple_
+start_time="$(date -u +%s)"
+
+FOLDERS_DATA_BACKUP=(
+"$DATA_ROOT/$serviceName"
+>>>>>>> refs/remotes/origin/main
 )
 
 # TODO: review how to check if the docker sergvice exists, quenchinnovations returns 2 values
@@ -190,13 +255,24 @@ backup_files
 occCmd maintenance:mode --off | tee -a $logfile
 for file in $BACKUP_REPOSITORY/*.tar
 do
+<<<<<<< HEAD
     writeLogLine "$_color_green_ $(basename $file) Size: $(stat --printf='%s' $file | numfmt --to=iec) "
     aws s3 cp $file $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/
+=======
+    writeLogLine "$(basename $file) Size: $(stat --printf='%s' $file | numfmt --to=iec) " $_color_green_
+    writeLogLine "Backup to $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/" $_color_blue_
+    aws s3 cp $file $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/ | tee -a $logfile
+#    awsCmd s3 cp $file $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/
+>>>>>>> refs/remotes/origin/main
 done
 
 #Remove Archive folder without condition
 removeFolder $BACKUP_REPOSITORY
+<<<<<<< HEAD
 writeLogLine " end of job "
+=======
+writeLogLine " end of job " $_color_green_
+>>>>>>> refs/remotes/origin/main
 
 exit 0
 

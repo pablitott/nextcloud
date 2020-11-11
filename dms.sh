@@ -1,0 +1,1 @@
+function dms() { docker ps --format "{{.ID}}\t{{.Tag}}\t{{.Size}}"; }

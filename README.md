@@ -1,25 +1,12 @@
-# nextcloud in docker 
+# Docker improvements
 
-## Main docker scripts
-Goal: create a Nextcloud website using docker 
-* docker-compose.yml: main script to create the nextcloud
-* docker-rebuild.sh: Used to rebuild the entire docker infraestructure
-    * Stop containers
-    * Remove Containers
-    * Remove Images
-    * Remove Volumes
-    * Restore Containers
+[docker-compose file with python](https://docs.docker.com/compose/gettingstarted/)
 
-## Maintenance scripts
-* saveScripts.sh: Save all the current scripts to AWS S3
-* backup_nextcloud.sh: Backup nextcloud project files and database to aws s3
+### Network manage
+- Install and study [bridge utils](https://help.ubuntu.com/community/NetworkConnectionBridge)<br/>
 
-## Documentation (notes)
-* DockerInAWs.md: Instructions to push/pull docker images to AWS ECS
-* Docker-notes.md: Instructions and commands used in scripts 
+## NextCloud migration
+- [ ] Change the database name in Nextcloud see [NextCloud migration](./Notes/nextcloud-migration.md)
+- [ ] Add preview generator to nextcloud page [preview generator](https://quenchinnovations.net/settings/apps/installed/)
+- [ ] add RAW preview (from previous item)
 
-## bash functions
-* folderMaintenance.sh
-    * removeFolder(folder): remove folder specified as argument 
-    * createFolder(): remove folder specified as argument
-* writeLogLine.sh: print out a colored to std output and a  log file **needs improvement**

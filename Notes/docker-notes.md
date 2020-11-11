@@ -1,11 +1,14 @@
-
 # Nextcloud in Docker containers
----
-[Install nextcloud server using Docker images](https://hub.docker.com/_/nextcloud)<br/>
-[How to install NextCloud in your server with Docker](https://blog.ssdnodes.com/blog/installing-nextcloud-docker/)
 
 ---
-```yaml {.line-numbers}
+
+[Install nextcloud server using Docker images](https://hub.docker.com/_/nextcloud)
+
+ [How to install NextCloud in your server with Docker](https://blog.ssdnodes.com/blog/installing-nextcloud-docker/)
+
+---
+
+```
   mydeskweb:
     image: nextcloud:latest
     container_name: nextcloud-mydeskweb.com
@@ -36,10 +39,17 @@
     restart: unless-stopped
 
 ```
+<<<<<<< HEAD
 ![Tux, Linux](../images/tux.png)
+=======
+
+![Tux, Linux](../images/tux.png)
+
+>>>>>>> refs/remotes/origin/main
 ## Useful nextcloud commands to use in docker
 
 Stop the container(s) using the following command
+
 ```
 docker-compose down
 ```
@@ -52,35 +62,51 @@ Delete all containers using the following command:
 ```
 
 Delete all volumes using the following command:
+
 ```
     docker volume rm $(docker volume ls -q)
 ```
 
 delete current images
+
 ```
    docker rmi $(docker images -a -q)
 ```
 
 Restart the containers using the following command:
+
 ```
    docker-compose up -d
 ```
+
 ### save docker images [docker save image](https://docs.docker.com/engine/reference/commandline/save/)
+
 ```
 docker save --output [tar image name] [docker image to save]
 docker save --output 
 ```
+
 ### load docker images [docker load images](https://docs.docker.com/engine/reference/commandline/load/)
+
 ```
   Not implemented yet
 ```
 
 ### set/unset predefined environment variables
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/main
 ```
    export $(grep -v '^#' mydeskweb.env | xargs)
    unset $(grep -v '^#' mydeskweb.env | sed -E 's/(.*)=.*/\1/' | xargs)
 ```
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/main
 ### Backup a database
+
 ```
    docker run -it mariadb bash
    mariadb is the container name
@@ -90,7 +116,9 @@ docker save --output
    backup database
    docker exec -it mariadb-mydeskweb.com mysqldump --single-transaction -u nextcloud -p"admin" mydeskweb > ./mydeskweb_db.sql
 ```
+
 ### Restore database
+
 ```
 change root-password by your root password below
 change db-password by the nextcloud db user password below
@@ -102,6 +130,7 @@ docker exec -i mariadb-mydeskweb.com mysql -unextcloud -pdb-password mydeskweb <
 ```
 
 ### To use the Nextcloud command-line interface (aka. occ command):
+
 ```
     $ docker exec --user www-data CONTAINER_ID php occ
     $ docker exec --user www-data nextcloud-mydeskweb.com php occ config:system:get trusted_domains
@@ -110,26 +139,29 @@ docker exec -i mariadb-mydeskweb.com mysql -unextcloud -pdb-password mydeskweb <
 ```
 
 ### renew ssh certificates
+
 ```
 docker exec nextcloud-letsencrypt /app/force_renew
 ```
 
 ### Reload nginx
+
 ```
 docker exec -it nextcloud-proxy nginx -s reload
 ```
 
 ## php commands
+
 ### List php environment
+
 ```
 docker exec -it nextcloud-mydeskweb.com php -i
 ```
 
 **References**
-- [allow upload big files](https://help.nextcloud.com/t/nextcloud-17-0-0-on-docker-container-where-is-the-php-ini-file/63413/10)
 
-- [documents to allow big files](https://docs.nextcloud.com/server/17/admin_manual/configuration_files/big_file_upload_configuration.html)
-
+* [allow upload big files](https://help.nextcloud.com/t/nextcloud-17-0-0-on-docker-container-where-is-the-php-ini-file/63413/10)
+* [documents to allow big files](https://docs.nextcloud.com/server/17/admin_manual/configuration_files/big_file_upload_configuration.html)
 
 ```
 $ docker ps
@@ -150,11 +182,10 @@ Then:
    }
    docker exec -it nextcloud-proxy nginx -s reload
 ```
+
 *and voila*
 
-**Save docker container as image**
-[create docker image](https://www.scalyr.com/blog/create-docker-image/)
-save the container after it is modified
+**Save docker container as image** [create docker image](https://www.scalyr.com/blog/create-docker-image/) save the container after it is modified
 
 ```
    docker ps
@@ -165,7 +196,9 @@ eddd1e0bc13f        nextcloud:latest                         "/entrypoint.sh apa
 e4c973a42bdb        mariadb                                  "docker-entrypoint.s…"   3 hours ago         Up 3 hours          3306/tcp                                   mariadb-mydeskweb.com
 
 ```
+
 ===
+
 ```
     save the container as an image
     $ docker commit nextcloud-proxy nextcloud-proxy-edited
@@ -175,7 +208,9 @@ e4c973a42bdb        mariadb                                  "docker-entrypoint.
 e
 
 ```
+
 ### format docker outputs
+
 ```
   Images
   docker image list --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}"
@@ -185,15 +220,28 @@ e
   docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Size}}"
   docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Size}}" -a --filter name=mariadb
 ```
-*recomended use:* alias dps='docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Size}}\t{{.Image}}"'
+
+*recomended use:* alias dps='docker ps --format "table {{.ID}}\\t{{.Names}}\\t{{.Size}}\\t{{.Image}}"'
 
 ### Install vault
-   [Vault source](https://learn.hashicorp.com/tutorials/vault/getting-started-install)<br/>
-   [Vault docker](https://hub.docker.com/_/vault)
 
+<<<<<<< HEAD
 ## Docker compose resources
 Limit the resources to use by a container<br/>
 [Resources](https://docs.docker.com/compose/compose-file/#resources)
 
 ## Markdown 
    [basics markdown guide](https://www.markdownguide.org/basic-syntax/)
+=======
+[Vault source](https://learn.hashicorp.com/tutorials/vault/getting-started-install)
+
+[Vault docker](https://hub.docker.com/_/vault)
+
+## Docker compose resources
+
+Limit the resources to use by a container<br/> [Resources](https://docs.docker.com/compose/compose-file/#resources)
+
+## Markdown
+
+[basics markdown guide](https://www.markdownguide.org/basic-syntax/)
+>>>>>>> refs/remotes/origin/main
