@@ -1,0 +1,65 @@
+#================================================================
+# file to create NextCloud using MariaDB and ngInx
+#================================================================
+
+version: '3.2'
+
+services:
+
+  nextcloud:
+    image: nextcloud:latest
+    container_name: ${NEXTCLOUD_SERVICE}
+    networks: 
+      default:
+    external_links: 
+      - nginx-proxy
+      - nginx-letsencrypt-proxy-companion
+    depends_on:
+      #- letsencrypt-proxy-companion
+      #- nginx-proxy
+      - mariadb
+    volumes:
+      # use html path instead of nextcloud volume as the original doc for backup purposes
+      - nextcloud:/var/www/html
+      - /nextcloud/${NEXTCLOUD_SERVICE}/config:/var/www/html/config
+      - /nextcloud/${NEXTCLOUD_SERVICE}/custom_apps:/var/www/html/custom_apps
+      - /nextcloud/${NEXTCLOUD_SERVICE}/data:/var/www/html/data
+      - /nextcloud/${NEXTCLOUD_SERVICE}/themes:/var/www/html/themes
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - VIRTUAL_HOST=${NEXTCLOUD_SERVICE}
+      - LETSENCRYPT_HOST=${NEXTCLOUD_SERVICE}
+      - LETSENCRYPT_EMAIL=pablitott@gmail.com
+      - NEXTCLOUD_ADMIN_USER=${NEXTCLOUD_ADMIN_USER}
+      - NEXTCLOUD_ADMIN_PASSWORD${NEXTCLOUD_ADMIN_PASSWORD}
+      - MYSQL_DATABASE=${DATABASE_SERVICE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD} 
+      - MYSQL_HOST=${DATABASE_SERVICE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
+    restart: unless-stopped
+
+  mariadb:
+    image: mariadb:latest
+    container_name: ${DATABASE_SERVICE}
+    networks:
+      default:
+    volumes:
+      - mariadb:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+    restart: unless-stopped
+
+volumes:
+  nextcloud:
+  mariadb:
+
+networks: 
+  default:
+    external:
+      name: nginx_nextcloud_network
