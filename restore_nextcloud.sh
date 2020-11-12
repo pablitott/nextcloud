@@ -131,7 +131,7 @@ function restore_files(){
 #====================================================================
 function restore_database(){
   writeLogLine "Restore DataBase $MYSQL_DATABASE from $restore_db_file"
-  restore_db_file=$serverName-db.sql
+  restore_db_file=$BACKUP_DATABASE_FILE
   writeLogLine "Restoring datafiles from $restoreTarFile to $BACKUP_REPOSITORY"
   writeLogLine "Database file: $BACKUP_REPOSITORY/$restore_db_file"
 
@@ -191,8 +191,7 @@ if [ -z $2 ]; then
 fi
 backupToRestore=$2
 logfile="$PWD/restore-$serverName.log"
-
-environmentFile=$serverName.env
+environmentFile=$serverName/$serviceName.env
 echo $environmentFile
 
 set -a; source $environmentFile ; set +a
@@ -214,7 +213,7 @@ FOLDERS_DATA_BACKUP=(
 
 occCmd maintenance:mode --on | tee -a $logfile
 
-removeFolder "$BACKUP_REPOSITORY"
+# removeFolder "$BACKUP_REPOSITORY"
 createFolder "$BACKUP_REPOSITORY"
 restoreTarFile="nc_backup_$(date +$backupToRestore).tar"
 echo "NICKNAME: $NICKNAME"

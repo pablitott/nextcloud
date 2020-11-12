@@ -85,7 +85,7 @@ function backup_database(){
     tarOptions="-cf"
     [ ! -z $verbose ] && tarOptions="-cvf"
   fi
-  writeLogLine "packing DB $serverName.db to $BACKUP_DATABASE_FILE"
+  writeLogLine "packing DB $serverName.db to $BACKUP_DATABASE_FILE ON $DATABASE_SERVICE"
   docker exec -it $DATABASE_SERVICE mysqldump --single-transaction -h$DATABASE_SERVICE -u$MYSQL_USER -p$MYSQL_PASSWORD $serverName > $BACKUP_REPOSITORY/$BACKUP_DATABASE_FILE
  
   sudo tar $tarOptions $ARCHIVE_FILE $BACKUP_REPOSITORY/$BACKUP_DATABASE_FILE
@@ -162,7 +162,7 @@ fi
 [ "$2" == "-full" ] && FULL_BACKUP=1
 
 logfile="$PWD/restore-$serverName.log"
-environmentFile=$serverName.env
+environmentFile=$serverName/$serviceName.env
 
 set -a; source $environmentFile; set +a
 set -a; source backup_nextcloud.env; set +a

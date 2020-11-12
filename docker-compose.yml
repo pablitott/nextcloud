@@ -1,0 +1,175 @@
+#================================================================
+# file to create NextCloud using MariaDB and ngInx
+#
+#  TODO:
+#  Add following lines 
+# deploy:
+#   resources:
+#     limits:
+#       cpus: '0.50'
+#      memory: 50M
+#     reservations:
+#       cpus: '0.25'
+#      memory: 20M
+#================================================================
+#         KEEP IT FOR REFERENCE IN THE FUTURE
+version: '3.2' 
+
+services:
+  proxy:
+  #  original image from internet documents, uncomment to create a new docker container
+  #  image: jwilder/nginx-proxy:alpine
+  # image modified to allow upload big files
+  #  image: nextcloud-proxy
+  # find following image on AWS->ECR>Repositories > nextcloud
+  # you have to login first before pull the image see pushCommandsFromAWS.md
+    image: 690049365056.dkr.ecr.us-east-1.amazonaws.com/nextcloud:nextcloud-proxy
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
+    container_name: nextcloud-proxy
+    networks:
+      - nextcloud_network
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /nextcloud/mydeskweb.com/proxy/conf.d:/etc/nginx/conf.d:rw
+      - /nextcloud/mydeskweb.com/proxy/vhost.d:/etc/nginx/vhost.d:rw
+      - /nextcloud/mydeskweb.com/proxy/html:/usr/share/nginx/html:rw
+      - /nextcloud/mydeskweb.com/proxy/certs:/etc/nginx/certs:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    restart: unless-stopped
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion:latest
+    container_name: nextcloud-letsencrypt
+    depends_on:
+      - proxy
+    networks:
+      - nextcloud_network
+    volumes:
+      - /nextcloud/mydeskweb.com/proxy/certs:/etc/nginx/certs:rw
+      - /nextcloud/mydeskweb.com/proxy/vhost.d:/etc/nginx/vhost.d:rw
+      - /nextcloud/mydeskweb.com/proxy/html:/usr/share/nginx/html:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+
+  quenchinnovations:
+    image: nextcloud:latest
+    container_name: quenchinnovations.net
+    networks:
+      - nextcloud_network
+    depends_on:
+      - letsencrypt
+      - proxy
+      - db_quenchinnovations
+    volumes:
+      # use html path instead of nextcloud volume as the original doc for backup purposes
+      - vol_nc_qi:/var/www/html
+      - /nextcloud/quenchinnovations.net/config:/var/www/html/config
+      - /nextcloud/quenchinnovations.net/custom_apps:/var/www/html/custom_apps
+      - /nextcloud/quenchinnovations.net/data:/var/www/html/data
+      - /nextcloud/quenchinnovations.net/themes:/var/www/html/themes
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - VIRTUAL_HOST=quenchinnovations.net
+      - LETSENCRYPT_HOST=quenchinnovations.net
+      - LETSENCRYPT_EMAIL=pablitott@gmail.com
+    restart: unless-stopped
+
+  db_quenchinnovations:
+    image: mariadb
+    container_name: mariadb-quenchinnovations
+    networks:
+      - nextcloud_network
+    volumes:
+      - vol_db_qi:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor
+      # used on frist screen
+      - MYSQL_PASSWORD=mysql
+      - MYSQL_DATABASE=quenchinnovations
+      - MYSQL_USER=nextclouduser
+        # database host = db
+    restart: unless-stopped
+    
+  questinnovations:
+    image: nginx
+    container_name: questinnovations.net
+    networks:
+      - nextcloud_network
+    expose:
+      - 80
+      - 443
+    environment:
+      - VIRTUAL_HOST=questinnovations.net
+      - LETSENCRYPT_HOST=questinnovations.net
+      - LETSENCRYPT_EMAIL=pablitott@gmail.com
+    volumes:
+      - /nextcloud/www/questinnovations.net:/usr/share/nginx/html:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - letsencrypt
+      - proxy
+    restart: unless-stopped
+
+  paveltrujillo:
+    image: nginx
+    container_name: paveltrujillo.info
+    networks:
+      - nextcloud_network
+    expose:
+      - 80
+      - 443
+    environment:
+      - VIRTUAL_HOST=paveltrujillo.info
+      - LETSENCRYPT_HOST=paveltrujillo.info
+      - LETSENCRYPT_EMAIL=pablitott@gmail.com
+    volumes:
+        - /nextcloud/www/paveltrujillo.info:/usr/share/nginx/html:ro
+        - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - letsencrypt
+      - proxy
+    restart: unless-stopped
+
+  ftpd_server:
+    image: stilliard/pure-ftpd
+    container_name: pure-ftpd
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+    volumes: 
+      # remember to replace /folder_on_disk/ with the path to where you want to store the files on the host machine
+      #      - "/folder_on_disk/data:/home/username/"
+      #- /nextcloud/www/questinnovations.net:/home/ftpusers/ptrujillo
+      - /nextcloud/www/paveltrujillo.info:/home/ftpusers/pavelt
+      #- /nextcloud/www/paveltrujillo.info:/home/ftpusers/bob
+      - "/etc/ssl/private/:/etc/pure-ftpd/passwd"
+      # uncomment for ssl/tls, see https://github.com/stilliard/docker-pure-ftpd#tls
+      - "/etc/ssl/private:/etc/ssl/private/"
+    environment:
+      PUBLICHOST: "mydeskweb.com"
+      FTP_USER_NAME: pavelt
+      FTP_USER_PASS: batlink1977
+      FTP_USER_HOME: /home/pavelt
+      PURE_PASSWDFILE: /etc/pure-ftpd/passwd/pureftpd.passwd
+      # also for ssl/tls:
+      ADDED_FLAGS: "--tls=2"
+      TLS_USE_DSAPRAM: "true"
+    depends_on:
+      - letsencrypt
+      - proxy
+    restart: always
+    networks:
+      nextcloud_network:
+
+volumes:
+  vol_nc_qi:
+  vol_db_qi:
+    
+networks:
+  nextcloud_network:
