@@ -11,9 +11,12 @@ services:
     container_name: ${NEXTCLOUD_SERVICE}
     networks: 
       default:
+    external_links: 
+      - nginx-proxy
+      - nginx-letsencrypt-proxy-companion
     depends_on:
-      #- letsencrypt
-      #- proxy
+      #- letsencrypt-proxy-companion
+      #- nginx-proxy
       - mariadb
     volumes:
       # use html path instead of nextcloud volume as the original doc for backup purposes
