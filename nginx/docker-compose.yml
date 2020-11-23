@@ -27,7 +27,7 @@ services:
 
   letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion:latest
-    container_name: letsencrypt-proxy-companion
+    container_name: letsencrypt
     depends_on:
       - proxy
     networks:
