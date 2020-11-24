@@ -23,7 +23,8 @@ echo "coreName: $coreName"
 if [[ ! -z $coreName ]]; then
     nginxStatus=$(docker inspect nginx-proxy -f {{.State.Status}})
     echo "service: $coreName is $nginxStatus"
-    letsencryptStatus=$(docker inspect letsencrypt-proxy-companion -f {{.State.Status}})
+#    letsencryptStatus=$(docker inspect letsencrypt-proxy-companion -f {{.State.Status}})
+    letsencryptStatus=$(docker inspect letsencrypt -f {{.State.Status}})
     NEXTCLOUD_NETWORK=$(docker inspect nginx-proxy -f {{.HostConfig.NetworkMode}})
 else
     echo "core service is down"
