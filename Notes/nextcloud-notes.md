@@ -39,6 +39,11 @@ docker exec -it mariadb-quenchinnovations mysql -uroot -ptoor
 ```
 docker-compose exec -u www-data quenchinnovations php occ files:scan admin
 ```
->  docker-compose exec -u www-data quenchinnovations php occ maintenance:mode --off
+>  docker-compose exec -u www-data quenchinnovations occ maintenance:mode --off
 >  docker-compose exec -u www-data quenchinnovations php occ files:scan --all
 >  docker-compose exec -u www-data quenchinnovations php occ files:cleanup
+
+List of users
+>  docker-compose exec -u www-data quenchinnovations php occ user:list
+Reset password
+> docker-compose exec -u www-data quenchinnovations php occ user:passwordreset <user name> 

@@ -1,3 +1,5 @@
 *.tar
 *.log
 secrets/*.*
+*.sql
+.gitignore

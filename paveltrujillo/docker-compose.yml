@@ -8,7 +8,7 @@ services:
 
   paveltrujillo:
     image: nginx
-    container_name: paveltrujillo.info
+    container_name: paveltrujillo
     networks: 
       default:
     expose:
