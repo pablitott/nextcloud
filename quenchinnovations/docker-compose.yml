@@ -13,7 +13,7 @@ services:
       default:
     external_links: 
       - nginx-proxy
-      - nginx-letsencrypt-proxy-companion
+      - letsencrypt
     depends_on:
       #- letsencrypt-proxy-companion
       #- nginx-proxy
