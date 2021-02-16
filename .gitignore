@@ -1,3 +1,4 @@
 *.tar
 *.log
 secrets/*.*
+images/logo_bkp.png

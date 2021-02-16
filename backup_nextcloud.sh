@@ -71,7 +71,7 @@ function backup_home(){
   [ ! -z $verbose ] && tarOptions="-uvf"
   writeLogLine "tar using $tarOptions" $_color_yellow_
   writeLogLine "packing $PWD Home to $ARCHIVE_FILE, exclude hidden folders" $_color_blue_
-  sudo tar $tarOptions $ARCHIVE_FILE --exclude="./.*" --exclude="*.tar"  ./
+  sudo tar $tarOptions $ARCHIVE_FILE --exclude="./.*" --exclude="*.tar" --exclude="*.log"  ./
   unset verbose
 }
 #================================================================================
@@ -159,9 +159,8 @@ fi
 [ "$2" == "-full" ] && FULL_BACKUP=1
 serviceName=$1
 serverName="${serviceName%.*}"
-echo "serverName:$serverName"
-echo "serviceName: $serviceName"
-echo "logfile: $logfile"
+writeLogLine "serverName:$serverName" _color_blue_
+writeLogLine "serviceName: $serviceName" _color_blue_
 
 environmentFile="$PWD/$serverName/$serviceName.env"
 
@@ -170,6 +169,7 @@ set -a; source backup_nextcloud.env; set +a
 
 logfile="$PWD/$serverName/backup-$serverName-$(date +$CURRENT_TIME_FORMAT).log"
 [ -f $logfile ] && rm $logfile
+writeLogLine "logfile: $logfile" _color_blue_
 
 writeLogLine "START Backup process on $NEXTCLOUD_TRUSTED_DOMAINS" $_color_purple_
 start_time="$(date -u +%s)"
@@ -180,9 +180,11 @@ FOLDERS_DATA_BACKUP=(
 
 # TODO: review how to check if the docker sergvice exists, quenchinnovations returns 2 values
 #       quenchinnovations.net returns only one value which is the correct vsalue expected
-#set maintenance on
-occCmd maintenance:mode --on | tee -a $logfile
 
+if [ $DATABASE_SERVICE ]; then 
+  # set maintenance on only when DATABASE_SERVICE is defined
+  occCmd maintenance:mode --on | tee -a $logfile
+fi
 removeFolder "$BACKUP_REPOSITORY"
 createFolder "$BACKUP_REPOSITORY"
 
@@ -190,15 +192,16 @@ createFolder "$BACKUP_REPOSITORY"
 # backup_image
 # is a database defined for the service?
 if [ -z $DATABASE_SERVICE ]; then 
-  echo "No database is defined for $serverName"
+  writeLogLine "No database is defined for $serverName" _color_yellow_
 else
   backup_database verbose
 fi
-backup_home
-backup_files
+backup_home verbose
+backup_files verbose
 
-occCmd maintenance:mode --off | tee -a $logfile
-
+if [ $DATABASE_SERVICE ]; then 
+  occCmd maintenance:mode --off | tee -a $logfile
+fi
 for file in $BACKUP_REPOSITORY/*.tar
 do
     writeLogLine "$(basename $file) Size: $(stat --printf='%s' $file | numfmt --to=iec) " $_color_green_
