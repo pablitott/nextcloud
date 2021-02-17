@@ -1,4 +1,5 @@
 *.tar
 *.log
+*.sql
 secrets/*.*
 images/logo_bkp.png

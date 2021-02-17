@@ -51,12 +51,12 @@ save current configuration
 > docker exec -it -u www-data mydeskweb.local php occ config:list --private > mydeskweb.local.json
 
 import existing configuration
-> docker exec -i -u www-data mydeskweb.local php occ config:import < mydeskweb.local.json
+> docker exec -i -u www-data mydeskweb.local php occ config:import <br mydeskweb.local.json
 
 after migration or restore is util to run
 > docker exec -i -u www-data mydeskweb.local php occ files:scan <br/>
 > docker exec -i -u www-data mydeskweb.local php occ files:cleanup <br/>
-> docker exec -i -u www-data mydeskweb.local php occ user:resetpassword admin
-docker exec -i -u www-data quenchinnovations.local php occ user:list
+> docker exec -i -u www-data mydeskweb.local php occ user:resetpassword admin </br>
+> docker exec -i -u www-data quenchinnovations.local php occ user:list
 
 

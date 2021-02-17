@@ -19,8 +19,9 @@ services:
       #- nginx-proxy
       - mariadb
     volumes:
-      # use html path instead of nextcloud volume as the original doc for backup purposes
+      # use COMPOSE_PROJECT_NAME instead of nextcloud hard name
       - nextcloud:/var/www/html
+      # use html path instead of nextcloud volume as the original doc for backup purposes and restore purposes
       - ${NEXTCLOUD_HTTP_ROOT}/config:/var/www/html/config
       - ${NEXTCLOUD_HTTP_ROOT}/custom_apps:/var/www/html/custom_apps
       - ${NEXTCLOUD_HTTP_ROOT}/data:/var/www/html/data
@@ -29,7 +30,7 @@ services:
     environment:
       - VIRTUAL_HOST=${NEXTCLOUD_SERVICE}
       - LETSENCRYPT_HOST=${NEXTCLOUD_SERVICE}
-      - LETSENCRYPT_EMAIL=pablitott@gmail.com
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     restart: unless-stopped
 
   mariadb:

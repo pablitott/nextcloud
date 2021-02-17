@@ -17,7 +17,7 @@ services:
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST}
       - LETSENCRYPT_HOST=${VIRTUAL_HOST}
-      - LETSENCRYPT_EMAIL=pablitott@gmail.com
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     volumes:
       - /nextcloud/www/${CONTAINER_NAME}:/usr/share/nginx/html:ro
       - /etc/localtime:/etc/localtime:ro
