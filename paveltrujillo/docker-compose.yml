@@ -15,8 +15,9 @@ services:
       - 80
       - 443
     environment:
-      - VIRTUAL_HOST=paveltrujillo.info
-      - LETSENCRYPT_HOST=paveltrujillo.info
+      - VIRTUAL_HOST=paveltrujillo.info,www.paveltrujillo.info
+      - LETSENCRYPT_HOST=paveltrujillo.info,www.paveltrujillo.info
+      - LETSENCRYPT_SINGLE_DOMAIN_CERTS=true
       - LETSENCRYPT_EMAIL=pablitott@gmail.com
     volumes:
         - /nextcloud/www/paveltrujillo.info:/usr/share/nginx/html:ro
