@@ -1,4 +1,7 @@
 #!/bin/bash
+cd /home/ubuntu/nextcloud
+
+# dirname "$0"
 #=================================================================
 #
 #                  Syntax
@@ -71,12 +74,13 @@ function backup_home(){
   [ ! -z $verbose ] && tarOptions="-uvf"
   writeLogLine "tar using $tarOptions" $_color_yellow_
   writeLogLine "packing $PWD Home to $ARCHIVE_FILE, exclude hidden folders" $_color_blue_
-  sudo tar $tarOptions $ARCHIVE_FILE --exclude="./.*" --exclude="*.tar"   ./
+  sudo tar $tarOptions $ARCHIVE_FILE --exclude="./.git"  --exclude="./.*" --exclude="*.tar" ./
   unset verbose
 }
 #================================================================================
 function backup_database(){
   verbose=$1
+  env >> environment.log
   if [ -f $ARCHIVE_FILE ]
   then
     tarOptions="-uf"
@@ -86,9 +90,10 @@ function backup_database(){
     [ ! -z $verbose ] && tarOptions="-cvf"
   fi
   writeLogLine "packing DB $serverName.db to $BACKUP_DATABASE_FILE ON $DATABASE_SERVICE"
-  docker exec -it $DATABASE_SERVICE mysqldump --single-transaction -h$DATABASE_SERVICE -u$MYSQL_USER -p$MYSQL_PASSWORD $serverName > $BACKUP_REPOSITORY/$BACKUP_DATABASE_FILE
- 
-  sudo tar $tarOptions $ARCHIVE_FILE $BACKUP_REPOSITORY/$BACKUP_DATABASE_FILE
+  docker exec -it $DATABASE_SERVICE mysqldump --single-transaction -h$DATABASE_SERVICE -u$MYSQL_USER -p$MYSQL_PASSWORD $serverName > ./$BACKUP_DATABASE_FILE
+  writeLogLine "backup database ready"
+  sudo tar $tarOptions $ARCHIVE_FILE ./$BACKUP_DATABASE_FILE
+  writeLogLine "tar process ready"
   unset verbose
   unset tarOptions
 }
@@ -161,7 +166,7 @@ if [ -z "$USER" ] ; then
 fi
 [ "$2" == "-full" ] && FULL_BACKUP=1
 
-logfile="$PWD/restore-$serverName.log"
+logfile="$PWD/backup-$serverName.log"
 environmentFile=$serverName/$serviceName.env
 
 set -a; source $environmentFile; set +a
