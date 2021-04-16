@@ -9,13 +9,13 @@
     change following values if you see PHP timeouts in your logfiles
     - php_value max_input_time 3600
     - php_value max_execution_time 3600
-    
+
 ##
-### change psp ini file 
+### change php ini file
 [how to change PHP settings with inline replacements](https://davescripts.com/docker-container-how-to-change-php-settings-inline-replacements)
 ```
 RUN=docker exec -it nextcloud-mydeskweb.com
-RUN sed -E -i -e 's/post_max_size = 8M/post_max_size = 16G/' /usr/local/etc/php/php.ini-production               
+RUN sed -E -i -e 's/post_max_size = 8M/post_max_size = 16G/' /usr/local/etc/php/php.ini-production
 RUN sed -E -i -e 's/upload_max_filesize = 2M/upload_max_filesize = 16G/' /usr/local/etc/php/php.ini-production
 ```
 ## Manual upgrade<br/>
@@ -40,6 +40,7 @@ docker exec -it mariadb-quenchinnovations mysql -uroot -ptoor
 docker-compose exec -u www-data quenchinnovations php occ files:scan admin
 ```
 >  
+>  docker exec -u www-data quenchinnovations php occ maintenance:mode --off
 >  docker exec -u www-data quenchinnovations php occ files:scan --all
 >  docker exec -u www-data quenchinnovations php occ files:cleanup
 
@@ -47,3 +48,19 @@ List of users
 >  docker exec -u www-data quenchinnovations php occ user:list
 Reset password
 > docker exec -u www-data quenchinnovations php occ user:resetpassword <user name> 
+```
+
+### change nextcloud config values using occ
+[configuration server](https://docs.nextcloud.com/server/15/admin_manual/configuration_server/occ_command.html#config-commands-label)
+
+save current configuration
+> docker exec -it -u www-data mydeskweb.local php occ config:list --private > mydeskweb.local.json
+
+import existing configuration
+> docker exec -i -u www-data mydeskweb.local php occ config:import <br mydeskweb.local.json
+
+after migration or restore is util to run
+> docker exec -i -u www-data mydeskweb.local php occ files:scan <br/>
+> docker exec -i -u www-data mydeskweb.local php occ files:cleanup <br/>
+> docker exec -i -u www-data mydeskweb.local php occ user:resetpassword admin </br>
+> docker exec -i -u www-data quenchinnovations.local php occ user:list

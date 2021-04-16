@@ -6,7 +6,7 @@ cd /home/ubuntu/nextcloud
 #
 #                  Syntax
 #    ./backup_nextcloud.sh <serviceName>
-#    serviceName: quenchinnovations, mydeskweb
+#    serviceName: quenchinnovations.net, quenchinnovations.local, mydeskweb.com, paveltrujillo.info, paveltrujillo.local
 #
 #=================================================================
 #               Important notes
@@ -56,7 +56,7 @@ function showerror (){
     [ ! -z $notifyStatus ] && python2.7 ~/sendMail.py "Backup Succeed" $logfile
   else
     writeLogLine "\"${last_command}\" \n$_color_yellow_ command failed with exit code $?. " $_color_red_
-    [ ! -z $notifyStatus ] &&  python2.7 ~/sendMail.py "Restore failed" $logfile
+    [ ! -z $notifyStatus ] &&  python2.7 ~/sendMail.py "backup failed" $logfile
   fi
 
   end_time="$(date -u +%s)"
@@ -74,7 +74,7 @@ function backup_home(){
   [ ! -z $verbose ] && tarOptions="-uvf"
   writeLogLine "tar using $tarOptions" $_color_yellow_
   writeLogLine "packing $PWD Home to $ARCHIVE_FILE, exclude hidden folders" $_color_blue_
-  sudo tar $tarOptions $ARCHIVE_FILE --exclude="./.git"  --exclude="./.*" --exclude="*.tar" ./
+  sudo tar $tarOptions $ARCHIVE_FILE --exclude="./.*" --exclude="*.tar" --exclude="*.log"  ./
   unset verbose
 }
 #================================================================================
@@ -89,11 +89,10 @@ function backup_database(){
     tarOptions="-cf"
     [ ! -z $verbose ] && tarOptions="-cvf"
   fi
-  writeLogLine "packing DB $serverName.db to $BACKUP_DATABASE_FILE ON $DATABASE_SERVICE"
-  docker exec -it $DATABASE_SERVICE mysqldump --single-transaction -h$DATABASE_SERVICE -u$MYSQL_USER -p$MYSQL_PASSWORD $serverName > ./$BACKUP_DATABASE_FILE
-  writeLogLine "backup database ready"
-  sudo tar $tarOptions $ARCHIVE_FILE ./$BACKUP_DATABASE_FILE
-  writeLogLine "tar process ready"
+  writeLogLine "packing DB $serverName.db to $BACKUP_DATABASE_FILE ON $DATABASE_SERVICE" $_color_blue_
+  docker exec -it $DATABASE_SERVICE mysqldump --single-transaction -h$DATABASE_SERVICE -u$MYSQL_USER -p$MYSQL_PASSWORD $serverName > $BACKUP_REPOSITORY/$BACKUP_DATABASE_FILE
+ 
+  sudo tar $tarOptions $ARCHIVE_FILE $BACKUP_REPOSITORY/$BACKUP_DATABASE_FILE
   unset verbose
   unset tarOptions
 }
@@ -102,9 +101,10 @@ function backup_files(){
   verbose=$1
   tarOptions='-uf'
   [ ! -z $verbose ] && tarOptions="-uvf"
-
+  echo "$FOLDERS_DATA_BACKUP"
   for FOLDER in ${FOLDERS_DATA_BACKUP[@]}
   do
+    echo "packing $FOLDER"
     if [ -d "$FOLDER" ];
     then
       writeLogLine "packing $FOLDER..." $_color_blue_
@@ -137,7 +137,6 @@ function awsCmd(){
 source ./writeLogLine.sh  &1>/dev/null     # write fancy output to console
 source ./folderMaintenance.sh              # create/remove folders
 #=================================================
-
 # exit when an error ocurred
 set -e
 # keep track of the last executed command
@@ -151,9 +150,6 @@ if [ -z $1 ] ; then
     exit -1
 fi
 
-serviceName=$1
-serverName="${serviceName%.*}"
-
 #check if NICKNAME is defined, True if the length of string is zero
 if [ -z "$NICKNAME" ] ; then
     writeLogLine "NICKNAME is not defined, please define nickname accordingly" $_color_red_
@@ -165,37 +161,51 @@ if [ -z "$USER" ] ; then
     exit -1
 fi
 [ "$2" == "-full" ] && FULL_BACKUP=1
+serviceName=$1
+serverName="${serviceName%.*}"
+writeLogLine "serverName:$serverName" _color_blue_
+writeLogLine "serviceName: $serviceName" _color_blue_
 
-logfile="$PWD/backup-$serverName.log"
-environmentFile=$serverName/$serviceName.env
+environmentFile="$PWD/$serverName/$serviceName.env"
 
 set -a; source $environmentFile; set +a
 set -a; source backup_nextcloud.env; set +a
 
+logfile="$PWD/$serverName/backup-$serverName-$(date +$CURRENT_TIME_FORMAT).log"
 [ -f $logfile ] && rm $logfile
+writeLogLine "logfile: $logfile" _color_blue_
 
 writeLogLine "START Backup process on $NEXTCLOUD_TRUSTED_DOMAINS" $_color_purple_
 start_time="$(date -u +%s)"
 
 FOLDERS_DATA_BACKUP=(
-"$DATA_ROOT/$serviceName"
+"$NEXTCLOUD_HTTP_ROOT"
 )
 
 # TODO: review how to check if the docker sergvice exists, quenchinnovations returns 2 values
 #       quenchinnovations.net returns only one value which is the correct vsalue expected
-#set maintenance on
-occCmd maintenance:mode --on | tee -a $logfile
 
+if [ $DATABASE_SERVICE ]; then 
+  # set maintenance on only when DATABASE_SERVICE is defined
+  occCmd maintenance:mode --on | tee -a $logfile
+fi
 removeFolder "$BACKUP_REPOSITORY"
 createFolder "$BACKUP_REPOSITORY"
 
 #do not backup the images in a regular backup
 # backup_image
-backup_database
+# is a database defined for the service?
+if [ -z $DATABASE_SERVICE ]; then 
+  writeLogLine "No database is defined for $serverName" _color_yellow_
+else
+  backup_database verbose
+fi
 backup_home verbose
-backup_files
+backup_files verbose
 
-occCmd maintenance:mode --off | tee -a $logfile
+if [ $DATABASE_SERVICE ]; then 
+  occCmd maintenance:mode --off | tee -a $logfile
+fi
 for file in $BACKUP_REPOSITORY/*.tar
 do
     writeLogLine "$(basename $file) Size: $(stat --printf='%s' $file | numfmt --to=iec) " $_color_green_

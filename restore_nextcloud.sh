@@ -63,66 +63,22 @@ function restore_files(){
   workingdir=$PWD 
   writeLogLine "Restore user datafiles from $restoreTarFile" $_color_blue_
   cd /
+
+
   for FOLDER in ${FOLDERS_DATA_BACKUP[@]}
   do
+      FOLDER=${FOLDER#/}  # Remove possible leading /
+      
+      #c=${b%/} # Remove possible trailing /
+      
       if [ -d "$FOLDER" ];
       then
         writeLogLine "$_color_yellow_ deleting $FOLDER... "
         sudo rm -r $FOLDER
       fi
-      writeLogLine "$_color_yellow_ restore $FOLDER... "
-      sudo tar -xpf $BACKUP_REPOSITORY/$restoreTarFile $FOLDER 
-  done
-  cd $workingdir
-  writeLogLine "End of Restore user datafiles" $_color_purple_
-}
-#====================================================================
-function restore_database(){
-  writeLogLine "Restore DataBase $MYSQL_DATABASE from $restore_db_file" $_color_purple_
-
-  writeLogLine "Restoring datafiles from $restoreTarFile to $PWD" $_color_yellow_
-  writeLogLine "Database file: $restore_db_file" $_color_yellow_
-
-  #sudo tar -xpf $BACKUP_REPOSITORY/$restoreTarFile $BACKUP_FOLDER/$restore_db_file
-  writeLogLine "tar -xpf $BACKUP_REPOSITORY/$restoreTarFile $BACKUP_DATABASE_FILE" $_color_yellow_
-  
-  if [[ ! -f $BACKUP_DATABASE_FILE ]]; then
-    sudo tar -xpf $BACKUP_REPOSITORY/$restoreTarFile $BACKUP_FOLDER/$BACKUP_DATABASE_FILE
-  fi
-  
-  # for full command lines see docker-notes.md
-  writeLogLine "DROP DATABASE $MYSQL_DATABASE" $_color_blue_
-  docker exec -it $DATABASE_SERVICE mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "DROP DATABASE IF EXISTS $MYSQL_DATABASE"
-
-  writeLogLine "CREATE DATABASE $MYSQL_DATABASE" $_color_blue_
-  docker exec -it $DATABASE_SERVICE mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE $MYSQL_DATABASE CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"
-
-  writeLogLine "DROP USER $MYSQL_USER" $_color_blue_
-  docker exec -it $DATABASE_SERVICE mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "DROP USER IF EXISTS '$MYSQL_USER'"
-
-  writeLogLine "CREATE USER $MYSQL_USER" $_color_blue_
-  docker exec -it $DATABASE_SERVICE mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE USER '$MYSQL_USER' IDENTIFIED BY '$MYSQL_PASSWORD'"
-  
-  writeLogLine "GRANT ALL PRIVILEGES on $MYSQL_DATABASE.* to $MYSQL_USER" $_color_blue_
-  docker exec -it $DATABASE_SERVICE mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES on $MYSQL_DATABASE.* to $MYSQL_USER"
-
-  writeLogLine "RESTORE $MYSQL_DATABASE FROM $BACKUP_FOLDER/$BACKUP_DATABASE_FILE IN SERVICE $DATABASE_SERVICE" $_color_yellow_
-  docker exec -i $DATABASE_SERVICE mysql -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < $BACKUP_FOLDER/$BACKUP_DATABASE_FILE
-  writeLogLine "End of Restore Database ..." $_color_purple_
-}
-#====================================================================
-function restore_files(){
-  workingdir=$PWD 
-  writeLogLine "Restore user datafiles from $restoreTarFile" $_color_blue_
-  cd /
-  for FOLDER in ${FOLDERS_DATA_BACKUP[@]}
-  do
-      if [ -d "$FOLDER" ];
-      then
-        writeLogLine "$_color_yellow_ deleting $FOLDER... "
-        sudo rm -r $FOLDER
-      fi
-      writeLogLine "$_color_yellow_ restore $FOLDER... "
+      writeLogLine "BACKUP FILE $BACKUP_REPOSITORY/$restoreTarFile"
+      writeLogLine "restore $FOLDER... " $_color_yellow_
+      writeLogLine " tar restore command $BACKUP_REPOSITORY/$restoreTarFile $FOLDER "
       sudo tar -xpf $BACKUP_REPOSITORY/$restoreTarFile $FOLDER 
   done
   cd $workingdir
@@ -167,8 +123,9 @@ trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 # echo an error message before exiting
 trap showerror exit
 
+# verify first argument is the service name (include .local | .comn | .net) 
 if [ -z $1 ] ; then
-    writeLogLine "$_color_red_ ServerName to be backup is not defined, please define ServerName accordingly "
+    writeLogLine "$_color_red_ ServiceName to be backup is not defined, please define ServerName accordingly "
     exit -1
 fi
 serviceName=$1
@@ -191,7 +148,8 @@ if [ -z $2 ]; then
 fi
 backupToRestore=$2
 logfile="$PWD/restore-$serverName.log"
-environmentFile=$serverName/$serviceName.env
+logfile="$PWD/$serverName/backup-$serverName-$backupToRestore.log"
+environmentFile="$PWD/$serverName/$serviceName.env"
 echo $environmentFile
 
 set -a; source $environmentFile ; set +a
@@ -203,13 +161,8 @@ writeLogLine "START Restore process on $serviceName"
 start_time="$(date -u +%s)"
 
 FOLDERS_DATA_BACKUP=(
-"$FOLDER_ROOT/$serviceName"
+"$NEXTCLOUD_HTTP_ROOT"
 )
-#"$FOLDER_ROOT/$serviceName"
-#"$FOLDER_ROOT/$serviceName/custom_apps"
-#"$FOLDER_ROOT/$serviceName/data"
-#"$FOLDER_ROOT/$serviceName/config"
-#"$FOLDER_ROOT/$serviceName/themes"
 
 occCmd maintenance:mode --on | tee -a $logfile
 
@@ -231,21 +184,28 @@ if [[ ! -f $BACKUP_REPOSITORY/$restoreTarFile ]]; then
   sudo mv $restoreTarFile $BACKUP_REPOSITORY/$restoreTarFile
 fi
 
-restore_database
-writeLogLine "$output_blue shut down docker service $serviceName" $_color_blue_
-docker stop $serviceName | tee -a $logfile
+if [ -z $DATABASE_SERVICE ]; then 
+  echo "No database is defined for $serverName"
+  writeLogLine "$output_blue shut down docker service $serviceName" $_color_blue_
+  docker stop $serviceName | tee -a $logfile
 
-restore_files
+  restore_files
+else
+  restore_database
+  writeLogLine "$output_blue shut down docker service $serviceName" $_color_blue_
+  docker stop $serviceName | tee -a $logfile
 
-docker start $serviceName | tee -a $logfile
-writeLogLine "$output_blue docker service $serviceName is up" $_color_purple_
+  restore_files
+  docker start $serviceName | tee -a $logfile
+  writeLogLine "$output_blue docker service $serviceName is up" $_color_purple_
 
-occCmd maintenance:mode --off | tee -a $logfile
-# review data files
-occCmd files:scan-app-data | tee -a $logfile
-occCmd files:cleanup  | tee -a $logfile
-occCmd files:scan --all  | tee -a $logfile
 
+  occCmd maintenance:mode --off | tee -a $logfile
+  # review data files
+  occCmd files:scan-app-data | tee -a $logfile
+  occCmd files:cleanup  | tee -a $logfile
+  occCmd files:scan --all  | tee -a $logfile
+fi
 
 removeFolder $BACKUP_REPOSITORY
 

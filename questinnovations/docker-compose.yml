@@ -6,24 +6,24 @@ version: '3.2'
 
 services:
 
-  questinnovations:
+  nginx:
     image: nginx
-    container_name: questinnovations.net
+    container_name: ${CONTAINER_NAME}
     networks: 
       default:
     expose:
       - 80
       - 443
     environment:
-      - VIRTUAL_HOST=questinnovations.net
-      - LETSENCRYPT_HOST=questinnovations.net
-      - LETSENCRYPT_EMAIL=pablitott@gmail.com
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     volumes:
-      - /nextcloud/www/questinnovations.net:/usr/share/nginx/html:ro
+      - /nextcloud/www/${CONTAINER_NAME}:/usr/share/nginx/html:ro
       - /etc/localtime:/etc/localtime:ro
-#    depends_on:
-    #   - proxy
+    # depends_on:
     #   - letsencrypt
+    #   - proxy
     restart: unless-stopped
 
 networks: 

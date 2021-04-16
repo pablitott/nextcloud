@@ -1,5 +1,10 @@
 *.tar
 *.log
+*.sql
 secrets/*.*
+<<<<<<< HEAD
 *.sql
 .gitignore
+=======
+images/logo_bkp.png
+>>>>>>> b9e3e53a395d96e9864d478dbf6f309fd98a84cf
