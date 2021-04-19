@@ -1,4 +1,7 @@
 #!/bin/bash
+cd /home/ubuntu/nextcloud
+
+# dirname "$0"
 #=================================================================
 #
 #                  Syntax
@@ -77,6 +80,7 @@ function backup_home(){
 #================================================================================
 function backup_database(){
   verbose=$1
+  env >> environment.log
   if [ -f $ARCHIVE_FILE ]
   then
     tarOptions="-uf"

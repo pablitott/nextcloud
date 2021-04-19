@@ -26,8 +26,8 @@ services:
     restart: unless-stopped
 
   letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion:latest
-    container_name: letsencrypt
+    image: jrcs/:latest
+    container_name: letsencrypt-proxy-companion
     depends_on:
       - proxy
     networks:

@@ -39,9 +39,15 @@ docker exec -it mariadb-quenchinnovations mysql -uroot -ptoor
 ```
 docker-compose exec -u www-data quenchinnovations php occ files:scan admin
 ```
->  docker-compose exec -u www-data quenchinnovations php occ maintenance:mode --off
->  docker-compose exec -u www-data quenchinnovations php occ files:scan --all
->  docker-compose exec -u www-data quenchinnovations php occ files:cleanup
+>  
+>  docker exec -u www-data quenchinnovations php occ maintenance:mode --off
+>  docker exec -u www-data quenchinnovations php occ files:scan --all
+>  docker exec -u www-data quenchinnovations php occ files:cleanup
+
+List of users
+>  docker exec -u www-data quenchinnovations php occ user:list
+Reset password
+> docker exec -u www-data quenchinnovations php occ user:resetpassword <user name> 
 ```
 
 ### change nextcloud config values using occ
@@ -58,5 +64,3 @@ after migration or restore is util to run
 > docker exec -i -u www-data mydeskweb.local php occ files:cleanup <br/>
 > docker exec -i -u www-data mydeskweb.local php occ user:resetpassword admin </br>
 > docker exec -i -u www-data quenchinnovations.local php occ user:list
-
-

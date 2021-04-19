@@ -15,8 +15,9 @@ services:
       - 80
       - 443
     environment:
-      - VIRTUAL_HOST=${VIRTUAL_HOST}
-      - LETSENCRYPT_HOST=${VIRTUAL_HOST}
+      - VIRTUAL_HOST=${VIRTUAL_HOST},www.${VIRTUAL_HOST}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST},www.${VIRTUAL_HOST}
+      - LETSENCRYPT_SINGLE_DOMAIN_CERTS=true
       - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     volumes:
         - ${NEXTCLOUD_HTTP_ROOT}:/usr/share/nginx/html:ro
