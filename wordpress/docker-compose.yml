@@ -1,6 +1,10 @@
 #################################################
-# Original script, not working on local machine
-# Source: https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-docker-compose
+#
+# Source original: https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-docker-compose
+# Modified with existing scripts on ./nginx folder for nginx_nextcloud_network
+# 
+# rev. 1 Remove env_file section since file .env is loaded automatically
+# keep the file absolutehandymanservices.local.env for compatibility with nextcloud
 #
 ##################################################
 version: '3'
@@ -17,7 +21,7 @@ services:
       - dbdata:/var/lib/mysql
     command: '--default-authentication-plugin=mysql_native_password'
     networks:
-      - app-network
+      default:
 
   wordpress:
     depends_on:
@@ -32,9 +36,9 @@ services:
       - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
       - WORDPRESS_DB_NAME=wordpress
     volumes:
-      - wordpress:/var/www/html
+      - $CONTAINER_HTTP_ROOT:/var/www/html
     networks:
-      - app-network
+      default:
 
   webserver:
     depends_on:
@@ -42,30 +46,25 @@ services:
     image: nginx:1.15.12-alpine
     container_name: webserver
     networks:
-      - app-network
+      default:
     ports:
       - 80
+      - 443
+    environment:
+      - VIRTUAL_HOST=$VIRTUAL_HOST,www.$VIRTUAL_HOST
+      - LETSENCRYPT_HOST=$VIRTUAL_HOST,www.$VIRTUAL_HOST
+      - LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL
     volumes:
-      - wordpress:/var/www/html
+      - $CONTAINER_HTTP_ROOT:/var/www/html
       - ./nginx-conf:/etc/nginx/conf.d
-      - certbot_etc:/etc/letsencrypt
+      - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
 
-  certbot:
-    depends_on:
-      - webserver
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - certbot_etc:/etc/letsencrypt
-      - wordpress:/var/www/html
-    command: certonly --webroot --webroot-path=/var/www/html --email pablitott@gmail.com --agree-tos --no-eff-email --staging -d absolutehandymanservices.com -d www.absolutehandymanservices.com
-
 volumes:
-  certbot_etc:
-  wordpress:
+
   dbdata:
 
 networks:
-  app-network:
-    driver: bridge
+  default:
+    external:
+      name: nginx_nextcloud_network

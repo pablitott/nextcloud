@@ -1,0 +1,10 @@
+directions for hosts in local hosts
+
+      127.0.0.1     mydeskweb.local
+      127.0.0.1     quenchinnovations.local
+      127.0.0.1     paveltrujillo.local
+      127.0.0.1     www.questinnovations.local
+      127.0.0.1     questinnovations.local
+      127.0.0.1     absolutehandymanservices.local
+      127.0.0.1     www.absolutehandymanservices.local
+      127.0.0.1     jenkinsServer.local

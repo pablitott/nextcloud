@@ -1,4 +1,7 @@
 
+
+# turn up or turn down a docker container
+
 function turn-docker(){
     serverName=$1
     serviceName="${serverName%.*}"
