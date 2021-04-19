@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Install &#8211; Nextcloud</title>
+<meta name="author" content="Nextcloud">
+<meta itemprop="description" content="Nextcloud is the most deployed on-premises file share and collaboration platform. Access &amp; collaborate across your devices. Your data remains under your control.">
+<meta name="description" content="Nextcloud is the most deployed on-premises file share and collaboration platform. Access &amp; collaborate across your devices. Your data remains under your control.">
+
+<!-- Twitter Card data -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@nextclouders">
+<meta name="twitter:url" content="https://nextcloud.com/install">
+<meta name="twitter:title" content="Install &#8211; Nextcloud">
+<meta name="twitter:description" content="Nextcloud is the most deployed on-premises file share and collaboration platform. Access &amp; collaborate across your devices. Your data remains under your control.">
+
+<!-- Twitter summary card with large image must be at least 280x150px -->
+
+<!-- Open Graph data -->
+<meta property="og:title" content="Install &#8211; Nextcloud" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://nextcloud.com/install" />
+<meta property="og:description" content="Nextcloud is the most deployed on-premises file share and collaboration platform. Access &amp; collaborate across your devices. Your data remains under your control." />
+<meta property="og:site_name" content="Nextcloud" />
+<meta property="fb:admins" content="1032807203462807" />
+
+<!-- set images for generic, twitter and Open Graph -->
+
+<meta itemprop="image" content="https://nextcloud.com/media/hub-video.png">
+<meta name="twitter:image" content="https://nextcloud.com/media/hub-video.png">
+<meta name="twitter:image:src" content="https://nextcloud.com/media/hub-video.png">
+<meta property="og:image" content="https://nextcloud.com/media/hub-video.png">
+
+<meta name="theme-color" content="#0082c9">
+<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="shortcut icon" href="https://nextcloud.com/wp-content/themes/next/assets/img/common/favicon.png?x53054" />
+<link rel="apple-touch-icon-precomposed" href="https://nextcloud.com/wp-content/themes/next/assets/img/common/favicon-touch.png?x53054" />
+
+<!--     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin> -->
+<!-- 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i" rel="stylesheet"> -->
+	<link rel="stylesheet" href="https://nextcloud.com/wp-content/cache/minify/0871c.css?x53054" media="all" />
+
+
+
+	<link rel='dns-prefetch' href='//s.w.org' />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/11\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/11\/svg\/","svgExt":".svg","source":{"concatemoji":"\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.0.11"}};
+			!function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55358,56760,9792,65039],[55358,56760,8203,9792,65039]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" href="https://nextcloud.com/wp-content/cache/minify/72f27.css?x53054" media="all" />
+
+
+<link rel='https://api.w.org/' href='https://nextcloud.com/wp-json/' />
+<link rel="alternate" type="application/json+oembed" href="https://nextcloud.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fnextcloud.com%2Finstall%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://nextcloud.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fnextcloud.com%2Finstall%2F&#038;format=xml" />
+	<link rel="canonical" href="https://nextcloud.com/install/">
+<link rel="icon" href="https://nextcloud.com/media/screenshot-150x150.png?x53054" sizes="32x32" />
+<link rel="icon" href="https://nextcloud.com/media/screenshot.png?x53054" sizes="192x192" />
+<link rel="apple-touch-icon-precomposed" href="https://nextcloud.com/media/screenshot.png?x53054" />
+<meta name="msapplication-TileImage" content="https://nextcloud.com/media/screenshot.png" />
+	<script type="text/javascript">
+		var templateUrl = 'https://nextcloud.com/wp-content/themes/next';
+	</script>
+	<script data-main="https://nextcloud.com/wp-content/themes/next/assets/js/require.config.js"
+	src="https://nextcloud.com/wp-content/themes/next/node_modules/requirejs/require.min.js?x53054">
+	</script>
+
+	<script>
+	requirejs.config({ waitSeconds: 0 });
+	require(["require.config"], function() {
+		require(["modules/header", "main", "overlay", "modernizr", "modules/cookieconsent"])
+	});
+	</script>
+
+</head>
+<body class="page page-id-14 install not-front"><!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+
+
+
+<nav class="nav" id="nav">
+<!-- To finish -->
+	<div class="mobile-bg-container">
+		<div class="mobile-bg"></div>
+	</div>
+
+	<div class="container">
+<!--    <a class="storage-insider" target="_blank" href="https://nextcloud.com/blog/cloud-computing-insider-award-vote-now/">
+        <span class="si-icon"><i class="fa-bullseye fa"></i></span>
+        <span class="si-title">Vote for us!</span>
+        <span class="si-par">Support Nextcloud</span>
+    </a>-->
+		<div class="nav__bg-wrapper">
+			<div class="nav__bg"></div>
+		</div>
+		<div class="brand">
+			<a href="https://nextcloud.com/homepage">
+				<div class="logo"></div></a>
+		</div>
+		<button type="button" class="navbar-toggle collapsed" id="toggle">
+			<div class="menu-animation" data-animation-path="img/menu/black/" data-anim-loop="false" data-name="menu-black" id="menu-black"></div>
+		</button>
+			<div class="nav__sections-wrapper">
+			<ul class="nav__sections">
+				<li class="nav__section"><a class="nav__label">Products</a>
+					<ul class="nav__links ">
+                        <li class="nav__item">
+                            <a href="https://nextcloud.com/hub">
+                            <div class="nav__logo">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="svg20" width="100" height="100" version="1.1" viewBox="0 0 100 100"><metadata id="metadata24"/><defs id="defs3"><path id="a" d="M 0.302,9 H 7.74 V 0.307 H 0.3 Z"/></defs><g id="g18" fill="#0082c9" fill-rule="evenodd" transform="matrix(1.0975382,0,0,1.0975382,9.917e-7,27.237607)"><path id="path5" fill="#0082c9" d="m 77.625,15.169 c 3.124,0 5.572,2.446 5.572,5.569 0,3.124 -2.448,5.572 -5.572,5.572 -3.123,0 -5.569,-2.448 -5.569,-5.572 0,-3.123 2.446,-5.569 5.569,-5.569 m -64.14,0 c 3.124,0 5.573,2.446 5.573,5.569 0,3.124 -2.449,5.572 -5.573,5.572 -3.123,0 -5.569,-2.448 -5.569,-5.572 0,-3.123 2.446,-5.569 5.569,-5.569 M 45.626,7.916 c 7.095908,-0.033986 12.857326,5.726084 12.825,12.822 0,7.13 -5.696,12.825 -12.825,12.825 -7.129,0 -12.822,-5.695 -12.822,-12.825 C 32.770563,13.642801 38.530801,7.8825631 45.626,7.916 M 45.626,0 C 36.182,0 28.177,6.403 25.696,15.077 23.54,10.476 18.867,7.253 13.485,7.253 6.085,7.253 0,13.337 0,20.738 c 0,7.402 6.084,13.489 13.485,13.489 5.382,0 10.055,-3.226 12.211,-7.828 2.481,8.676 10.486,15.08 19.93,15.08 9.374,0 17.338,-6.308 19.883,-14.885 2.196,4.497 6.81,7.633 12.116,7.633 7.401,0 13.488,-6.087 13.488,-13.49 0,-7.4 -6.087,-13.484 -13.488,-13.484 -5.306,0 -9.92,3.133 -12.116,7.63 C 62.964,6.306 55,0 45.626,0"/><g id="g12" fill="#0082c9" transform="translate(42,50.702)"><mask id="b"><use id="use7" width="100%" height="100%" x="0" y="0" xlink:href="#a"/></mask></g></g></svg>                            </div>
+                            <div class="nav__text"><strong>Nextcloud Hub</strong><br><small>Content collaboration platform</small></div>
+                        </a>
+                        </li>
+                        <ul>
+                            <li class="nav__item">
+                                <a href="https://nextcloud.com/files">
+                                <div class="nav__logo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1" viewBox="0 0 16 16"><path fill="#0082c9" d="m1.5 2c-0.25 0-0.5 0.25-0.5 0.5v11c0 0.26 0.24 0.5 0.5 0.5h13c0.26 0 0.5-0.241 0.5-0.5v-9c0-0.25-0.25-0.5-0.5-0.5h-6.5l-2-2h-4.5zm8.75 3.5a1.25 1.25 0 0 1 1.25 1.25 1.25 1.25 0 0 1 -1.25 1.25 1.25 1.25 0 0 1 -0.8008 -0.291l-2.4512 1.2265a1.25 1.25 0 0 1 0.002 0.0645 1.25 1.25 0 0 1 -0.0039 0.0645l2.4531 1.2265a1.25 1.25 0 0 1 0.8008 -0.291 1.25 1.25 0 0 1 1.25 1.25 1.25 1.25 0 0 1 -1.25 1.25 1.25 1.25 0 0 1 -1.25 -1.25 1.25 1.25 0 0 1 0.0039 -0.064l-2.4531-1.227a1.25 1.25 0 0 1 -0.8008 0.291 1.25 1.25 0 0 1 -1.25 -1.25 1.25 1.25 0 0 1 1.25 -1.25 1.25 1.25 0 0 1 0.8008 0.291l2.4512-1.2265a1.25 1.25 0 0 1 -0.002 -0.0645 1.25 1.25 0 0 1 1.25 -1.25z"/></svg>                                </div>
+                                <div class="nav__text"><strong>Nextcloud Files</strong><br><small>File Sync and Share</small></div>
+                            </a>
+                            </li>
+                            <li class="nav__item">
+                                <a href="https://nextcloud.com/talk">
+                                    <div class="nav__logo">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1" viewBox="0 0 16 16"><path fill="#0082c9" stroke-width=".14" d="m7.9992 0.999a6.9993 6.9994 0 0 0 -6.9992 6.9996 6.9993 6.9994 0 0 0 6.9992 6.9994 6.9993 6.9994 0 0 0 3.6308 -1.024c0.86024 0.34184 2.7871 1.356 3.2457 0.91794 0.47922-0.45765-0.56261-2.6116-0.81238-3.412a6.9993 6.9994 0 0 0 0.935 -3.4814 6.9993 6.9994 0 0 0 -6.9991 -6.9993zm0.0008 2.6611a4.34 4.3401 0 0 1 4.34 4.3401 4.34 4.3401 0 0 1 -4.34 4.3398 4.34 4.3401 0 0 1 -4.34 -4.3398 4.34 4.3401 0 0 1 4.34 -4.3401z"/></svg>                                    </div>
+                                    <div class="nav__text">
+                                        <strong>Nextcloud Talk</strong><br><small>Calls, chat and web meetings</small>                                    </div>
+                                </a>
+                            </li>
+                            <li class="nav__item">
+                                <a href="https://nextcloud.com/groupware">
+                                    <div class="nav__logo">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1" viewbox="0 0 16 16"><path fill="#0082c9" d="m9 1c-1.746 0-3 1.43-3 2.8 0 1.4 0.1 2.4 0.8 3.5 0.224 0.29 0.485 0.35 0.7 0.6 0.135 0.5 0.24 1 0.1 1.5-0.436 0.153-0.85 0.332-1.27 0.5-0.51-0.273-1.1-0.5-1.61-0.7-0.07-0.28-0.02-0.487 0.05-0.75 0.12-0.125 0.23-0.18 0.36-0.3 0.37-0.45 0.39-1.21 0.39-1.75 0-0.8-0.72-1.4-1.5-1.4-0.87 0-1.5 0.72-1.5 1.4h-0.02c0 0.7 0.05 1.2 0.4 1.75 0.1 0.15 0.242 0.175 0.35 0.3 0.0674 0.25 0.121 0.5 0.05 0.75-0.64 0.223-1.244 0.5-1.8 0.8-0.42 0.3-0.233 0.182-0.5 1.15-0.124 0.5 1.3 0.73 2.32 0.81-0.05 0.275-0.12 0.64-0.32 1.34-0.32 1.25 4.353 1.7 6 1.7 2.43 0 6.313-0.456 5.98-1.7-0.52-1.94-0.208-1.71-0.98-2.3-1.09-0.654-2.452-1.167-3.6-1.6-0.15-0.557-0.04-0.97 0.1-1.5 0.235-0.25 0.5-0.36 0.72-0.6 0.69-0.884 0.78-2.424 0.78-3.5 0-1.586-1.43-2.8-3-2.8z"/></svg>                                    </div>
+                                    <div class="nav__text">
+                                        <strong>Nextcloud Groupware</strong><br><small>Calendar, Contacts & Mail</small>                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+						<li class="nav__item">
+                            <a href="https://nextcloud.com/athome">
+                                <div class="nav__logo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1" viewBox="0 0 16 16"><path fill="#0082c9" fill-rule="evenodd" d="M8 1.03L0 9h3v6h10V9h3l-3-3.03V2h-3v1.08L8 1.03z"/></svg>                                </div>
+                                <div class="nav__text">
+                                    <strong>Nextcloud at home</strong><br><small>For families, students & you</small>                                </div>
+                            </a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="https://nextcloud.com/enterprise">
+                                <div class="nav__logo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1" viewbox="0 0 16 16"><path fill="#0082c9" d="m8 0a3 3 0 0 0 -2.828 2 3 3 0 0 0 -0.172 -0 3 3 0 0 0 -3 3 3 3 0 0 0 0 0.172 3 3 0 0 0 -2 2.828 3 3 0 0 0 2 2.828 3 3 0 0 0 -0 0.172 3 3 0 0 0 3 3 3 3 0 0 0 0.172 -0 3 3 0 0 0 2.828 2 3 3 0 0 0 2.828 -2.01 3 3 0 0 0 0.172 0.01 3 3 0 0 0 3 -3 3 3 0 0 0 -0 -0.172 3 3 0 0 0 2 -2.828 3 3 0 0 0 -2.01 -2.828 3 3 0 0 0 0.01 -0.172 3 3 0 0 0 -3 -3 3 3 0 0 0 -0.172 0 3 3 0 0 0 -2.828 -2zm2.934 4.5625 1.433 1.4336-5.7772 5.7789-2.9511-2.9508 1.414-1.414 1.5371 1.5351 4.3442-4.3828z"/></svg>                                </div>
+                                <div class="nav__text">
+                                    <strong>Nextcloud Enterprise</strong><br><small>For mission-critical use</small>                                </div>
+                            </a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="https://nextcloud.com/industries">
+                                <div class="nav__logo">
+                                                                    </div>
+                                <div class="nav__text">
+                                    <strong>Industry solutions</strong><br><small>Optimized for your enterprise</small>                                </div>
+                            </a>
+                        </li>
+                        <hr>
+                        <li class="nav__item"><a href="https://nextcloud.com/outlook">Outlook integration</a></li>
+                        <li class="nav__item"><a href="https://nextcloud.com/collaboraonline">Collabora online office</a></li>
+                        <li class="nav__item"><a href="https://nextcloud.com/onlyoffice">ONLYOFFICE online office</a></li>
+                    </ul>
+				</li>
+
+				<li class="nav__section"><a class="nav__label">Support</a>
+					<ul class="nav__links">
+                        <li class="nav__item"><a href="https://portal.nextcloud.com">Enterprise support</a></li>
+                        <li class="nav__item"><a href="https://help.nextcloud.com">Community support</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/faq">FAQ</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/pricing">Pricing</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/support">Documentation</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/whitepapers">White papers</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/migration">Migration</a></li>
+						<li class="nav__item"><a href="https://apps.nextcloud.com">App Store</a></li>
+					</ul>
+				</li>
+
+				<li class="nav__section"><a class="nav__label">Community</a>
+					<ul class="nav__links">
+						<li class="nav__item"><a href="https://nextcloud.com/contribute">How to contribute</a></li>
+						<li class="nav__item"><a href="https://github.com/nextcloud">Code on GitHub</a></li>
+						<li class="nav__item"><a href="https://github.com/nextcloud/server/issues/new/choose">Report a bug</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/developer">Developer program</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/code-of-conduct">Code of Conduct</a></li>
+ 						<li class="nav__item"><a href="https://nextcloud.com/include">Nextcloud Include</a></li>
+ 						<li class="nav__item"><a href="https://nextcloud.com/podcast">Nextcloud Podcast</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/security">Security information</a></li>
+					</ul>
+				</li>
+
+				<li class="nav__section"><a class="nav__label">About</a>
+					<ul class="nav__links">
+						<li class="nav__item"><a href="https://nextcloud.com/about">About us</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/blog">Blog</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/secure">Security</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/team">Team</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/partners">Partners</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/events">Events</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/jobs">Jobs</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/compare">Comparison with others</a></li>
+						<li class="nav__item"><a href="https://nextcloud.com/search">Search our site</a></li>
+					</ul>
+				</li>
+            </ul>
+            <ul class="right-buttons">
+                <li class="nav__section">
+                <a class="nav__label get-nc-button button button--white">Get Nextcloud</a>
+                <a class="nav__label get-nc-nobutton">Get Nextcloud</a>
+                    <ul class="nav__links ">
+                        <li class="nav__item">
+                            <a href="https://nextcloud.com/install/#instructions-server">
+                                <div class="nav__logo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1" viewBox="0 0 16 16"><path fill="#0082c9" d="m6.94 0.5c-0.24 0-0.44 0.2-0.44 0.44v1.26c-0.5 0.14-1.05 0.35-1.53 0.65l-0.91-0.91c-0.16-0.18-0.46-0.19-0.62 0l-1.5 1.5c-0.18 0.17-0.18 0.46 0 0.62l0.91 0.91c-0.284 0.48-0.5 1-0.65 1.53h-1.26c-0.24 0-0.44 0.2-0.44 0.44v2.12c0 0.25 0.19 0.44 0.44 0.44h1.26c0.14 0.54 0.36 1.05 0.65 1.53l-0.91 0.91c-0.18 0.17-0.18 0.45 0 0.62l1.5 1.5c0.18 0.18 0.46 0.18 0.62 0l0.91-0.91c0.48 0.285 1 0.5 1.53 0.65v1.26c0 0.25 0.2 0.44 0.44 0.44h2.12c0.24 0 0.45-0.2 0.44-0.44v-1.26c0.54-0.14 1.05-0.36 1.53-0.65l0.91 0.91c0.17 0.18 0.45 0.18 0.62 0l1.5-1.5c0.18-0.17 0.18-0.45 0-0.62l-0.91-0.91c0.29-0.48 0.5-1 0.65-1.53h1.26c0.24 0 0.45-0.2 0.44-0.44v-2.12c0-0.24-0.2-0.44-0.44-0.44h-1.26c-0.14-0.54-0.36-1.05-0.65-1.53l0.91-0.91c0.18-0.17 0.18-0.45 0-0.62l-1.5-1.5c-0.17-0.18-0.45-0.18-0.62 0l-0.91 0.91c-0.48-0.29-1-0.5-1.53-0.65v-1.26c0-0.24-0.2-0.44-0.44-0.44h-2.12zm1.06 4a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1 -3.5 3.5 3.5 3.5 0 0 1 -3.5 -3.5 3.5 3.5 0 0 1 3.5 -3.5z"/></svg>                                </div>
+                                <div class="nav__text">
+                                    <strong>Server packages</strong><br><small>For self-hosting on your server</small>                                </div>
+                            </a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="https://nextcloud.com/install/#install-clients">
+                                <div class="nav__logo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1" viewBox="0 0 16 16"><path fill="#0082c9" d="m2 2c-0.554 0-1 0.446-1 1v8c0 0.554 0.446 1 1 1h5v1h-2v2h6v-2h-2v-1h5c0.554 0 1-0.446 1-1v-8c0-0.554-0.446-1-1-1zm1 2h10v6h-10z"/></svg>                                </div>
+                                <div class="nav__text">
+                                    <strong>Desktop & mobile apps</strong><br><small>Windows, macOS, Linux, Android, iOS, …</small>                                </div>
+                            </a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="https://nextcloud.com/signup">
+                                <div class="nav__logo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" x="0" y="0" fill="#0082c9" version="1.1" viewBox="0 0 16 16"><g><path d="m12.594 1.3438c-0.532-0.0313-1.094 0.1562-1.594 0.6562l3 3c1.5-1.5 0.188-3.5625-1.406-3.6562zm-2.594 1.6562l-7 7-2 5 5-2 7-7-3-3zm-6.5 7.5l2 2-2.5 1.5-1-1 1.5-2.5z" transform="translate(0 -1036.4) translate(0 1036.4)"/></g></svg>                                </div>
+                                <div class="nav__text">
+                                    <strong>Sign up now</strong><br><small>Get a free account at a provider</small>                                </div>
+                            </a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="https://nextcloud.com/devices">
+                                <div class="nav__logo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" x="0" y="0" fill="#0082c9" version="1.0" viewBox="0 0 16 16"><path d="m8.0001 0c-0.4714 0-0.96103 0.5419-0.95 1v6c-0.00747 0.52831 0.42163 1 0.95 1s0.95747-0.47169 0.95-1v-6c0.014622-0.6051-0.4786-1-0.95-1zm-3.3438 2.5c-0.087186 0.019294-0.17163 0.050959-0.25 0.09375-2.9995 1.5715-3.9184 4.7979-3.125 7.4688 0.7934 2.67 3.2799 4.937 6.6875 4.937 3.3592 0 5.8772-2.149 6.7192-4.781 0.841-2.6321-0.058-5.8234-3.125-7.594-0.434-0.2536-1.059-0.0899-1.313 0.3437-0.2536 0.4336-0.09 1.0589 0.344 1.3125 2.3908 1.3798 2.8825 3.4944 2.2812 5.375-0.6012 1.8806-2.344 3.4375-4.9062 3.4375-2.5759 0-4.2976-1.6502-4.875-3.5938-0.5776-1.9435-0.047-4.048 2.1873-5.2187 0.3787-0.2063 0.5791-0.6925 0.4558-1.1057-0.1232-0.4133-0.5572-0.7103-0.987-0.6755-0.0313-0.0015-0.0626-0.0015-0.0938 0z" color="#000" style="block-progression:tb;text-transform:none;text-indent:0"/></svg>                                </div>
+                                <div class="nav__text">
+                                    <strong>Devices</strong><br><small>Buy hardware with Nextcloud</small>                                </div>
+                            </a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="https://nextcloud.com/enterprise">
+                                <div class="nav__logo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1" viewbox="0 0 16 16"><path fill="#0082c9" d="m8 0a3 3 0 0 0 -2.828 2 3 3 0 0 0 -0.172 -0 3 3 0 0 0 -3 3 3 3 0 0 0 0 0.172 3 3 0 0 0 -2 2.828 3 3 0 0 0 2 2.828 3 3 0 0 0 -0 0.172 3 3 0 0 0 3 3 3 3 0 0 0 0.172 -0 3 3 0 0 0 2.828 2 3 3 0 0 0 2.828 -2.01 3 3 0 0 0 0.172 0.01 3 3 0 0 0 3 -3 3 3 0 0 0 -0 -0.172 3 3 0 0 0 2 -2.828 3 3 0 0 0 -2.01 -2.828 3 3 0 0 0 0.01 -0.172 3 3 0 0 0 -3 -3 3 3 0 0 0 -0.172 0 3 3 0 0 0 -2.828 -2zm2.934 4.5625 1.433 1.4336-5.7772 5.7789-2.9511-2.9508 1.414-1.414 1.5371 1.5351 4.3442-4.3828z"/></svg>                                </div>
+                                <div class="nav__text">
+                                    <strong>Enterprise solution</strong><br><small>For mission-critical use</small>                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="ghost-btn">
+                    <a href="https://try.nextcloud.com/" class="nav__label">
+                        Demo                    </a>
+                </li>
+                <li class="ghost-btn">
+                    <a href="https://nextcloud.com/gdpr" class="nav__label">
+                        GDPR                    </a>
+                </li>
+                <li class="ghost-btn no-underline">
+                    <a href="https://nextcloud.com/contact" class="nav__label top-navbar-svg"><svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" id="svg4" width="20" height="20" version="1.0" viewBox="0 0 20 20"><metadata id="metadata10"/><path id="path2" fill="#fff" fill-opacity="1" stroke-width=".625" d="M 1.111132,3.749836 C 0.49555934,3.749836 0,4.2457766 0,4.861343 v 10.278814 c 0,0.615629 0.49555934,1.110007 1.111132,1.110007 H 18.888743 C 19.504372,16.250164 20,15.755786 20,15.140157 V 4.861343 C 20,4.2457766 19.504372,3.749836 18.888743,3.749836 Z m 0.9375058,1.285133 7.6044224,7.604423 h 0.6597548 l 7.638797,-7.604423 0.76388,0.7638798 -4.548654,4.6180912 3.437521,3.50696 -0.763879,0.763879 -3.506959,-3.506959 -2.534766,2.569454 H 9.2014949 L 6.6671041,11.181507 3.1599573,14.722779 2.3960149,13.924025 5.8682866,10.417128 1.2849456,5.7992238 Z"/></svg></a>
+                </li>
+                <li class="nav__section"><a class="nav__label top-navbar-svg lang-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000" version="1.1" viewBox="0 0 6.667 6.667"><g fill="#fff" data-name="Layer 9" transform="matrix(.083333 0 0 .083333 -.83333 -1)"><polygon points="27.08 43 32.93 43 30 33.49"/><path d="m38 14h-20a8 8 0 0 0 -8 8v68l24-24h18zm-3.84 33h-8.31l-1.85 6h-4l8-26h4l8 26h-4z"/><path d="m82 14h-40l14 52h26a8 8 0 0 0 8 -8v-36a8 8 0 0 0 -8 -8zm-14 13h4v4h-4zm12 26a26.81 26.81 0 0 1 -10.64 -2.1 21.79 21.79 0 0 1 -9.36 2.1v-4a17.9 17.9 0 0 0 5 -0.7c-3.09-2.46-5-5.69-5-9.3h4c0 2.88 2.08 5.51 5.32 7.36a13.54 13.54 0 0 0 6.68 -11.36h-16v-4h20v4a17.15 17.15 0 0 1 -6.37 13.13 23.34 23.34 0 0 0 6.37 0.87z"/></g></svg></a>
+                    <ul class="nav__links">
+                        <li class="nav__item nav__item__language">
+                            <a href="https://nextcloud.com/de/install">
+															<span class="flag-icon flag-icon-de"></span>
+															Deutsch
+														</a>
+                        </li>
+                        <li class="nav__item nav__item__language">
+                            <a href="https://nextcloud.com/install">
+															<span class="flag-icon flag-icon-us"></span>
+															English
+														</a>
+                        </li>
+                        <li class="nav__item nav__item__language">
+                            <a href="https://nextcloud.com/fr_FR/install">
+															<span class="flag-icon flag-icon-fr"></span>
+															Français
+														</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+			</div>
+		</div>
+	</div>
+</nav>
+
+<script>
+    var selector = document.getElementById('nav');
+    selector.style.opacity = 0;
+</script>
+
+<style>
+.no-js body nav {
+  opacity: 1; }
+</style>
+<head>
+    <link rel="stylesheet" href="https://nextcloud.com/wp-content/cache/minify/94793.css?x53054" media="all" />
+
+    <script>
+	require(["require.config"], function() {
+		require(["jquery", "bootstrap", "pages/install"])
+	});
+</script>
+</head>
+
+
+<section class="content">
+<div class="container">
+
+<div class="row download--description">
+	<div class="col-md-6">
+		<div class="numbadge centre devicebadge">
+			<i class="fa-laptop"></i>
+		</div>
+		<h2>Desktop</h2>
+		<p class="text-center">Connect to your Nextcloud from Windows, macOS or Linux.</p>
+		<p class="text-center"><a class="button button--blue button--large" href="#install-clients" rel="tooltip" id="desktop" data-toggle="popover" title="Desktop Clients">Download for desktop</a></p>
+	</div>
+	<div class="col-md-6">
+		<div class="numbadge centre devicebadge">
+			<i class="fa-mobile"></i>
+		</div>
+		<h2>Mobile</h2>
+		<p class="text-center">Use your Nextcloud on the go with our Android and iOS apps.</p>
+		<p class="text-center"><a class="button button--blue button--large" href="#install-clients" rel="tooltip" id="mobile" data-toggle="popover" title="Mobile Clients">Mobile apps</a></p>
+	</div>
+</div>
+
+<div class="row download--description download--description_server">
+	<div class="col-md-12">
+		<div class="numbadge centre devicebadge">
+			<i class="fa-server"></i>
+		</div>
+		<h2>Server</h2>
+		<p class="text-center">Stay in control of your data!<br>Choose one of the providers or download the Nextcloud server for self hosting.</p>
+		<p class="text-center"><a class="button button--blue button--large" href="https://nextcloud.com/signup">Sign up with a provider</a> <a class="button button--white button--large" href="#instructions-server"  >Download for server</a></p>
+		<p class="text-center"><a class="hyperlink" href="https://nextcloud.com/devices">Buy devices</a> &nbsp; &nbsp; <a class="hyperlink" href="https://nextcloud.com/providers">Find a provider</a> &nbsp; &nbsp; <a class="hyperlink" href="https://nextcloud.com/enterprise">Enterprise Solutions</a></p>
+	</div>
+</div>
+
+
+
+<hr class="wide"></hr>
+<div class="row">
+	<div class="col-md-4">
+		<div class="numbadge centre">
+			<i class="fa-book"></i>
+		</div>
+		<h3>Read the documentation</h3>
+		<p>Here you can find our manuals:</p>
+		<ul>
+			<li><a class="hyperlink" href="https://docs.nextcloud.com/server/latest/user_manual/en/" target="_blank" rel="tooltip" title="End User Documentation">Users</a></li>
+			<li><a class="hyperlink" href="https://docs.nextcloud.com/desktop/3.1" target="_blank" rel="tooltip" title="Desktop client">Desktop client</a></li>
+			<li><a class="hyperlink" href="https://docs.nextcloud.com/server/21/admin_manual/" target="_blank" rel="tooltip" title="Nextcloud administrator Documentation">Admins</a></li>
+			<li><a class="hyperlink" href="https://docs.nextcloud.com/server/latest/developer_manual/" target="_blank" rel="tooltip" title="Nextcloud Developer Documentation">Developers</a></li>
+			<li><a class="hyperlink" href="https://docs.nextcloud.com/server/latest/developer_manual/prologue/bugtracker/" target="_blank" rel="tooltip" title="Information for Testers">Testers</a></li>
+		</ul>
+	</div>
+	<div class="col-md-4">
+		<hr class="narrow"></hr>
+		<div class="numbadge centre">
+			<i class="fa-comment"></i>
+		</div>
+		<h3>Need help?</h3>
+		<p>Discuss using, installing or maintaining Nextcloud in our support channels.</p>
+		<ul>
+			<li><a class="hyperlink" href="http://help.nextcloud.com" target="_blank" rel="tooltip" title=" Nextcloud User Forums">The Forum</a></li>
+			<li><a class="hyperlink" href="irc://#nextcloud@freenode.net" target="_blank" rel="tooltip" title="The Nextcloud IRC Channel">IRC Channel</a> (<a class="hyperlink" href="https://webchat.freenode.net/?channels=nextcloud" target="_blank"  rel="tooltip" title="Web interface to the Nextcloud IRC Channel">Webchat</a>)</li>
+		</ul>
+		<p>These consist of users helping each other. Consider helping out others, too!<br />
+		<p>Browse dozens of free apps and services you could use with your Nextcloud on        <a class="hyperlink" href="https://apps.nextcloud.com" target="_blank" rel="tooltip" title="App Store">the Nextcloud app store.</a></p>
+		<p><a class="button button--blue" href="https://nextcloud.com/enterprise">Enterprise support</a></p></p>
+	</div>
+	<a name="testing"></a>
+	<div class="col-md-4">
+		<hr class="narrow"></hr>
+		<div class="numbadge centre">
+			<i class="fa-rocket"></i>
+		</div>
+		<h3>Get Involved</h3>
+		<p>If you want to help out with <a class="hyperlink" href="https://docs.nextcloud.com/server/latest/developer_manual/" target="_blank" rel="tooltip" title="Developer Documentation">developing</a> and testing, grab a daily build. Find our <a class="hyperlink" href="https://github.com/nextcloud" target="_blank">GitHub project here</a> and find our  <a class="hyperlink" href="https://github.com/nextcloud/server/issues" target="_blank">issue tracker for the server here.</a></p>
+		<p><a class="button button--white button--small" href="https://download.nextcloud.com/server/daily/latest.tar.bz2" ><i class="fa-archive"></i>  Daily build</a></p>
+				<p>Latest testing version is  21 RC2</p>
+		<p>
+					      <a class="button button--white button--small" href="https://download.nextcloud.com/server/prereleases/nextcloud-21.0.0RC2.zip" ><i class="fa-archive"></i> .zip</a>
+							<a class="button button--white button--small" href="https://download.nextcloud.com/server/prereleases/nextcloud-21.0.0RC2.tar.bz2"><i class="fa-archive"></i> .tar.bz2</a>
+						<p>Help test our clients: <a target="_blank" href="https://play.google.com/apps/testing/com.nextcloud.client"><i class="fa-android"></i> Android Release Candidate client on Play store</a> and <a target="_blank" href="https://f-droid.org/packages/com.nextcloud.android.beta/"><i class="fa-android"></i> Android Beta client on F-Droid</a>. For iOS, <a target="_blank" class="hyperlink" href="https://testflight.apple.com/join/GjNbfo2a"><i class="fa-apple"></i> join Testflight for iOS</a></p></p>
+
+
+		</p>
+		<p><a class="hyperlink" href="https://nextcloud.com/contribute" target="_blank" rel="tooltip" title="The Nextcloud Contribute Page">More ways to get involved!</a></p>
+
+	</div>
+</div>
+<div class="installers">
+	<div id="instructions-server" class="container row PopupGetStarted">
+		<div class="instructions">
+            <div class="row navigation-row">
+                <a href="#" class="close install-close">&times;</a>
+                <ul class="install-nav nav-tabs" role="tablist">
+                    <li id="li-tab-archive" class="active">
+                        <a href="#tab-archive" title="For server owners" role="tab" data-toggle="tab">
+                            <div>
+                            <i class="fa-archive"></i><br/>
+                            Archive File<br>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab-web" title="Best for shared hosts" role="tab" data-toggle="tab">
+                            <div>
+                            <i class="fa-code"></i> <br />
+                            Web Installer<br>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab-cloud" title="Provides automated updates" role="tab" data-toggle="tab">
+                            <div>
+                            <i class="fa-cloud"></i> <br />
+                            Appliances<br>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div  class="tab-content">
+                <div id="tab-archive" role="tabpanel" class="tab-pane active">
+                    <div class="overlay-body row">
+                        <div class="col-md-6">
+                            <p>The <strong>archive</strong> should be extracted in a folder your web server has access to. Latest stable version:  21.0.0 (<a class="hyperlink" href="https://nextcloud.com/changelog"><small>Changelog</small></a>)</br>
+                            <div class="downloadbutton">
+                                <a  class="button button--blue button--huge" href="https://download.nextcloud.com/server/releases/nextcloud-21.0.0.zip">Download Nextcloud</a>
+                            </div>
+                            <p>Follow the <a class="hyperlink" href="https://docs.nextcloud.com/server/21/admin_manual/installation">Nextcloud Admin Manuals</a> installation chapter.</br>
+                            If you already run Nextcloud, refer to the <a class="hyperlink" href="https://docs.nextcloud.com/server/21/admin_manual/maintenance/upgrade.html">upgrade manual.</a><br/>
+                            <a class="hyperlink" href="https://nextcloud.com/enterprise">Need an enterprise solution?</a></p>
+
+                            <a class="button button--white button--small button--arrow--down" data-toggle="collapse" href="#more">Details and download options</a>
+                            <div class="collapse" id="more">
+                                <ol>
+                                    <li>Download the <a class="hyperlink" href="https://download.nextcloud.com/server/releases/nextcloud-21.0.0.tar.bz2">.tar.bz2</a></a> or <a class="hyperlink" href="https://download.nextcloud.com/server/releases/nextcloud-21.0.0.zip">.zip</a> archive.</li>
+                                    <li>Check package integrity using MD5 (<a class="hyperlink" href="https://download.nextcloud.com/server/releases/nextcloud-21.0.0.tar.bz2.md5">.tar.bz2</a> / <a class="hyperlink"  href="https://download.nextcloud.com/server/releases/nextcloud-21.0.0.zip.md5">.zip</a>) or SHA256 (<a class="hyperlink"  href="https://download.nextcloud.com/server/releases/nextcloud-21.0.0.tar.bz2.sha256">.tar.bz2</a> / <a class="hyperlink"  href="https://download.nextcloud.com/server/releases/nextcloud-21.0.0.zip.sha256">.zip</a>)</li>
+                                    <li>Verify the authenticity via PGP (<a class="hyperlink" target="_blank" href="https://download.nextcloud.com/server/releases/nextcloud-21.0.0.tar.bz2.asc">.tar.bz2 </a>/<a class="hyperlink" target="_blank" href="https://download.nextcloud.com/server/releases/nextcloud-21.0.0.zip.asc">.zip</a>). The Nextcloud GPG key <a class="hyperlink" target="_blank" href="https://nextcloud.com/nextcloud.asc">is here</a>.</li>
+                                </ol>
+                                <p>You can already find server packages included with many distributions or provided by active community members. Find an <a class="hyperlink" href="https://help.nextcloud.com/t/linux-packages-status/10216">overview of packages for various distributions as well as Docker and snap images here.</a> Can't find packages you need? Ask your distribution for packages or contribute to creating them!</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="thumbnail">
+                                <img class="img-responsive" src="https://nextcloud.com/wp-content/themes/next/assets/img/screenshots/serverwebui.png?x53054" alt="Nextcloud Server" />
+                            </div>
+                            <p>Looking for <a class="hyperlink" href="https://nextcloud.com/changelog">older versions or major releases</a>?</p>
+                            <p><small>Nextcloud Server does <strong>not</strong> support Microsoft Windows. We recommend using <a class="hyperlink" href="#tab-cloud" title="Provides automated updates" role="tab" data-toggle="tab">a virtual machine or docker image</a> on Windows Server.</small></p>
+                            <p><small><strong>Security note:</strong></br>To receive information about updates and security issues, we recommend a subscription to our low-traffic <a class="hyperlink" href="https://newsletter.nextcloud.com/?p=subscribe&id=1">newsletter</a>.</small></p>
+                            <p><small><strong>Release channels:</strong></br>We offer <a class="hyperlink" href="https://nextcloud.com/release-channels">Release Channels</a> with production, stable, beta and daily-branches. This gives you the opportunity to choose your balance between stability and features.</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab-web" role="tabpanel" class="tab-pane">
+                    <div class="overlay-body row">
+                        <div class="col-md-6">
+                            <p>The <strong>Web Installer</strong> is the easiest way to install Nextcloud on a web space. It checks the dependencies, downloads Nextcloud from the official server, unpacks it with the right permissions and the right user account. Finally, you will be redirected to the Nextcloud installer.</p>
+                            <ol>
+                                <li>Right-click <a class="hyperlink" href="https://download.nextcloud.com/server/installer/setup-nextcloud.php">here</a> and save the file to your computer</li>
+                                <li>Upload <tt>setup-nextcloud.php</tt> to your web space</li>
+                                <li>Point your web browser to <tt>setup-nextcloud.php</tt> on your webspace</li>
+                                <li>Follow the instructions and configure Nextcloud</li>
+                                <li>Login to your newly created Nextcloud instance!</li>
+                            </ol>
+                            <p>You can find further instructions in the <a class="hyperlink" href="https://docs.nextcloud.com/server/21/admin_manual/">Nextcloud Admin Manual</a>.</p>
+                            <p><strong>Note</strong> that the installer uses the same Nextcloud version as available for the built in updater in Nextcloud. After a major release it can take up to a month before it becomes available through the web installer and the updater. This is done to spread the deployment of new major releases out over time.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="thumbnail">
+                                <img class="img-responsive" src="https://nextcloud.com/wp-content/themes/next/assets/img/screenshots/serverwebui.png?x53054" alt="Nextcloud Server" />
+                            </div>
+                            <p><small>Nextcloud Server does <strong>not</strong> support Microsoft Windows. We recommend using <a class="hyperlink" href="#tab-cloud" title="Provides automated updates" role="tab" data-toggle="tab">a virtual machine or docker image</a> on Windows Server.</small></p>
+                            <p><small><strong>Security note:</strong></br>To receive information about updates and security issues, we recommend a subscription to our low-traffic <a class="hyperlink" href="https://newsletter.nextcloud.com/?p=subscribe&id=1">newsletter</a>.</small></p>
+                            <p><small><strong>Release channels:</strong></br>We offer <a class="hyperlink" href="https://nextcloud.com/release-channels">Release Channels</a> with production, stable, beta and daily-branches. This gives you the opportunity to choose your balance between stability and features.</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab-packages" role="tabpanel" class="tab-pane">
+                    <div class="overlay-body row">
+                        <div class="col-md-6">
+                            <p>You can find further instructions in the <a class="hyperlink" href="https://docs.nextcloud.com/server/21/admin_manual/">Nextcloud Admin Manual</a>.</br>
+                            If you already run Nextcloud, refer to the <a class="hyperlink" href="https://docs.nextcloud.com/server/21/admin_manual/maintenance/upgrade.html">upgrade manual</a> for moving to new Nextcloud releases.</p>
+                            <br/><a  class="btn btn-primary" href="https://download.nextcloud.com/download/repositories/stable/nextcloud">Continue</a></br></br>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="thumbnail">
+                                <img class="img-responsive" src="https://nextcloud.com/wp-content/themes/next/assets/img/screenshots/serverwebui.png?x53054" alt="Nextcloud Server" />
+                            </div>
+                            <p><strong>Security note:</strong></br> We recommend a subscription to our low-traffic <a class="hyperlink" href="https://newsletter.nextcloud.com/?p=subscribe&id=1">newsletter</a> for notifications on updates and security issues. Find the <a class="hyperlink" href="<?php echo $NEXTCLOUD_GPG; ?>">public Nextcloud GPG key here</a>.</p>
+                            <p>Looking for repositories of <a class="hyperlink" href="https://nextcloud.com/changelog">previous major releases?</a></p>
+                            <p><small>Nextcloud Server does <strong>not</strong> support Microsoft Windows. We recommend using <a class="hyperlink" id="cloud" href="#tab-cloud" title="Easy deployment in a Virtual Machine" role="tab" data-toggle="tab">the Nextcloud Appliance</a> on Windows Server.</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab-cloud" role="tabpanel" class="tab-pane">
+                    <div class="overlay-body row">
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h5>Virtual Machine image</h5>
+                                    <p>The Nextcloud VM is designed to be an easy way for less technical users to get Nextcloud up and running or to test it out. It builds on Ubuntu Linux and makes configuration easy.</p>
+                                    <p><a class="button button--blue" href="https://download.nextcloud.com/vm/Official-Nextcloud-VM.zip" target="_blank">Download the VM</a></p>
+                                    <p><a class="hyperlink" href="https://github.com/nextcloud/vm" target="_blank">Find source here</a>.</p>
+                                    <p>If you are looking for a more extensive virtual machine with many scripts to easily set up advanced functionality, <a class="hyperlink" href="https://www.hanssonit.se/nextcloud-vm/" target="_blank">get the full-version VM from Hansson IT.</a></p>
+                                    <p>For small businesses, Nextcloud GmbH maintains a free appliance built on the Univention Corporate Server (UCS) with easy graphical setup and web-based administration. It includes user management via LDAP as well as optional online office integration. <a class="hyperlink" href="https://www.univention.com/products/univention-app-center/app-catalog/nextcloud/" target="_blank">Get the SME/Enterprise appliance.</a></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>Docker image</h5>
+                                    <p>Several Nextcloud community members maintain a Docker image. It supports a wide range of architectures, releases, various webservers, databases and more.</p>
+                                    <p><a class="button button--blue" href="https://hub.docker.com/_/nextcloud/" target="_blank">Get Docker image</a></p>
+                                    <p><a class="hyperlink" href="https://github.com/nextcloud/docker" target="_blank">Find source here</a>.</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Snap package</h5>
+                                    <p><a class="hyperlink" href="https://canonical.com">Canonical</a> and the Nextcloud community maintain a Nextcloud Snap, including release channels and quick and easy deployment for easy home use.</p>
+                                    <p><a class="button button--blue" href="https://snapcraft.io/nextcloud" target="_blank">Get Snap package</a></p>
+                                    <p><a class="hyperlink" href="https://github.com/nextcloud/nextcloud-snap" target="_blank">Find source here.</a></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="thumbnail">
+                                <img class="img-responsive" src="https://nextcloud.com/wp-content/themes/next/assets/img/features/VMwelcome.png?x53054" alt="Nextcloud home user VM" />
+                            </div>
+                            <p><small><strong>Security note:</strong></br>To receive information about updates and security issues, we recommend a subscription to our low-traffic <a class="hyperlink" href="https://newsletter.nextcloud.com/?p=subscribe&id=1">newsletter</a>.</small></p>
+                            <p><small><strong>Release channels:</strong></br>We offer <a class="hyperlink" href="https://nextcloud.com/release-channels">Release Channels</a> with production, stable, beta and daily-branches. This gives you the opportunity to choose your balance between stability and features.</small> Most of our Appliances support these release channels or let you fix on specific major versions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--  Mask instructions server -->
+	<a href="#" class="mask"></a>
+</div>
+
+
+<div class="installers">
+	<div id="install-clients" name="install-clients" class="container row PopupGetStarted">
+		<div class="instructions">
+			<div class="row navigation-row">
+				<a href="#" class="close install-close">&times;</a>
+				<ul class="install-nav nav-tabs" role="tablist">
+					<li id="li-tab-desktop" class="active">
+                        <a href="#tab-desktop" title="Download for desktop" role="tab" data-toggle="tab">
+                            <div>
+                            <i class="fa-laptop"></i><br/>
+                            Download for desktop                            </div>
+                        </a>
+                    </li>
+					<li id="li-tab-mobile">
+                        <a href="#tab-mobile" title="Download for mobile" role="tab" data-toggle="tab">
+                            <div>
+                            <i class="fa-mobile"></i><br>
+                            Download for mobile                            </div>
+                        </a>
+                    </li>
+				</ul>
+			</div>
+			<div  class="tab-content">
+				<div id="tab-desktop" role="tabpanel" class="tab-pane active">
+					<div class="overlay-body row">
+						<div class="col-md-6">
+<!-- 							<p>Latest stable version: 3.1.3&nbsp;<a href="https://github.com/nextcloud/desktop/releases">changelog</a>&nbsp;</p> -->
+							<p>Use the desktop clients to keep your files synchronized between your Nextcloud server and your desktop. Select one or more directories on your local machine and always have access to your latest files wherever you are. <a class="hyperlink" href="https://nextcloud.com/clients">Learn more about our clients here.</a></p>
+							<a href="https://github.com/nextcloud/desktop/releases/download/v3.1.3/Nextcloud-3.1.3-x64.msi" id="client-download-win" class="button button--white"><i class="fa-windows"></i>  Windows<br /><small>10</small></a>
+							<a href="https://github.com/nextcloud/desktop/releases/download/v3.1.3/Nextcloud-3.1.3.pkg" id="client-download-mac" class="button button--white"><i class="fa-apple"></i> macOS<br /><small>10.12+, 64 bit</small></a>
+							<a href="https://github.com/nextcloud/desktop/releases/download/v3.1.3/Nextcloud-3.1.3-x86_64.AppImage" id="client-download-linux" class="button button--white"><i class="fa-linux"></i> Linux<br /><small>AppImage</small></a>
+							<br>
+							<p><i class="fa-apple"></i>&nbsp;<a href="https://github.com/nextcloud/desktop/releases/download/v2.6.5/Nextcloud-2.6.5.20200710-legacy.pkg">Mac OS 10.10+ (legacy)</a></p>
+							<br>
+							<p>Looking for integration apps like browser add-ins for Passwords, a feedreader and more? Check our app store for integrations!</p>
+							<p><a class="button button--white button--arrow" href="https://apps.nextcloud.com/categories/integration"> Integrations</a></p>
+							<p>find here:<br>
+							<i class="fa-book"></i> <a class="hyperlink" href="https://docs.nextcloud.com/desktop/3.1">documentation</a>
+							<br>
+							<i class="fa-code-fork"></i> <a class="hyperlink" href="https://github.com/nextcloud/desktop">source code</a>
+							</p>
+							<p>You can already find Nextcloud Desktop client packages included in openSUSE Tumbleweed, Arch Linux and Fedora. You can find Ubuntu/Debian packages <a class="hyperlink" href="https://launchpad.net/~nextcloud-devs/+archive/ubuntu/client">in this PPA</a>. Packages for Alpine Linux <a class="hyperlink" href="http://pkgs.alpinelinux.org/packages?name=nextcloud-client">over here</a>. See the latest state and more packages <a class="hyperlink" href="https://help.nextcloud.com/t/linux-packages-status/10216">in this post on our forums.</a> Can't find packages? Ask your distribution or contribute to creating them!</p>
+							<p>Nextcloud Files is using WebDAV, so you can also try out any other client you want!</p>
+							<p><a class="hyperlink" href="https://nextcloud.com/outlook">Try also our Outlook and Thunderbird integration:</a> Sync your files, calendars, contacts and tasks with Outlook or Mozilla Thunderbird</p>
+						</div>
+						<div class="col-md-6">
+							<div class="thumbnail">
+								<img class="img-responsive" src="https://nextcloud.com/wp-content/themes/next/assets/img/clients/desktop/macsettings.png?x53054" alt="Desktop Client" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="tab-mobile" role="tabpanel" class="tab-pane">
+					<div class="overlay-body row">
+						<div class="col-md-6">
+							<p>The Nextcloud mobile apps are available in various app stores. <a class="hyperlink" href="https://nextcloud.com/clients">Learn more about our clients here.</a></p>
+							<h3><span class="appicon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1" viewBox="0 0 16 16"><path fill="#0082c9" d="m1.5 2c-0.25 0-0.5 0.25-0.5 0.5v11c0 0.26 0.24 0.5 0.5 0.5h13c0.26 0 0.5-0.241 0.5-0.5v-9c0-0.25-0.25-0.5-0.5-0.5h-6.5l-2-2h-4.5zm8.75 3.5a1.25 1.25 0 0 1 1.25 1.25 1.25 1.25 0 0 1 -1.25 1.25 1.25 1.25 0 0 1 -0.8008 -0.291l-2.4512 1.2265a1.25 1.25 0 0 1 0.002 0.0645 1.25 1.25 0 0 1 -0.0039 0.0645l2.4531 1.2265a1.25 1.25 0 0 1 0.8008 -0.291 1.25 1.25 0 0 1 1.25 1.25 1.25 1.25 0 0 1 -1.25 1.25 1.25 1.25 0 0 1 -1.25 -1.25 1.25 1.25 0 0 1 0.0039 -0.064l-2.4531-1.227a1.25 1.25 0 0 1 -0.8008 0.291 1.25 1.25 0 0 1 -1.25 -1.25 1.25 1.25 0 0 1 1.25 -1.25 1.25 1.25 0 0 1 0.8008 0.291l2.4512-1.2265a1.25 1.25 0 0 1 -0.002 -0.0645 1.25 1.25 0 0 1 1.25 -1.25z"/></svg></span> Nextcloud Files</h3>
+							<p>The apps allow you to access, sync and upload your data and feature instant upload for photos and videos, upload management and more features.</p>
+							<div class="row mobileclientbuttons">
+								<div class="col-xs-4">
+									<a target="_blank" href="https://play.google.com/store/apps/details?id=com.nextcloud.client">
+									<img class="img-responsive" src="https://nextcloud.com/wp-content/themes/next/assets/img/clients/buttons/googleplay.png?x53054"></a><br />
+								</div>
+								<div class="col-xs-4">
+									<a target="_blank" href="https://f-droid.org/packages/com.nextcloud.client/">
+									<img class="img-responsive" src="https://nextcloud.com/wp-content/themes/next/assets/img/clients/buttons/fdroid.png?x53054"></a><br />
+								</div>
+								<div class="col-xs-4">
+									<a target="_blank" href="https://itunes.apple.com/us/app/nextcloud/id1125420102?mt=8">
+									<img class="img-responsive" src="https://nextcloud.com/wp-content/themes/next/assets/img/clients/buttons/appstore.svg?x53054">
+									</a>
+								</div>
+							</div>
+							<p><a class="hyperlink" href="https://github.com/nextcloud/ios">Find iOS Sources here</a>, <a class="hyperlink" href="https://github.com/nextcloud/android">Android Sources here and</a>  <a class="hyperlink" href="https://download.nextcloud.com/android">direct APK download here.</a></p>
+							<h3><span class="appicon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1" viewBox="0 0 16 16"><path fill="#0082c9" stroke-width=".14" d="m7.9992 0.999a6.9993 6.9994 0 0 0 -6.9992 6.9996 6.9993 6.9994 0 0 0 6.9992 6.9994 6.9993 6.9994 0 0 0 3.6308 -1.024c0.86024 0.34184 2.7871 1.356 3.2457 0.91794 0.47922-0.45765-0.56261-2.6116-0.81238-3.412a6.9993 6.9994 0 0 0 0.935 -3.4814 6.9993 6.9994 0 0 0 -6.9991 -6.9993zm0.0008 2.6611a4.34 4.3401 0 0 1 4.34 4.3401 4.34 4.3401 0 0 1 -4.34 4.3398 4.34 4.3401 0 0 1 -4.34 -4.3398 4.34 4.3401 0 0 1 4.34 -4.3401z"/></svg></span> Nextcloud Talk</h3>
+							<div class="row mobileclientbuttons">
+								<div class="col-xs-4">
+									<a target="_blank" href="https://play.google.com/store/apps/details?id=com.nextcloud.talk2">
+									<img class="img-responsive" src="https://nextcloud.com/wp-content/themes/next/assets/img/clients/buttons/googleplay.png?x53054"></a><br />
+								</div>
+								<div class="col-xs-4">
+									<a target="_blank" href="https://f-droid.org/en/packages/com.nextcloud.talk2">
+									<img class="img-responsive" src="https://nextcloud.com/wp-content/themes/next/assets/img/clients/buttons/fdroid.png?x53054"></a><br />
+								</div>
+								<div class="col-xs-4">
+									<a target="_blank" href="https://itunes.apple.com/us/app/nextcloud-talk/id1296825574">
+									<img class="img-responsive" src="https://nextcloud.com/wp-content/themes/next/assets/img/clients/buttons/appstore.svg?x53054">
+									</a>
+								</div>
+							</div>
+							<p><a class="hyperlink" href="https://github.com/nextcloud/talk-ios">Find iOS Sources here</a>, <a class="hyperlink" href="https://github.com/nextcloud/talk-android">Android Sources here</a>.</p>
+							<p>Looking for mobile apps for Deck, News, Passwords and more? Check our app store!</p>
+							<p><a class="button button--blue button--arrow button--small" href="https://apps.nextcloud.com/categories/integration?search=android"><i class="fa-android"></i> Android Apps</a> <a class="button button--blue button--arrow button--small" href="https://apps.nextcloud.com/categories/integration?search=ios"><i class="fa-apple"></i> iOS Apps</a></p>
+							<p>Nextcloud is using open standards like CalDAV, WebDAV and IMAP so many independent third party clients can connect to it.</p>
+						</div>
+						<div class="col-md-6">
+							<div class="thumbnail">
+								<img class="img-responsive" src="https://nextcloud.com/wp-content/themes/next/assets/img/clients/mobile/android.gif?x53054" alt="Nextcloud Mobile Client" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<!--  Mask instructions server -->
+	<a href="#" class="mask"></a>
+</div>
+</div>
+</section>
+<style>
+.hide {
+    display: none !important;
+}
+</style>
+<div class="alert alert--no-js" id="no-js">
+  <div class="container" style="display: inherit">
+		<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><g fill="none" fill-rule="evenodd"><path stroke-linecap="round" stroke-linejoin="bevel" stroke-width="2" d="M16 1l15 30H1z" class="shape"/><path d="M16.898 22.53h-1.36l-.405-7.952h2.164l-.4 7.953zm-1.86 2.493c0-.385.103-.678.306-.878.203-.2.492-.3.867-.3.37 0 .656.103.853.31.198.21.297.5.297.868 0 .37-.1.663-.3.88-.202.215-.484.324-.85.324-.37 0-.657-.105-.862-.313-.206-.208-.31-.505-.31-.89z" class="symbol"/></g></svg>    <p style="display: inherit"><strong>You have javascript disabled.</strong> We tried to make sure the basics of our website work but some functionality will be missing.</p>
+  </div>
+</div>
+
+<script>
+    window.onload = (function(){
+        // let's hope ONE of these removes the javascript warning.
+
+        // first attempt, just adding the 'hide' class to make it display: none
+        if(document.getElementById("no-js")) {
+            var d = document.getElementById("no-js");
+            d.className += " hide";
+        }
+
+        // second attempt, let's just remove the entire thing. If it doesn't work... hope the first attempt did work. Note, IE does not support the remove method
+        if(document.querySelector("alert--no-js"))
+            document.body.removeChild(document.querySelector("alert--no-js"));
+
+    })();
+</script>
+
+<div class="cookiewarning" id="cookieConsent">
+    <div class="container">
+        <div class="text-center">
+            This website is using cookies. By visiting you agree with our <a href="https://nextcloud.com/privacy" target="_blank">privacy policy.</a> <a class="cookieConsentOK">That's Fine</a>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer">
+    <div class="container">
+        <div class="col-sm-3">
+            <h1>About Nextcloud</h1>
+            <ul>
+                <li><a href="https://nextcloud.com/about">About us</a></li>
+<!--                 <li><a href="https://nextcloud.com/contributors">Community</a></li> --><!-- broken atm -->
+                <li><a href="https://nextcloud.com/events">Events</a></li>
+                <li><a href="https://nextcloud.com/jobs">Jobs</a></li>
+                <li><a href="https://nextcloud.com/community/code-of-conduct/">Code of Conduct</a></li>
+                <li><a href="https://nextcloud.com/privacy">Privacy</a></li>
+                <li><a href="https://nextcloud.com/impressum">Legal notice</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-3">
+            <h1 >Resources</h1>
+            <ul>
+                <li><a href="https://nextcloud.com/search">Search our website</a></li>
+                <li><a href="https://nextcloud.com/install">Download</a></li>
+                <li><a href="https://apps.nextcloud.com">App Store</a></li>
+                <li><a href="https://docs.nextcloud.com/server/21/admin_manual/">Admin manual</a></li>
+                <li><a href="https://docs.nextcloud.com/server/latest/user_manual/en/">User manual</a></li>
+                <li><a href="https://nextcloud.com/developer">Developer program</a></li>
+                <li><a href="https://nextcloud.com/security">Security</a></li>
+                <li><a href="https://github.com/nextcloud">Code on GitHub</a></li>
+                <li><a href="https://nextcloud.com/compare">Compare</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-3">
+            <h1>Interact</h1>
+            <ul >
+                <li><a href="https://nextcloud.com/support">Support</a></li>
+                <li><a href="https://help.nextcloud.com/categories">Forums</a></li>
+                <li><a href="https://demo.nextcloud.com">Demo</a></li>
+                <li><a href="https://nextcloud.com/contact">Contact us</a></li>
+                <li><a href="https://nextcloud.com/press">Press center</a></li>
+                <li><a href="https://docs.nextcloud.com/server/latest/developer_manual/prologue/bugtracker/">Bug Tracker</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-3">
+            <h1>Follow us</h1>
+            <ul >
+                <li><a href="https://www.facebook.com/Nextclouders/">Facebook</a></li>
+                <li><a href="https://instagram.com/nextclouders">Instagram</a></li>
+                <li><a href="https://www.linkedin.com/company/10827569/">LinkedIn</a></li>
+                <li><a href="https://youtube.com/nextcloud">YouTube</a></li>
+                <li><a href="https://twitter.com/nextclouders">Twitter</a></li>
+                <li><a href="https://mastodon.xyz/@nextcloud">Mastodon</a></li>
+                <li><a href="https://nextcloud.com/podcast">Podcast</a></li>
+                <li><a href="https://nextcloud.com/blogfeed">RSS Feed</a></li>
+            </ul>
+        </div>
+    <div class="row">
+		<div class="col-sm-12 text-center">
+		<p >&copy; </font> 2021 Nextcloud GmbH</p>
+		</div>
+	</div>
+  </div>
+</footer>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(["setCookieDomain", "*.nextcloud.com"]);
+  _paq.push(["setDomains", ["*.nextcloud.com"]]);
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//stats.nextcloud.com/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//stats.nextcloud.com/piwik.php?idsite=1&rec=1" style="border:0;" alt="" /></p></noscript>
+<!-- End Piwik Code -->
+<!-- Mautic -->
+<script>
+    (function(w,d,t,u,n,a,m){w['MauticTrackingObject']=n;
+        w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments)},a=d.createElement(t),
+        m=d.getElementsByTagName(t)[0];a.async=1;a.src=u;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://mautic.nextcloud.com/mtc.js','mt');
+
+    mt('send', 'pageview');
+</script>
+<!-- End Mautic code -->
+</body></html>
+<!--
+Performance optimized by W3 Total Cache. Learn more: https://www.w3-edge.com/products/
+
+Object Caching 0/0 objects using apc
+Page Caching using apc (Empty response) 
+Minified using apc
+Database Caching using apc
+
+Served from: nextcloud.com @ 2021-02-23 11:02:01 by W3 Total Cache
+-->
