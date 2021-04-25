@@ -1,5 +1,7 @@
 *.tar
 *.zip
+*.tar
+*.tar.bz2
 *.log
 *.sql
 secrets/*.*

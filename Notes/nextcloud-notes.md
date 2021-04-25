@@ -64,3 +64,8 @@ after migration or restore is util to run
 > docker exec -i -u www-data mydeskweb.local php occ files:cleanup <br/>
 > docker exec -i -u www-data mydeskweb.local php occ user:resetpassword admin </br>
 > docker exec -i -u www-data quenchinnovations.local php occ user:list
+
+## docker cron tasks
+>sudo crontab -l -u www-data
+>*/15  *  *  *  * docker exec -it -u www-data quenchinnovations.net php -f /var/www/html/cron.php
+>*/15  *  *  *  * docker exec -it -u www-data mydeskweb.com php -f /var/www/html/cron.php

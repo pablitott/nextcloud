@@ -163,8 +163,8 @@ fi
 [ "$2" == "-full" ] && FULL_BACKUP=1
 serviceName=$1
 serverName="${serviceName%.*}"
-writeLogLine "serverName:$serverName" _color_blue_
-writeLogLine "serviceName: $serviceName" _color_blue_
+writeLogLine "serverName:$serverName" $_color_blue_
+writeLogLine "serviceName: $serviceName" $_color_blue_
 
 environmentFile="$PWD/$serverName/$serviceName.env"
 
@@ -173,7 +173,7 @@ set -a; source backup_nextcloud.env; set +a
 
 logfile="$PWD/$serverName/backup-$serverName-$(date +$CURRENT_TIME_FORMAT).log"
 [ -f $logfile ] && rm $logfile
-writeLogLine "logfile: $logfile" _color_blue_
+writeLogLine "logfile: $logfile" $_color_blue_
 
 writeLogLine "START Backup process on $NEXTCLOUD_TRUSTED_DOMAINS" $_color_purple_
 start_time="$(date -u +%s)"
@@ -196,7 +196,7 @@ createFolder "$BACKUP_REPOSITORY"
 # backup_image
 # is a database defined for the service?
 if [ -z $DATABASE_SERVICE ]; then 
-  writeLogLine "No database is defined for $serverName" _color_yellow_
+  writeLogLine "No database is defined for $serverName"$_color_yellow_
 else
   backup_database verbose
 fi
