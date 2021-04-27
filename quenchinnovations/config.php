@@ -11,7 +11,7 @@ $CONFIG = array (
   'datadirectory' => '/var/www/html/data',
   'app.mail.transport' => 'php.mail',
   'dbtype' => 'mysql',
-  'version' => '20.0.1.1',
+  'version' => '21.0.1.1',
   'overwrite.cli.url' => 'http://www.quenchinnovations.net',
   'overwriteprotocol' => 'https',
   'dbname' => 'quenchinnovations',
@@ -65,7 +65,6 @@ $CONFIG = array (
   'mail_smtppassword' => 'Ca11ista',
   'mail_smtpsecure' => 'tls',
   'updater.release.channel' => 'stable',
-  'updater.secret' => '$2y$10$uoDj.qfXENRczKUEL4tH7eepsCH5AdeQzaMFkeR/RFFGSzR0RXOrC',
   'htaccess.RewriteBase' => '/',
   'memcache.local' => '\\OC\\Memcache\\APCu',
   'apps_paths' => 
@@ -83,4 +82,6 @@ $CONFIG = array (
       'writable' => true,
     ),
   ),
+  'updater.secret' => '$2y$10$K1cePwPlTlMaGtwowABtLO0aVdj7zr38D4hyef87gnI6ZSlC7Cm6y',
+  'default_phone_region' => 'US',
 );

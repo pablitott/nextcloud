@@ -23,11 +23,11 @@ $CONFIG = array (
   'trusted_domains' => 
   array (
     0 => 'mydeskweb.com',
-    1 => 'www.mydeskweb.com'
+    1 => 'www.mydeskweb.com',
   ),
   'datadirectory' => '/var/www/html/data',
   'dbtype' => 'mysql',
-  'version' => '20.0.1.1',
+  'version' => '21.0.1.1',
   'overwrite.cli.url' => 'http://www.mydeskweb.com',
   'overwriteprotocol' => 'https',
   'dbname' => 'mydeskweb',
@@ -52,4 +52,6 @@ $CONFIG = array (
   'maintenance' => false,
   'theme' => '',
   'loglevel' => 2,
+  'updater.secret' => '$2y$10$th3rcYW.Rx5clQPu7EmVxO.8YQUjSPf1Rx9JmeoSDpLmQn2w6o4M.',
+  'default_phone_region' => 'US',
 );
