@@ -131,7 +131,7 @@ function awsCmd(){
 }
 #define global variables
 if [ -z "$HOMEDIR" ] ; then
-    writeLogLine "HOMEDIR is not defined, please define HOMEDIR accordingly" $_color_red_
+    echo "HOMEDIR is not defined, please define HOMEDIR accordingly"
     exit -1
 fi
 echo "USER: $USER"
