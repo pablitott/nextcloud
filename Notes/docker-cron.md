@@ -65,3 +65,24 @@ i think last link above is the best article to run cron for docker
 
 
 [here is an example to configure cron](https://github.com/nextcloud/docker/tree/488378f8e88071a68bec5c0f846c294fb61ddd76/18.0/apache)
+
+current cron lines, to edit cron file use:
+> sudo crontab -e -u ubuntu
+```
+# m h  dom mon dow   command
+SHELL=/bin/bash
+PATH=$PATH:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+NICKNAME=LightsailDocker
+USER=ubuntu
+HOMEDIR=/home/ubuntu/nextcloud
+
+*/10 *  *  *  * docker exec -u www-data mydeskweb.com php -f /var/www/html/cron.php
+*/15 *  *  *  * docker exec -u www-data quenchinnovations.net php -f /var/www/html/cron.php
+
+
+*/30  *  *  *  * docker exec -u www-data quenchinnovations.net php occ files:scan --all
+*/40  *  *  *  * docker exec -u www-data quenchinnovations.net php occ files:scan-app-data
+
+57  23 *  *  *  /home/ubuntu/nextcloud/backup_nextcloud.sh mydeskweb.com
+50  23 *  *  *  /home/ubuntu/nextcloud/backup_nextcloud.sh quenchinnovations.net
+```
