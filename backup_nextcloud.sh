@@ -1,6 +1,4 @@
 #!/bin/bash
-cd /home/ubuntu/nextcloud
-
 # dirname "$0"
 #=================================================================
 #
@@ -73,14 +71,13 @@ function backup_home(){
   tarOptions='-uf'
   [ ! -z $verbose ] && tarOptions="-uvf"
   writeLogLine "tar using $tarOptions" $_color_yellow_
-  writeLogLine "packing $PWD Home to $ARCHIVE_FILE, exclude hidden folders" $_color_blue_
+  writeLogLine "packing $HOMEDIR Home to $ARCHIVE_FILE, exclude hidden folders" $_color_blue_
   sudo tar $tarOptions $ARCHIVE_FILE --exclude="./.*" --exclude="*.tar" --exclude="*.log"  ./
   unset verbose
 }
 #================================================================================
 function backup_database(){
   verbose=$1
-  env >> environment.log
   if [ -f $ARCHIVE_FILE ]
   then
     tarOptions="-uf"
@@ -90,9 +87,9 @@ function backup_database(){
     [ ! -z $verbose ] && tarOptions="-cvf"
   fi
   writeLogLine "packing DB $serverName.db to $BACKUP_DATABASE_FILE ON $DATABASE_SERVICE" $_color_blue_
-  docker exec -it $DATABASE_SERVICE mysqldump --single-transaction -h$DATABASE_SERVICE -u$MYSQL_USER -p$MYSQL_PASSWORD $serverName > $BACKUP_REPOSITORY/$BACKUP_DATABASE_FILE
+  docker exec $DATABASE_SERVICE mysqldump --single-transaction -h$DATABASE_SERVICE -u$MYSQL_USER -p$MYSQL_PASSWORD $serverName > $BACKUP_REPOSITORY/$BACKUP_DATABASE_FILE
  
-  sudo tar $tarOptions $ARCHIVE_FILE $BACKUP_REPOSITORY/$BACKUP_DATABASE_FILE
+  tar $tarOptions $ARCHIVE_FILE $BACKUP_REPOSITORY/$BACKUP_DATABASE_FILE
   unset verbose
   unset tarOptions
 }
@@ -132,6 +129,15 @@ function awsCmd(){
   echo $*
   docker run --rm -ti -v ~/.aws:/root/.aws -v $(pwd):/aws amazon/aws-cli $*
 }
+#define global variables
+if [ -z "$HOMEDIR" ] ; then
+    writeLogLine "HOMEDIR is not defined, please define HOMEDIR accordingly" $_color_red_
+    exit -1
+fi
+echo "USER: $USER"
+echo "HOMEDIR: $HOMEDIR"
+cd $HOMEDIR
+
 #================================================================================
 #            include subroutines
 source ./writeLogLine.sh  &1>/dev/null     # write fancy output to console
@@ -166,12 +172,14 @@ serverName="${serviceName%.*}"
 writeLogLine "serverName:$serverName" $_color_blue_
 writeLogLine "serviceName: $serviceName" $_color_blue_
 
-environmentFile="$PWD/$serverName/$serviceName.env"
+environmentFile="$HOMEDIR/$serverName/$serviceName.env"
 
 set -a; source $environmentFile; set +a
 set -a; source backup_nextcloud.env; set +a
 
-logfile="$PWD/$serverName/backup-$serverName-$(date +$CURRENT_TIME_FORMAT).log"
+logfileName="backup-$serverName-$(date +$CURRENT_TIME_FORMAT).log"
+logfile="$HOMEDIR/$serverName/$logfileName"
+
 [ -f $logfile ] && rm $logfile
 writeLogLine "logfile: $logfile" $_color_blue_
 
@@ -210,7 +218,7 @@ for file in $BACKUP_REPOSITORY/*.tar
 do
     writeLogLine "$(basename $file) Size: $(stat --printf='%s' $file | numfmt --to=iec) " $_color_green_
     writeLogLine "Backup to $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/" $_color_blue_
-    aws s3 cp $file $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/ | tee -a $logfile
+    aws s3 cp $file $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/
 #    awsCmd s3 cp $file $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/
 done
 
