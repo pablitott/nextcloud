@@ -7,11 +7,8 @@
 #check arguments provided
 if [[ "$1" = "up" ]]; then
     action="up -d"
-elif [[ "$1" = "down" ]]; then
-    action=$1
 else
-    echo "specify either <up> or <down> actions"
-    exit 1
+    action=$1
 fi
 if [ -z "$2" ] ; then
     if [ -z "$NICKNAME" ] ; then
@@ -47,10 +44,10 @@ fi
 homedir=$PWD
 if [ "$1" = "up" ]; then
     # for up services nginx must be the first
-    services=(nginx questinnovations.net paveltrujillo.info mydeskweb.com quenchinnovations.net)
-elif [ "$1" = "down" ]; then
+    services=(nginx paveltrujillo.info mydeskweb.com quenchinnovations.net )
+else
     # for down services nginx must be the last
-    services=(questinnovations.net paveltrujillo.info mydeskweb.com quenchinnovations.net nginx)
+    services=(paveltrujillo.info mydeskweb.com quenchinnovations.net nginx)
 fi
 for service in ${services[@]}; do
     echo "turn $1 service $service"
