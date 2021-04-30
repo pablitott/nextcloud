@@ -1,16 +1,8 @@
 #================================================================
-# file to create NextCloud using MariaDB and ngInx
+# file to create NextCloud using MariaDB and ngInx, for all the services
+# this file has been split into different services using subfolders as ./quenchinnovations and mtdeskweb
 #
-#  TODO:
-#  Add following lines 
-# deploy:
-#   resources:
-#     limits:
-#       cpus: '0.50'
-#      memory: 50M
-#     reservations:
-#       cpus: '0.25'
-#      memory: 20M
+# not used anymore
 #================================================================
 #         KEEP IT FOR REFERENCE IN THE FUTURE
 version: '3.2' 
