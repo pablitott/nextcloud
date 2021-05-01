@@ -69,3 +69,15 @@ after migration or restore is util to run
 >sudo crontab -l -u www-data
 >*/15  *  *  *  * docker exec -it -u www-data quenchinnovations.net php -f /var/www/html/cron.php
 >*/15  *  *  *  * docker exec -it -u www-data mydeskweb.com php -f /var/www/html/cron.php
+
+## Update Nextcloud
+> Source: [How to upgrade nextcloud in docker](https://forum.openmediavault.org/index.php?thread/31542-how-to-upgrade-nextcloud-in-docker/)
+```
+1. SSH to host
+2. Run
+  docker exec -it nextcloud sudo -u abc php /config/www/nextcloud/occ upgrade
+3. run
+  docker exec -it nextcloud sudo -u abc php /config/www/nextcloud/occ maintenance:mode --off
+  
+```
+
