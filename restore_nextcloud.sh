@@ -55,6 +55,7 @@ function occCmd(){
 }
 #====================================================================
 function awsCmd(){
+  amazon/aws-cli is a container with amazon commands
   echo $*
   docker run --rm -ti -v ~/.aws:/root/.aws -v $(pwd):/aws amazon/aws-cli $*
 }
