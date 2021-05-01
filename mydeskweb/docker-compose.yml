@@ -7,7 +7,8 @@ version: '3.2'
 services:
 
   nextcloud:
-    image: nextcloud:latest
+    image: myowncloud
+    build: ../nextCloudImage
     container_name: ${NEXTCLOUD_SERVICE}
     networks: 
       default:
