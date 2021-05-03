@@ -86,3 +86,6 @@ HOMEDIR=/home/ubuntu/nextcloud
 57  23 *  *  *  /home/ubuntu/nextcloud/backup_nextcloud.sh mydeskweb.com
 50  23 *  *  *  /home/ubuntu/nextcloud/backup_nextcloud.sh quenchinnovations.net
 ```
+
+# crontab location
+> crontab files are located at: /var/spool/cron/crontabs
