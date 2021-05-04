@@ -11,14 +11,10 @@ else
     action=$1
 fi
 if [ -z "$2" ] ; then
-    if [ -z "$NICKNAME" ] ; then
-        echo "no NICKNAME is defined for this computer"
-        echo "you can either define a NICKNAME variable or"
-        echo "specify the environment as <local> or <production> as a second argument"
-        exit 1
-    else
-        environment=$NICKNAME
-    fi 
+    # echo "no NICKNAME is defined for this computer"
+    # echo "you can either define a NICKNAME variable or"
+    echo "specify the environment as <local> or <production> as a second argument"
+    exit 1
 elif [[ "$2" = "local" || "$2" = "production" ]]; then
     environment=$2
     echo "environment: $2" 
@@ -40,23 +36,23 @@ if [[ ! -z $coreName ]]; then
 else
     echo "core service is down"
 fi
-
+echo "now what"
 homedir=$PWD
 if [ "$1" = "up" ]; then
     # for up services nginx must be the first
-    services=(nginx paveltrujillo.info mydeskweb.com quenchinnovations.net )
+    services=(nginx paveltrujillo.info absolutehandymanservices.com mydeskweb.com quenchinnovations.net )
 else
     # for down services nginx must be the last
-    services=(paveltrujillo.info mydeskweb.com quenchinnovations.net nginx)
+    services=(paveltrujillo.info absolutehandymanservices.com mydeskweb.com quenchinnovations.net nginx)
 fi
 for service in ${services[@]}; do
-    echo "turn $1 service $service"
     serverName="${service%.*}"
     if [ "$environment" = "local" ]; then 
         environmentFile=$serverName.local.env
     else
         environmentFile=$service.env
     fi
+    echo "turn $1 service $serverName using $environmentFile"
     cd $homedir/$serverName
     
     if [[ -f $environmentFile ]]; then
