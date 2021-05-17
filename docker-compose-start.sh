@@ -38,9 +38,18 @@ else
 fi
 echo "now what"
 homedir=$PWD
+buildOption=""
+#check if amazon/aws-cli image exists, image used for aws commands
+awscliImage=$(docker images amazon/aws-cli -q)
 if [ "$1" = "up" ]; then
     # for up services nginx must be the first
     services=(nginx paveltrujillo.info absolutehandymanservices.com mydeskweb.com quenchinnovations.net )
+    if [[ -f "Dockerfile" ]]; then
+        buildOption="--build"
+    fi
+    if [[ -z $awscliImage ]]; then
+        docker pull amazon/aws-cli
+    fi
 else
     # for down services nginx must be the last
     services=(paveltrujillo.info absolutehandymanservices.com mydeskweb.com quenchinnovations.net nginx)
@@ -56,9 +65,9 @@ for service in ${services[@]}; do
     cd $homedir/$serverName
     
     if [[ -f $environmentFile ]]; then
-        docker-compose --env-file $environmentFile $action
+        docker-compose --env-file $environmentFile $action $buildOption
     else
-        docker-compose $action
+        docker-compose $action $buildOption
     fi
 done
 cd $homedir
