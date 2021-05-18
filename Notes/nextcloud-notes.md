@@ -22,6 +22,7 @@ RUN sed -E -i -e 's/upload_max_filesize = 2M/upload_max_filesize = 16G/' /usr/lo
 [How to upgrade nextcloud manually](https://docs.nextcloud.com/server/latest/admin_manual/maintenance/manual_upgrade.html)
 ### change data attributes
 ```
+ sudo chown -R www-data:www-data /nextcloud/mydeskweb.com/
  sudo find /nextcloud/mydeskweb.com/ -type d -exec chmod 755 {} \;
  sudo find /nextcloud/mydeskweb.com/ -type f -exec chmod 740 {} \;
 

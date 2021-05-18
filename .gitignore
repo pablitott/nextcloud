@@ -10,3 +10,4 @@ secrets/*.*
 images/logo_bkp.png
 *.env
 python/awsCredentials.txt
+lightsailNode/aws/**/*.*

@@ -6,7 +6,9 @@ from botocore.exceptions import ClientError
 #    SMTP Password: BC7KImAkjV/1dT2ihVF3Ufaa+OyEFeYj038RIA9zPgHj
 
 
-
+# install boto3
+# sudo apt update -y
+# sudo apt-get install -y python-boto3
 
 # Replace sender@example.com with your "From" address.
 # This address must be verified with Amazon SES.
