@@ -5,6 +5,10 @@
 #       action: up | down
 #       environment: local | production
 #check arguments provided
+###################################################################
+
+# Global variables
+services="nginx paveltrujillo.info absolutehandymanservices.com questinnovations.net mydeskweb.com quenchinnovations.net"
 if [[ "$1" = "up" ]]; then
     action="up -d"
 else
@@ -30,29 +34,35 @@ echo "coreName: $coreName"
 if [[ ! -z $coreName ]]; then
     nginxStatus=$(docker inspect nginx-proxy -f {{.State.Status}})
     echo "service: $coreName is $nginxStatus"
-#    letsencryptStatus=$(docker inspect letsencrypt-proxy-companion -f {{.State.Status}})
-    letsencryptStatus=$(docker inspect letsencrypt -f {{.State.Status}})
+    letsencryptStatus=$(docker inspect nginx-proxy -f {{.State.Status}})
     NEXTCLOUD_NETWORK=$(docker inspect nginx-proxy -f {{.HostConfig.NetworkMode}})
+    echo "Network: $NEXTCLOUD_NETWORK"
 else
-    echo "core service is down"
+    echo "$coreName service is down"
 fi
-echo "now what"
+
+letsEncrypt=$(docker ps --filter name="letsencrypt-proxy-companion" --format {{.Names}})
+echo "letsEncrypt: $letsEncrypt"
+if [[ ! -z $letsEncrypt ]]; then
+    letsEncryptStatus=$(docker inspect nginx-proxy -f {{.State.Status}})
+    echo "service: $letsEncrypt is $letsEncryptStatus"
+    letsencryptStatus=$(docker inspect letsencrypt-proxy-companion -f {{.State.Status}})
+else
+    echo "$letsEncrypt service is down"
+fi
+
 homedir=$PWD
 buildOption=""
 #check if amazon/aws-cli image exists, image used for aws commands
 awscliImage=$(docker images amazon/aws-cli -q)
-if [ "$1" = "up" ]; then
-    # for up services nginx must be the first
-    services=(nginx paveltrujillo.info absolutehandymanservices.com mydeskweb.com quenchinnovations.net )
-    if [[ -f "Dockerfile" ]]; then
-        buildOption="--build"
-    fi
-    if [[ -z $awscliImage ]]; then
-        docker pull amazon/aws-cli
-    fi
-else
+#pull amazon/aws-cli for aws-cli commands
+if [[ -z $awscliImage && $action="up" ]]; then
+    docker pull amazon/aws-cli
+fi
+
+if [ "$1" = "down" ]; then
     # for down services nginx must be the last
-    services=(paveltrujillo.info absolutehandymanservices.com mydeskweb.com quenchinnovations.net nginx)
+    services=$(echo ${services[@]}  | tac -s ' ')
 fi
 for service in ${services[@]}; do
     serverName="${service%.*}"
@@ -61,12 +71,16 @@ for service in ${services[@]}; do
     else
         environmentFile=$service.env
     fi
-    echo "turn $1 service $serverName using $environmentFile"
     cd $homedir/$serverName
+    if [[ -f "Dockerfile"  && "$1" = "up" ]]; then
+        buildOption="--build"
+    fi
     
     if [[ -f $environmentFile ]]; then
+        echo "turn $1 service $serverName using $environmentFile"
         docker-compose --env-file $environmentFile $action $buildOption
     else
+        echo "NO environment file"
         docker-compose $action $buildOption
     fi
 done
