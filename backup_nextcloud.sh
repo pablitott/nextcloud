@@ -129,6 +129,27 @@ function awsCmd(){
   echo $*
   docker run --rm -ti -v ~/.aws:/root/.aws -v $(pwd):/aws amazon/aws-cli $*
 }
+
+#Verify Bash version required
+if [[ $BASH_VERSINFO -lt 4 ]] ; then
+    echo "You need to update bash to version 4+"
+    exit 1
+fi
+
+# verify TAR utility is installed
+if [[ ! -a $(which tar) ]];
+then
+    echo "This script use tar command, install tar with sudo apt install tar"
+    exit 1
+fi
+
+# verify Docker utility is installed
+if [[ ! -a $(which docker) ]];
+then
+    echo "This script use tar command, install docker"
+    exit 1
+fi
+
 #define global variables
 if [ -z "$HOMEDIR" ] ; then
     echo "HOMEDIR is not defined, please define HOMEDIR accordingly"

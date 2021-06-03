@@ -8,25 +8,40 @@
 ###################################################################
 
 # Global variables
-services="nginx paveltrujillo.info absolutehandymanservices.com questinnovations.net mydeskweb.com quenchinnovations.net"
-if [[ "$1" = "up" ]]; then
-    action="up -d"
-else
-    action=$1
-fi
-if [ -z "$2" ] ; then
-    # echo "no NICKNAME is defined for this computer"
-    # echo "you can either define a NICKNAME variable or"
-    echo "specify the environment as <local> or <production> as a second argument"
+# list of services to turn on/off
+if [[ $BASH_VERSINFO -lt 4 ]] ; then
+    echo "You need to update bash to version 4+"
     exit 1
-elif [[ "$2" = "local" || "$2" = "production" ]]; then
+fi
+
+if [[ $# < 2 ]]
+then
+    printf "Arguments error: syntax is:\n\tdocker-compose-start.sh <action> <environment>\n"
+    printf "\twhere: action can be up or down\n"
+    printf "\tEnvironment: Local/production\n" 
+    exit 1
+fi
+
+case $1 in
+    "up") action="up -d";;
+    "down") action="down";;
+    *) echo "Invalid option $1 options must be up/down"
+    exit 1;;
+esac
+
+if [[ "$2" = "local" || "$2" = "production" ]]
+then
     environment=$2
     echo "environment: $2" 
 else
     echo "specify either <local> or <production> environments"
     exit 1
 fi
-echo "action: $action $environment"
+exit 0
+services="nginx paveltrujillo.info absolutehandymanservices.com questinnovations.net mydeskweb.com quenchinnovations.net"
+
+echo "action: $action"
+echo "Environment: $environment"
 
 #check core service status
 coreName=$(docker ps --filter name="nginx-proxy" --format {{.Names}})
