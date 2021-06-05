@@ -42,7 +42,7 @@
 
 ![Tux, Linux](../images/tux.png)
 
-## Useful nextcloud commands to use in docker
+## Useful docker commands to use in docker
 
 Stop the container(s) using the following command
 
@@ -74,6 +74,35 @@ Restart the containers using the following command:
 ```
    docker-compose up -d
 ```
+
+## To enable Build-kit bulds
+```
+DOCKER_BUILDKIT=1 docker build -t questinnovations .
+to show the build plan for docker images, I think is useful for debug
+[Docker buildkit](https://docs.docker.com/develop/develop-images/build_enhancements/)
+```
+ => [internal] load build definition from Dockerfile                                            0.1s
+ => transferring dockerfile: 32B                                                             0.0s
+ => [internal] load .dockerignore                                                               0.1s
+ => => transferring context: 2B                                                                 0.0s
+ => [internal] load metadata for docker.io/library/nginx:latest                                 0.0s
+ => [1/4] FROM docker.io/library/nginx                                                          0.0s
+ => [internal] load build context                                                               0.1s
+ => => transferring context: 3.12kB                                                             0.1s
+ => CACHED [2/4] COPY ./source/ /usr/share/nginx/html/                                          0.0s
+ => CACHED [3/4] RUN chown www-data:www-data -R /usr/share/nginx/html/                          0.0s
+ => CACHED [4/4] RUN ls -la -r /usr/share/nginx/html/*                                          0.0s
+ => exporting to image                                                                          0.1s
+ => => exporting layers                                                                         0.0s
+ => => writing image sha256:084297ca92ad8c37449d7ea0a801bbd034d2ce38f7a5a42951f54ba3bb4566b1    0.0s
+ => => naming to docker.io/library/questinnovations                                             0.0s
+```
+
+## To create an Image
+> docker build -t questinnovations .
+
+## To carete a container from an existing image
+> docker run -d -p 80:80 --name questinnovations.local questinnovations
 
 ### save docker images [docker save image](https://docs.docker.com/engine/reference/commandline/save/)
 
