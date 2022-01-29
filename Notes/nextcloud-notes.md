@@ -22,6 +22,7 @@ RUN sed -E -i -e 's/upload_max_filesize = 2M/upload_max_filesize = 16G/' /usr/lo
 [How to upgrade nextcloud manually](https://docs.nextcloud.com/server/latest/admin_manual/maintenance/manual_upgrade.html)
 ### change data attributes
 ```
+ sudo chown -R www-data:www-data /nextcloud/mydeskweb.com/
  sudo find /nextcloud/mydeskweb.com/ -type d -exec chmod 755 {} \;
  sudo find /nextcloud/mydeskweb.com/ -type f -exec chmod 740 {} \;
 
@@ -39,7 +40,7 @@ docker exec -it mariadb-quenchinnovations mysql -uroot -ptoor
 ```
 docker-compose exec -u www-data quenchinnovations php occ files:scan admin
 ```
->  
+>
 >  docker exec -u www-data quenchinnovations php occ maintenance:mode --off
 >  docker exec -u www-data quenchinnovations php occ files:scan --all
 >  docker exec -u www-data quenchinnovations php occ files:cleanup
@@ -47,7 +48,7 @@ docker-compose exec -u www-data quenchinnovations php occ files:scan admin
 List of users
 >  docker exec -u www-data quenchinnovations php occ user:list
 Reset password
-> docker exec -u www-data quenchinnovations php occ user:resetpassword <user name> 
+> docker exec -u www-data quenchinnovations php occ user:resetpassword <user name>
 ```
 
 ### change nextcloud config values using occ
@@ -63,7 +64,7 @@ after migration or restore is util to run
 > cd /home/ubuntu/nextcloud
 > docker exec -u www-data mydeskweb.local php occ files:scan <br/>
 > docker exec -u www-data mydeskweb.local php occ files:cleanup <br/>
-> docker exec -u www-data mydeskweb.local php occ user:resetpassword admin </br>
+> docker exec -i -u www-data mydeskweb.local php occ user:resetpassword admin </br>
 > docker exec -u www-data quenchinnovations.local php occ user:list
 > docker exec -u www-data quenchinnovations.net php occ user:list
 
@@ -82,6 +83,6 @@ Reset password:
   docker exec -it nextcloud sudo -u abc php /config/www/nextcloud/occ upgrade
 3. run
   docker exec -it nextcloud sudo -u abc php /config/www/nextcloud/occ maintenance:mode --off
-  
+
 ```
 

@@ -55,7 +55,7 @@ function occCmd(){
 }
 #====================================================================
 function awsCmd(){
-  amazon/aws-cli is a container with amazon commands
+#  amazon/aws-cli is a container with amazon commands
   echo $*
   docker run --rm -ti -v ~/.aws:/root/.aws -v $(pwd):/aws amazon/aws-cli $*
 }
@@ -165,7 +165,7 @@ FOLDERS_DATA_BACKUP=(
 "$NEXTCLOUD_HTTP_ROOT"
 )
 
-occCmd maintenance:mode --on | tee -a $logfile
+occCmd maintenance:mode --on -q | tee -a $logfile
 
 # removeFolder "$BACKUP_REPOSITORY"
 createFolder "$BACKUP_REPOSITORY"

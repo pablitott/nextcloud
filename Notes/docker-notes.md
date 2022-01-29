@@ -33,14 +33,14 @@
       - NEXTCLOUD_ADMIN_PASSWORD=**************
       - MYSQL_DATABASE=db
       - MYSQL_USER
-      - MYSQL_PASSWORD 
+      - MYSQL_PASSWORD
       - MYSQL_HOST
 
     restart: unless-stopped
 
 ```
 
-![Tux, Linux](../images/tux.png)
+![Tux, Linux](images/tux.png)
 
 ## Useful nextcloud commands to use in docker
 
@@ -79,7 +79,7 @@ Restart the containers using the following command:
 
 ```
 docker save --output [tar image name] [docker image to save]
-docker save --output 
+docker save --output
 ```
 
 ### load docker images [docker load images](https://docs.docker.com/engine/reference/commandline/load/)
@@ -123,7 +123,7 @@ docker exec -i mariadb-mydeskweb.com mysql -unextcloud -pdb-password mydeskweb <
     $ docker exec --user www-data CONTAINER_ID php occ
     $ docker exec --user www-data nextcloud-mydeskweb.com php occ config:system:get trusted_domains
         or for docker-compose:
-    $ docker-compose exec --user www-data nextcloud-mydeskweb.com php 
+    $ docker-compose exec --user www-data nextcloud-mydeskweb.com php
 ```
 
 ### renew ssh certificates
@@ -160,7 +160,7 @@ CONTAINER ID        IMAGE                                    COMMAND            
 [...]
    $ docker exec -it nextcloud-proxy bash
    # vi /etc/nginx/nginx.conf
-or 
+or
    $ docker exec -it nextcloud-proxy vi /etc/nginx/nginx.conf
 
 Then:
