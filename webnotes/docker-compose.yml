@@ -1,0 +1,33 @@
+#============================================================
+# TODO: create a dev barnch and make adjustments there
+#
+#============================================================
+version: '3.2' 
+
+services:
+
+  nginx:
+    image: nginx
+    container_name: ${CONTAINER_NAME}
+    networks: 
+      default:
+    expose:
+      - 80
+      - 443
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST},www.${VIRTUAL_HOST}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST},www.${VIRTUAL_HOST}
+      - LETSENCRYPT_SINGLE_DOMAIN_CERTS=true
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+    volumes:
+        - ${NEXTCLOUD_HTTP_ROOT}:/usr/share/nginx/html:ro
+        - /etc/localtime:/etc/localtime:ro
+    # depends_on:
+    #   - letsencrypt
+    #   - proxy
+    restart: unless-stopped
+
+networks: 
+  default:
+    external:
+      name: nginx_nextcloud_network
