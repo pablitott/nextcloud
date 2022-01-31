@@ -1,0 +1,25 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# vagrant settings, do not change folloing line
+Vagrant.configure("2") do |config|
+  # https://docs.vagrantup.com.
+  # boxes at https://vagrantcloud.com/search.
+  # config.vm.box       = "ubuntu/trusty64"     # is not working with docker provision
+  # config.vm.box       = 'hashicorp/bionic64'  # old version of docker-compose
+  config.vm.box         = "bento/ubuntu-20.04"  # https://app.vagrantup.com/bento/boxes/ubuntu-20.04
+  config.vm.box_version = "202112.19.0"
+  config.vm.define 'nextcloud' do |node|
+    node.vm.network        'forwarded_port', guest: 80, host: 8080
+    node.vm.provision      :shell, path: './bootstrap.sh', privileged: true, name: 'upgrade'
+    node.vm.provision      'docker'
+    node.vm.provision      'shell', inline: "apt install -y docker-compose", privileged: true, name: 'docker-compose'
+    node.vm.synced_folder  '~/mydeskweb/Develop/Docker/nextcloud', '/home/vagrant/nextcloud', owner: 'vagrant'
+    node.vm.hostname  = 'nextcloud.local'
+    node.vm.provider 'virtualbox' do |vb|
+        vb.name    = "nextcloud"
+        vb.memory  = 1024
+        vb.cpus    = 1
+    end
+  end
+end
