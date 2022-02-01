@@ -122,7 +122,7 @@ function dpStart(){
     unset services
     unset servers
     unset serversLocal
-    servers=($(cat services | grep -v '#' ))  # include domain
+    servers=($(cat services | grep -v '#' | awk '{print $1}' ))  # include domain
     services=$(awk -F'.' '{print $1}' services | grep -v '#' )
     if [[ -z $2 || $2 = "local" ]]; then
         environment="local"
