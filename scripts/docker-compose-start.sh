@@ -1,3 +1,4 @@
+# obsolete script is being replaced by dpStart in dpService.sh
 #!/bin/bash
 ##################################################################
 #   Syntax: docker-compose-start.sh <action> <environment>
@@ -17,7 +18,7 @@ if [ -z "$2" ] ; then
     exit 1
 elif [[ "$2" = "local" || "$2" = "production" ]]; then
     environment=$2
-    echo "environment: $2" 
+    echo "environment: $2"
 else
     echo "specify either <local> or <production> environments"
     exit 1
@@ -56,14 +57,14 @@ else
 fi
 for service in ${services[@]}; do
     serverName="${service%.*}"
-    if [ "$environment" = "local" ]; then 
+    if [ "$environment" = "local" ]; then
         environmentFile=$serverName.local.env
     else
         environmentFile=$service.env
     fi
     echo "turn $1 service $serverName using $environmentFile"
     cd "$homedir/$serverName"
-    
+
     if [[ -f $environmentFile ]]; then
         docker-compose --env-file $environmentFile $action $buildOption
     else
