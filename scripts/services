@@ -1,6 +1,6 @@
-webnotes.me
-mydeskweb.com
-quenchinnovations.net
-paveltrujillo.info
-#questinnovations.net
-#absolutehandymanservices.com
+webnotes.me nginx
+#mydeskweb.com   nginx
+#quenchinnovations.net nextcloud
+paveltrujillo.info nextcloud
+questinnovations.net nginx
+#absolutehandymanservices.com nginx
