@@ -13,8 +13,8 @@ Vagrant.configure("2") do |config|
     node.vm.network        'forwarded_port', guest: 80, host: 8080
     node.vm.provision      :shell, path: './bootstrap.sh', privileged: true, name: 'upgrade'
     node.vm.provision      'docker'
-    node.vm.provision      'shell', inline: "apt install -y docker-compose", privileged: true, name: 'docker-compose'
-    node.vm.synced_folder  '~/mydeskweb/Develop/Docker/nextcloud', '/home/vagrant/nextcloud', owner: 'vagrant'
+    node.vm.provision      :shell, inline: "apt install -y docker-compose", privileged: true, name: 'docker-compose'
+    node.vm.synced_folder  '../', '/home/vagrant/nextcloud', owner: 'vagrant'
     node.vm.hostname  = 'nextcloud.local'
     node.vm.provider 'virtualbox' do |vb|
         vb.name    = "nextcloud"
