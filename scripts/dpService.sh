@@ -81,7 +81,7 @@ function dpTurn(){
         echo "$serverName will be $action"
         docker-compose --env-file $environmentFile $action
     else
-        docker-compose $action
+        CONTAINER_NAME=$serverName docker-compose $action
     fi
     cd $currentpwd
 
@@ -158,19 +158,19 @@ function dpStart(){
         fi
     fi
 
-    for service in ${services[@]}; do
-        service="${service%.*}"
+    for server in ${servers[@]}; do
+        service="${server%.*}"
         if [ "$environment" = "local" ]; then
             environmentFile=$service.local.env
         else
             environmentFile=$domain.env
         fi
-        echo "turn $1 service $service using $environmentFile"
         cd "$homedir/$service"
         if [[ -f $environmentFile ]]; then
+            echo "turn $1 service $service using $environmentFile"
             docker-compose --env-file $environmentFile $action $buildOption
         else
-            docker-compose $action $buildOption
+            CONTAINER_NAME=$server docker-compose $action
         fi
     done
     cd $currentdir
