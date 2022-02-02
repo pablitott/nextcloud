@@ -6,6 +6,25 @@
 #=======================================================#
 # Remove an element                                     #
 #=======================================================#
+# readonly _color_grey_="\e[30m"
+# readonly _color_red_="\e[31m"
+# readonly _color_green_="\e[32m"
+# readonly _color_yellow_="\e[33m"
+# readonly _color_blue_="\e[0;34m"
+# readonly _color_purple_="\e[35m"
+# readonly _color_cyan_="\e[36m"
+# readonly _color_white_="\e[37m"
+# readonly _color_reset_="\e[0m"
+#=================================================
+function echoError(){
+  echo -e "\t\e[31m$1\e[0m"
+}
+function echoWarning(){
+   echo -e "\t\e[33m$1\e[0m"
+}
+function echoSuccess(){
+    echo -e "\e[32m$1\e[0m"
+}
 function ArrayRemove(){
     ArrayLenght=${#servers[@]}
     # remove 3rd element
@@ -37,25 +56,30 @@ function dms(){ docker images --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}
 #=======================================================#
 function dpTurn(){
     if [ -z $1 ]; then
-        echo "Syntax error: Paramneters missed"
-        echo "turn-docker <Server Name> <action>"
-        echo "e.g. nextcloud-set webnotes.local up"
-        echo "e.g. nextcloud-set webnotes.local down"
+        echoError "Syntax error: Parameters missed"
+        echoWarning "turn-docker <Server Name> <action>"
+        echoWarning "e.g. nextcloud-set webnotes.local up" 
+        echoWarning "e.g. nextcloud-set webnotes.local down"
         return 1
     fi
     if [ -z $2 ]; then
-        echo "Syntax error: Action missed"
-        echo "turn-docker <Server Name> <action>"
-        echo "e.g. nextcloud-set webnotes.local up"
-        echo "e.g. nextcloud-set webnotes.local down"
+        echoError "Syntax error: Action missed"
+        echoWarning "turn-docker <Server Name> <action>"
+        echoWarning "e.g. nextcloud-set webnotes.local up" 
+        echoWarning "e.g. nextcloud-set webnotes.local down"
+        return 1
+    fi
+    check the full name is provided
+    if [ -z $domain ]; then
+        echoError  "Full server name must be provided e.g. webnotes.me or webnotes.local"
         return 1
     fi
     options="up down stop pause unpause"
     action=$2
     [[ $options =~ (^| )$action($| ) ]] && isValid=1 || isValid=0
     if [ $isValid != 1 ]; then
-        echo "Error: action \"$action\" is invalid"
-        echo "valid actions: $options"
+        echoError "Error: action \"$action\" is invalid"
+        echoWarning "valid actions: $options"
     fi
     serverName=$1
     serviceName="${serverName%.*}"   # same as serverName with no extension
@@ -68,8 +92,8 @@ function dpTurn(){
     servicesName=$(docker ps --format {{.Names}} )
     serviceStatus=$(docker ps --filter name="$serverName" --format {{.Names}})
     if [[ -z $serviceStatus && $action = 'down' ]]; then
-        echo "Service for \"$serverName\" does not exists or is down"
-        echo "Try dpStatus to check the status"
+        echoError "Service for \"$serverName\" does not exists or is down"
+        echoWarning "Try dpStatus to check the status"
         return 1
     fi
     currentpwd=$PWD
@@ -78,7 +102,6 @@ function dpTurn(){
     cd "$homedir/$serviceName"
 
     if [[ -f $environmentFile ]]; then
-        echo "$serverName will be $action"
         docker-compose --env-file $environmentFile $action
     else
         CONTAINER_NAME=$serverName docker-compose $action
@@ -135,6 +158,7 @@ function dpStart(){
     fi
 
     nLenght=${#servers[@]}
+    
     if [[ -z $1 || $1 = "up" ]]; then
         action="up -d"
         # include nginx at the begining of the list
