@@ -10,7 +10,8 @@ Vagrant.configure("2") do |config|
   config.vm.box         = "bento/ubuntu-20.04"  # https://app.vagrantup.com/bento/boxes/ubuntu-20.04
   config.vm.box_version = "202112.19.0"
   config.vm.define 'nextcloud' do |node|
-    node.vm.network        'forwarded_port', guest: 80, host: 8080
+    node.vm.network        'forwarded_port', guest: 80,  host: 8080
+    node.vm.network        'forwarded_port', guest: 443, host: 443
     node.vm.provision      :shell, path: './bootstrap.sh', privileged: true, name: 'upgrade'
     node.vm.provision      'docker'
     node.vm.provision      :shell, inline: "apt install -y docker-compose", privileged: true, name: 'docker-compose'
