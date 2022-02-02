@@ -11,8 +11,10 @@ where site name is the .local or .com | .net
 > environment file: .env
 
 To Create the containers use following command
-> docker-compose 
+> docker-compose --env-file wordpress.local.env up -d
 
+To shutdown the website
+docker-compose --env-file wordpress.local.env down
 
 file attributes for worpress HTML:
 ```
@@ -22,9 +24,11 @@ sudo find /wordpress/absolutehandymanservices.local -type f -exec chmod 644 {} \
 ```
 
 To rebuild the containers you can use the rebuild-wordpress.sh, but running following command is enough
-> docker-compose down --volumes
+> docker-compose --env-file wordpress.local.env down --volumes
 
 above command stop, delete containers and the volumes, allow to start the project from scratch
 
 
 TODO: change the container-name in docker-compose file, remember the volume will be deleted
+
+at this time password: JvY%!x1wT!&gXlMoYu
