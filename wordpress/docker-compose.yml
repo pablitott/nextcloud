@@ -53,6 +53,7 @@ services:
     ports:
       - 80
       - 443
+    env_file: wordpress.local.env
     environment:
       - VIRTUAL_HOST=$VIRTUAL_HOST,www.$VIRTUAL_HOST
       - LETSENCRYPT_HOST=$VIRTUAL_HOST,www.$VIRTUAL_HOST

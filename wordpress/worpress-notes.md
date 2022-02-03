@@ -10,6 +10,14 @@ where site name is the .local or .com | .net
 > NICKNAME=local <br/>
 > environment file: .env
 
+Permissions
+````bash
+sudo chown -R bitnami:daemon TARGET
+sudo find TARGET -type d -exec chmod 775 {} \;
+sudo find TARGET -type f -exec chmod 664 {} \;
+sudo chmod 640 TARGET/wp-config.php
+````
+
 To Create the containers use following command
 > docker-compose --env-file wordpress.local.env up -d
 
@@ -31,4 +39,4 @@ above command stop, delete containers and the volumes, allow to start the projec
 
 TODO: change the container-name in docker-compose file, remember the volume will be deleted
 
-at this time password: JvY%!x1wT!&gXlMoYu
+at this time password: qwuEB^Fvofo!O4zyA^

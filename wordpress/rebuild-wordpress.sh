@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Remove wordpress docker images
-docker-compose down
+docker-compose --env-file wordpress.local.env down
 # docker rm db
 # docker rm wordpress
 # docker rm webserver
