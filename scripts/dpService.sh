@@ -16,6 +16,12 @@
 # readonly _color_white_="\e[37m"
 # readonly _color_reset_="\e[0m"
 #=================================================
+# todo: tempral user of variables
+export NEXTCLOUD_HTTP_ROOT="/nextcloud"
+export NEXTCLOUD_HTTP_WWW="$NEXTCLOUD_HTTP_ROOT/www"
+export AWS_S3_ROOT="s3://s3quenchinnovations/backups"
+export HTTP_USER='www-data'
+
 function echoError(){
   echo -e "\t\e[31m$1\e[0m"
 }
@@ -57,7 +63,7 @@ function dms(){ docker images --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}
 function dpTurn(){
     if [ -z $1 ]; then
         echoError "Syntax error: Parameters missed"
-        echoWarning "turn-docker <Server Name> <action>"
+        echoWarning "dpTurn <Server Name> <action>"
         echoWarning "e.g. nextcloud-set webnotes.local up" 
         echoWarning "e.g. nextcloud-set webnotes.local down"
         return 1
@@ -69,7 +75,8 @@ function dpTurn(){
         echoWarning "e.g. nextcloud-set webnotes.local down"
         return 1
     fi
-    check the full name is provided
+    # check the full name is provided
+    domain=$( echo $1 | awk -F "." '{ print $2 }' )
     if [ -z $domain ]; then
         echoError  "Full server name must be provided e.g. webnotes.me or webnotes.local"
         return 1
@@ -199,4 +206,103 @@ function dpStart(){
     done
     cd $currentdir
 
+}
+#=======================================================#
+#                 dpRestore                             #
+#-------------------------------------------------------#
+# Restore services files                                #
+# Syntax:  dprestore <service name>                     #
+#                                                       #
+#  TODO: extent to restore db data with the files       #
+#                                                       #
+#=======================================================#
+function dpRestore(){
+    if [ -z $1 ]; then
+        echoError "Syntax error: Parameters missed"
+        echoWarning "dpRestore <Server Name> <action>"
+        echoWarning "e.g. nextcloud-set webnotes.local up" 
+        echoWarning "e.g. nextcloud-set webnotes.local down"
+        return 1
+    fi
+    service=$1
+    remove=$2
+    echo "remove: $remove"
+    echo "service: $service"
+
+    serviceRoot=$( echo $1 | awk -F "." '{ print $1 }' )
+    domain=$( echo $1 | awk -F "." '{ print $2 }' )
+    # in s3 folder name has no domain
+    s3Folder=$AWS_S3_ROOT/$serviceRoot/
+    # Local folder is full Name
+    localFolder=$NEXTCLOUD_HTTP_WWW/$service
+    echo "folder: $localFolder"
+    #change the owner of the HTTP folder
+    if [[ -d $localFolder ]]; then
+        if [[ ! -z $2 ]]; then 
+            echo "Removing $localFolder"
+            sudo rm -r $localFolder
+            sudo mkdir -p $localFolder
+        else
+            echoError "Folder $localFolder exists, delete folder before restore"
+            return 1
+        fi
+    else
+        sudo mkdir -p $localFolder
+    fi
+    source=$AWS_S3_ROOT/$domain/$serviceRoot/$serviceRoot.tar
+    target=$NEXTCLOUD_HTTP_WWW/$service
+
+    echo "source: $source"
+    echo "target: $target"
+    echo $source
+    echo $target 
+    
+    dpTurn $service down
+    aws s3 cp $source ./$serviceRoot.tar
+    echo "error: $?"
+    sudo tar -xvf ./$serviceRoot.tar -C $target .
+
+    #change the ownership to HTTP_USER
+    sudo chown -R $HTTP_USER:$HTTP_USER $localFolder
+
+    #Change the folder/file permissions
+    sudo find $localFolder -type f -exec chmod 774 {} \;
+    rm -f ./$serviceRoot.tar
+
+    # turn up the service
+    dpTurn $service up
+    return 0
+}
+function dpBackup(){
+    if [ -z $1 ]; then
+        echoError "Syntax error: Parameters missed"
+        echoWarning "dpRestore <Server Name> <action>"
+        echoWarning "e.g. nextcloud-set webnotes.local up" 
+        echoWarning "e.g. nextcloud-set webnotes.local down"
+        return 1
+    fi
+    service=$1
+    serviceRoot=$( echo $1 | awk -F "." '{ print $1 }' )
+    domain=$( echo $1 | awk -F "." '{ print $2 }' )
+    # AWS_S3_STORE="$AWS_S3_ROOT/$domain"
+
+    # in s3 folder name has no domain
+    S3FOLDER=$AWS_S3_ROOT/$domain
+    # Local folder is full Name
+    localFolder=$NEXTCLOUD_HTTP_WWW/$service
+    echo $localFolder
+
+    sudo tar -cvf /tmp/$serviceRoot.tar -C $NEXTCLOUD_HTTP_WWW/$service .
+    aws s3 cp /tmp/$serviceRoot.tar $S3FOLDER/$serviceRoot/
+    echo backup done
+    return 0
+    #     sudo tar -cvf /tmp/paveltrujillo.tar -C /nextcloud/www/paveltrujillo.local .
+    #         no sudo tar -cjf /tmp/paveltrujillo.bz2 -C /nextcloud/www/paveltrujillo.local .
+    # compress
+    #     sudo tar -cvf /tmp/paveltrujillo.tar -C /nextcloud/www/paveltrujillo.local .
+    # list
+    #     sudo tar -tvf /tmp/paveltrujillo.bz2
+    # uncompress
+    #     sudo mkdir /tmp/paveltrujillo.info
+    #     sudo tar -xvf /tmp/paveltrujillo.tar -C /tmp/paveltrujillo.info .
 }
