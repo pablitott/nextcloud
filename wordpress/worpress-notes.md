@@ -27,8 +27,11 @@ docker-compose --env-file wordpress.local.env down
 file attributes for worpress HTML:
 ```
 sudo chown -R www-data:www-data /wordpress/absolutehandymanservices.local
+standard
 sudo find /wordpress/absolutehandymanservices.local -type d -exec chmod 0755 {} \;
-sudo find /wordpress/absolutehandymanservices.local -type f -exec chmod 644 {} \;
+
+working on local host
+sudo find /wordpress/absolutehandymanservices.local -type f -exec chmod 747 {} \;
 ```
 
 To rebuild the containers you can use the rebuild-wordpress.sh, but running following command is enough
