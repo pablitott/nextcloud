@@ -17,11 +17,12 @@
 # readonly _color_reset_="\e[0m"
 #=================================================
 # todo: tempral user of variables
-export NEXTCLOUD_HTTP_ROOT="/nextcloud"
-export NEXTCLOUD_HTTP_WWW="$NEXTCLOUD_HTTP_ROOT/www"
-export AWS_S3_ROOT="s3://s3quenchinnovations/backups"
-export HTTP_USER='www-data'
-
+export _NEXTCLOUD_ROOT_FOLDER="/nextcloud"
+export _NEXTCLOUD_WWW_FOLDER="$_NEXTCLOUD_ROOT_FOLDER/www"
+export _AWS_S3_ROOT="s3://s3quenchinnovations/backups"
+export _HTTP_USER='www-data'
+export _HOME_DIR="$HOME/nextcloud"
+unset build
 function echoError(){
   echo -e "\t\e[31m$1\e[0m"
 }
@@ -30,6 +31,9 @@ function echoWarning(){
 }
 function echoSuccess(){
     echo -e "\e[32m$1\e[0m"
+}
+function echoNote(){
+    echo -e "\t\e[34m$1\e[0m"
 }
 function ArrayRemove(){
     ArrayLenght=${#servers[@]}
@@ -46,13 +50,22 @@ function ArrayAdd(){
 # Show the status for all containers                    #
 # Syntax:  dps                                          #
 #=======================================================#
-function dps(){ docker ps --format "table {{.ID}}\t{{.Names}}\t{{.State}}\t{{.Size}}\t{{.Image}}"; }
+function dps(){ docker ps $* --format "table {{.ID}}\t{{.Names}}\t{{.State}}\t{{.Size}}\t{{.Image}}"; }
 #=======================================================#
 #                                                       #
 # Show the status for all images                        #
 # Syntax:  dms                                          #
 #=======================================================#
-function dms(){ docker images --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}"; }
+function dms(){ docker images $* --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}"; }
+function dpCore(){
+    if [[ $1=="up" ]]; then action="up -d"; else action="$1"; fi
+    currentdir=$PWD
+    cd "$_HOME_DIR/nginx"
+    docker-compose $action
+    cd $currentdir
+    unset currentdir
+    unset action
+}
 #=======================================================#
 #                                                       #
 # turn up/down/pause/unpause                            #
@@ -64,15 +77,15 @@ function dpTurn(){
     if [ -z $1 ]; then
         echoError "Syntax error: Parameters missed"
         echoWarning "dpTurn <Server Name> <action>"
-        echoWarning "e.g. nextcloud-set webnotes.local up" 
-        echoWarning "e.g. nextcloud-set webnotes.local down"
+        echoWarning "e.g. dpTurn webnotes.local up" 
+        echoWarning "e.g. dpTurn webnotes.com down"
         return 1
     fi
     if [ -z $2 ]; then
         echoError "Syntax error: Action missed"
-        echoWarning "turn-docker <Server Name> <action>"
-        echoWarning "e.g. nextcloud-set webnotes.local up" 
-        echoWarning "e.g. nextcloud-set webnotes.local down"
+        echoWarning "dpTurn <Server Name> <action>"
+        echoWarning "e.g. dpTurn webnotes.local up" 
+        echoWarning "e.g. dpTurn webnotes.com down"
         return 1
     fi
     # check the full name is provided
@@ -95,7 +108,6 @@ function dpTurn(){
     fi
     
     # show services status
-    # docker ps --format "table {{.Names}}\t{{.State}}"
     servicesName=$(docker ps --format {{.Names}} )
     serviceStatus=$(docker ps --filter name="$serverName" --format {{.Names}})
     if [[ -z $serviceStatus && $action = 'down' ]]; then
@@ -154,6 +166,7 @@ function dpStart(){
         echoWarning "dpStart <action> <location>"
         echoWarning "e.g. dpStart up local" 
         echoWarning "e.g. dpStart up aws"
+        echoNote "aws is the production server AWS"
         return 1
     fi
     if [ -z $2 ]; then
@@ -161,6 +174,7 @@ function dpStart(){
         echoWarning "dpStart <action> <location>"
         echoWarning "e.g. dpStart up local" 
         echoWarning "e.g. dpStart up aws"
+        echoNote "aws is the production server AWS"
         return 1
     fi
     unset services
@@ -189,18 +203,9 @@ function dpStart(){
         servers=( "${servers[@]:0:nLenght}" "nginx"  )
     fi
 
-    # echo ${servers[@]}
-    # return 0
     currentdir=$PWD
     homedir="/home/vagrant/nextcloud"
     buildOption=""
-    # awscliImage=$(docker images amazon/aws-cli -q)
-    # if [ "$1" = "up" ] && [ -f "Dockerfile" ]; then
-    #     buildOption="--build"
-    #     if [[ -z $awscliImage ]]; then
-    #         docker pull amazon/aws-cli
-    #     fi
-    # fi
 
     for server in ${servers[@]}; do
         service="${server%.*}"
@@ -241,9 +246,9 @@ function dpRestore(){
     serviceRoot=$( echo $1 | awk -F "." '{ print $1 }' )
     domain=$( echo $1 | awk -F "." '{ print $2 }' )
     # in s3 folder name has no domain
-    s3Folder=$AWS_S3_ROOT/$serviceRoot/
+    s3Folder=$_AWS_S3_ROOT/$serviceRoot/
     # Local folder is full Name
-    localFolder=$NEXTCLOUD_HTTP_WWW/$service
+    localFolder=$_NEXTCLOUD_WWW_FOLDER/$service
     echo "folder: $localFolder"
     #change the owner of the HTTP folder
     if [[ -d $localFolder ]]; then
@@ -258,8 +263,8 @@ function dpRestore(){
     else
         sudo mkdir -p $localFolder
     fi
-    source=$AWS_S3_ROOT/$domain/$serviceRoot/$serviceRoot.tar
-    target=$NEXTCLOUD_HTTP_WWW/$service
+    source=$_AWS_S3_ROOT/$domain/$serviceRoot/$serviceRoot.tar
+    target=$_NEXTCLOUD_WWW_FOLDER/$service
 
     echo "source: $source"
     echo "target: $target"
@@ -271,11 +276,11 @@ function dpRestore(){
     echo "error: $?"
     sudo tar -xvf ./$serviceRoot.tar -C $target .
 
-    #change the ownership to HTTP_USER
-    sudo chown -R $HTTP_USER:$HTTP_USER $localFolder
+    #change the ownership to _HTTP_USER
+    sudo chown -R $_HTTP_USER:$_HTTP_USER $localFolder
 
     #Change the folder/file permissions
-    sudo find $localFolder -type f -exec chmod 774 {} \;
+   sudo find $localFolder -type f -exec chmod 774 {} \;
     rm -f ./$serviceRoot.tar
 
     # turn up the service
@@ -294,15 +299,15 @@ function dpBackup(){
     service=$1
     serviceRoot=$( echo $1 | awk -F "." '{ print $1 }' )
     domain=$( echo $1 | awk -F "." '{ print $2 }' )
-    # AWS_S3_STORE="$AWS_S3_ROOT/$domain"
+    # AWS_S3_STORE="$_AWS_S3_ROOT/$domain"
 
     # in s3 folder name has no domain
-    S3FOLDER=$AWS_S3_ROOT/$domain
+    S3FOLDER=$_AWS_S3_ROOT/$domain
     # Local folder is full Name
-    localFolder=$NEXTCLOUD_HTTP_WWW/$service
+    localFolder=$_NEXTCLOUD_WWW_FOLDER/$service
     echo $localFolder
 
-    sudo tar -cvf /tmp/$serviceRoot.tar -C $NEXTCLOUD_HTTP_WWW/$service .
+    sudo tar -cvf /tmp/$serviceRoot.tar -C $_NEXTCLOUD_WWW_FOLDER/$service .
     aws s3 cp /tmp/$serviceRoot.tar $S3FOLDER/$serviceRoot/
     echo backup done
     return 0
