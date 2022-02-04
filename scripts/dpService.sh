@@ -21,7 +21,8 @@ export _NEXTCLOUD_ROOT_FOLDER="/nextcloud"
 export _NEXTCLOUD_WWW_FOLDER="$_NEXTCLOUD_ROOT_FOLDER/www"
 export _AWS_S3_ROOT="s3://s3quenchinnovations/backups"
 export _HTTP_USER='www-data'
-export _HOME_DIR="$HOME/nextcloud"
+export _WORK_DIR="$HOME/nextcloud"
+
 unset build
 function echoError(){
   echo -e "\t\e[31m$1\e[0m"
@@ -60,7 +61,7 @@ function dms(){ docker images $* --format "table {{.ID}}\t{{.Repository}}\t{{.Ta
 function dpCore(){
     if [[ $1=="up" ]]; then action="up -d"; else action="$1"; fi
     currentdir=$PWD
-    cd "$_HOME_DIR/nginx"
+    cd "$_WORK_DIR/nginx"
     docker-compose $action
     cd $currentdir
     unset currentdir
@@ -180,7 +181,8 @@ function dpStart(){
     unset services
     unset servers
     unset serversLocal
-    services=$(awk -F'.' '{print $1}' services | grep -v '#' )
+    servicesFile="$_WORK_DIR/scripts/services"
+    services=$(awk -F'.' '{print $1}' $servicesFile | grep -v '#' )
     if [[ -z $2 || $2 = "local" ]]; then
         environment="local"
         servers=()
@@ -320,4 +322,21 @@ function dpBackup(){
     # uncompress
     #     sudo mkdir /tmp/paveltrujillo.info
     #     sudo tar -xvf /tmp/paveltrujillo.tar -C /tmp/paveltrujillo.info .
+}
+
+
+function dpKill(){
+    service=$1
+    unset projectImages
+    unset projectContainers
+    project="${service%.*}"
+    pwd=$PWD
+    cd "$_WORK_DIR/$project"
+    projectImages=$(docker-compose --env-file $project.local.env images -q)
+    projectContainers=$(docker-compose --env-file $project.local.env ps -q)
+    docker-compose --env-file $project.local.env kill
+    docker rm ${projectContainers}
+    docker rmi ${projectImages}
+    docker volume prune -f
+    cd $pwd
 }

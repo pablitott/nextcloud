@@ -14,7 +14,6 @@ services:
     image: mysql:8.0
     container_name: db
     restart: unless-stopped
-    env_file: wordpress.local.env
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
@@ -30,9 +29,8 @@ services:
     depends_on:
       - mysql
     image: wordpress:5.1.1-fpm-alpine
-    container_name: wordpress
+    container_name: $COMPOSE_PROJECT
     restart: unless-stopped
-    env_file: wordpress.local.env
     environment:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_USER: ${MYSQL_USER}
@@ -46,8 +44,8 @@ services:
   webserver:
     depends_on:
       - wordpress
-    image: nginx
-    container_name: webserver
+    image: nginx:1.15.12-alpine
+    container_name: nginx-$COMPOSE_SERVICE
     networks:
       default:
     ports:
