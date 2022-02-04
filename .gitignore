@@ -11,3 +11,4 @@ images/logo_bkp.png
 python/awsCredentials.txt
 lightsailNode/aws/**/*.*
 Vagrant/.vagrant/**
+.aws/**
