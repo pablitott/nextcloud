@@ -149,10 +149,23 @@ function dpStatus(){
 #                                                       #
 #=======================================================#
 function dpStart(){
+    if [ -z $1 ]; then
+        echoError "Syntax error: Parameters missed"
+        echoWarning "dpStart <action> <location>"
+        echoWarning "e.g. dpStart up local" 
+        echoWarning "e.g. dpStart up aws"
+        return 1
+    fi
+    if [ -z $2 ]; then
+        echoError "Syntax error: Parameters missed"
+        echoWarning "dpStart <action> <location>"
+        echoWarning "e.g. dpStart up local" 
+        echoWarning "e.g. dpStart up aws"
+        return 1
+    fi
     unset services
     unset servers
     unset serversLocal
-    servers=($(cat services | grep -v '#' | awk '{print $1}' ))  # include domain
     services=$(awk -F'.' '{print $1}' services | grep -v '#' )
     if [[ -z $2 || $2 = "local" ]]; then
         environment="local"
@@ -169,11 +182,11 @@ function dpStart(){
     if [[ -z $1 || $1 = "up" ]]; then
         action="up -d"
         # include nginx at the begining of the list
-        services=( "nginx" "${services[@]:0:nLenght}"   )
+        servers=( "nginx" "${servers[@]:0:nLenght}"   )
     else
         action=$1
         # Add nginx at the end of the list
-        services=( "${services[@]:0:nLenght}" "nginx" )
+        servers=( "${servers[@]:0:nLenght}" "nginx"  )
     fi
 
     # echo ${servers[@]}
@@ -181,21 +194,17 @@ function dpStart(){
     currentdir=$PWD
     homedir="/home/vagrant/nextcloud"
     buildOption=""
-    awscliImage=$(docker images amazon/aws-cli -q)
-    if [ "$1" = "up" ] && [ -f "Dockerfile" ]; then
-        buildOption="--build"
-        if [[ -z $awscliImage ]]; then
-            docker pull amazon/aws-cli
-        fi
-    fi
+    # awscliImage=$(docker images amazon/aws-cli -q)
+    # if [ "$1" = "up" ] && [ -f "Dockerfile" ]; then
+    #     buildOption="--build"
+    #     if [[ -z $awscliImage ]]; then
+    #         docker pull amazon/aws-cli
+    #     fi
+    # fi
 
     for server in ${servers[@]}; do
         service="${server%.*}"
-        if [ "$environment" = "local" ]; then
-            environmentFile=$service.local.env
-        else
-            environmentFile=$domain.env
-        fi
+        environmentFile=$service.$environment.env
         cd "$homedir/$service"
         if [[ -f $environmentFile ]]; then
             echo "turn $1 service $service using $environmentFile"
@@ -274,11 +283,12 @@ function dpRestore(){
     return 0
 }
 function dpBackup(){
+    # Note: Actually this script works only with www websites no Nextcloud yet
     if [ -z $1 ]; then
         echoError "Syntax error: Parameters missed"
-        echoWarning "dpRestore <Server Name> <action>"
-        echoWarning "e.g. nextcloud-set webnotes.local up" 
-        echoWarning "e.g. nextcloud-set webnotes.local down"
+        echoWarning "dpRestore <Server Name>"
+        echoWarning "e.g. nextcloud-set webnotes.local" 
+        echoWarning "e.g. nextcloud-set webnotes.me"
         return 1
     fi
     service=$1
