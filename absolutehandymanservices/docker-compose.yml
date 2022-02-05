@@ -29,7 +29,7 @@ services:
     depends_on:
       - mysql
     image: wordpress:5.1.1-fpm-alpine
-    container_name: $COMPOSE_PROJECT
+    container_name: $COMPOSE_SERVICE
     restart: unless-stopped
     environment:
       WORDPRESS_DB_HOST: db:3306
