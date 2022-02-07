@@ -58,6 +58,12 @@ function dps(){ docker ps $* --format "table {{.ID}}\t{{.Names}}\t{{.State}}\t{{
 # Syntax:  dms                                          #
 #=======================================================#
 function dms(){ docker images $* --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}"; }
+#=======================================================#
+#                                                       #
+# Turns up/down the core container nginx                #
+# Syntax:  dpCore <up>/<down>                           #
+#=======================================================#
+
 function dpCore(){
     if [[ $1=="up" ]]; then action="up -d"; else action="$1"; fi
     currentdir=$PWD
@@ -313,30 +319,64 @@ function dpBackup(){
     aws s3 cp /tmp/$serviceRoot.tar $S3FOLDER/$serviceRoot/
     echo backup done
     return 0
-    #     sudo tar -cvf /tmp/paveltrujillo.tar -C /nextcloud/www/paveltrujillo.local .
-    #         no sudo tar -cjf /tmp/paveltrujillo.bz2 -C /nextcloud/www/paveltrujillo.local .
-    # compress
-    #     sudo tar -cvf /tmp/paveltrujillo.tar -C /nextcloud/www/paveltrujillo.local .
-    # list
-    #     sudo tar -tvf /tmp/paveltrujillo.bz2
-    # uncompress
-    #     sudo mkdir /tmp/paveltrujillo.info
-    #     sudo tar -xvf /tmp/paveltrujillo.tar -C /tmp/paveltrujillo.info .
 }
-
-
+#=======================================================#
+#                 dpKill                                #
+#-------------------------------------------------------#
+# Kills all containers, images and                      #
+# volumes in a projects                                 #
+#                                                       #
+#  USE WITH EXTREME CAUTION                             #
+# Syntax:  dpKill <service name>                        #
+#                                                       #
+#=======================================================#
 function dpKill(){
+    echoWarning "\t   <<<WARNING>>>"
+    echoWarning "This script will kill and erase the whole components in a project $1"
+    echoWarning "containers/images, volumes will be erased"
+    echoWarning "it cannot be reverted"
+    continue='No'
+    read -p 'Continue? (only yes is accepted): ' continue
+    echo "continue \"$continue\""
     service=$1
+    project="${service%.*}"
+
+    if [[ $continue != 'yes' ]]; then return 1; fi
+    if [[ -d "$_WORK_DIR/$project" ]]; then
+        echoSuccess "Project $project folder exists continue"
+    else
+        echoError "project $project folder does not exist...Abort"
+        return 1
+    fi
     unset projectImages
     unset projectContainers
-    project="${service%.*}"
+    
     pwd=$PWD
     cd "$_WORK_DIR/$project"
-    projectImages=$(docker-compose --env-file $project.local.env images -q)
-    projectContainers=$(docker-compose --env-file $project.local.env ps -q)
-    docker-compose --env-file $project.local.env kill
+    domain=$( echo $service | awk -F "." '{ print $2 }' )
+    envFile=$project.$domain.env
+
+    if [[ -f $envFile ]]; then
+        projectImages=$(docker-compose --env-file $project.$domain.env images -q)
+        projectContainers=$(docker-compose --env-file $project.$domain.env ps -q)
+        docker-compose --env-file $project.local.env kill
+    else
+        projectImages=$(CONTAINER_NAME=$serverName docker-compose images -q)
+        projectContainers=$(CONTAINER_NAME=$serverName  docker-compose ps -q)
+        CONTAINER_NAME=$serverName docker-compose kill
+    fi
+    unset CONTAINER_NAME
+    coreImage=$(docker images nginx:latest --format {{.ID}} )
     docker rm ${projectContainers}
-    docker rmi ${projectImages}
+    for image in $projectImages; do
+        echo "image: $coreImage"
+        if [[ ! $image = $coreImage ]]; then
+            # TODO: Image is short while coreImage is long format
+            #       Match the strings
+            echo "removing: $image" 
+            docker rmi ${image}
+       fi
+    done
     docker volume prune -f
     cd $pwd
 }
