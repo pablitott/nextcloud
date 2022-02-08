@@ -1,38 +1,71 @@
-#===========================================================#
-# Pablo Trujillo                          02/01/2022        # 
-#                                                           #
-# Creates a new container for nginx web site                #
-# Define CONTAINER_NAME either as an encironment cariable   #
-# e.g. export CONTAINER_NAME=paveltrujillo.local            #
-# Or using the command:                                     #
-# CONTAINER_NAME=paveltrujillo.local docker-compose up -d   #
-#===========================================================#
-version: '3.2' 
+#################################################
+#
+# Source original: https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-docker-compose
+# Modified with existing scripts on ./nginx folder for nginx_nextcloud_network
+# 
+# rev. 1 Remove env_file section since file .env is loaded automatically
+# keep the file absolutehandymanservices.local.env for compatibility with nextcloud
+#
+##################################################
+version: '3'
 
 services:
-
-  nginx:
-    image: nginx
-    container_name: ${CONTAINER_NAME}
-    networks: 
+  mysql:
+    image: mysql:8.0
+    container_name: db-$COMPOSE_SERVICE
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - dbdata:/var/lib/mysql
+    command: '--default-authentication-plugin=mysql_native_password'
+    networks:
       default:
-    expose:
+
+  wordpress:
+    depends_on:
+      - mysql
+    image: wordpress:5.1.1-fpm-alpine
+    container_name: $COMPOSE_SERVICE
+    restart: unless-stopped
+    environment:
+      WORDPRESS_DB_HOST: db-${COMPOSE_SERVICE}:3306
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WORDPRESS_DB_NAME: ${DB_NAME}
+    volumes:
+      - $CONTAINER_HTTP_ROOT:/var/www/html
+    networks:
+      default:
+
+  webserver:
+    depends_on:
+      - wordpress
+    image: nginx:1.15.12-alpine
+    container_name: nginx-$COMPOSE_SERVICE
+    networks:
+      default:
+    ports:
       - 80
       - 443
     environment:
-      - VIRTUAL_HOST=${CONTAINER_NAME},www.${CONTAINER_NAME}
-      - LETSENCRYPT_HOST=${CONTAINER_NAME},www.${CONTAINER_NAME}
-      - LETSENCRYPT_SINGLE_DOMAIN_CERTS=true
-      - LETSENCRYPT_EMAIL="pablitott@gmail.com"
+      - VIRTUAL_HOST=$VIRTUAL_HOST,www.$VIRTUAL_HOST
+      - LETSENCRYPT_HOST=$VIRTUAL_HOST,www.$VIRTUAL_HOST
+      - LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL
     volumes:
-        - /nextcloud/www/${CONTAINER_NAME}:/usr/share/nginx/html:ro
-        - /etc/localtime:/etc/localtime:ro
-    # depends_on:
-    #   - letsencrypt
-    #   - proxy
+      - $CONTAINER_HTTP_ROOT:/var/www/html
+      - ./nginx-conf:/etc/nginx/conf.d
+      - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
 
-networks: 
+volumes:
+  wordpress:
+  dbdata:
+
+networks:
   default:
     external:
       name: nginx_nextcloud_network
