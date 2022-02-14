@@ -45,7 +45,6 @@ function ArrayAdd(){
     # remove 3rd element
     arr+=("new value")
 }
-
 #=======================================================#
 #                                                       #
 # Show the status for all containers                    #
@@ -63,8 +62,7 @@ function dms(){ docker images $* --format "table {{.ID}}\t{{.Repository}}\t{{.Ta
 # Turns up/down the core container nginx                #
 # Syntax:  dpCore <up>/<down>                           #
 #=======================================================#
-
-function dpCore(){
+function dpCoreTurn(){
     if [[ $1=="up" ]]; then action="up -d"; else action="$1"; fi
     currentdir=$PWD
     cd "$_WORK_DIR/nginx"
@@ -241,9 +239,9 @@ function dpStart(){
 function dpRestore(){
     if [ -z $1 ]; then
         echoError "Syntax error: Parameters missed"
-        echoWarning "dpRestore <Server Name> <action>"
-        echoWarning "e.g. nextcloud-set webnotes.local up" 
-        echoWarning "e.g. nextcloud-set webnotes.local down"
+        echoWarning "dpRestore <Server Name>"
+        echoWarning "e.g. dpRestore webnotes.local" 
+        echoWarning "e.g. dpRestore webnotes.local"
         return 1
     fi
     service=$1
@@ -295,6 +293,15 @@ function dpRestore(){
     dpTurn $service up
     return 0
 }
+#=======================================================#
+#                 dpBackup                             #
+#-------------------------------------------------------#
+# Restore services files                                #
+# Syntax:  dprBackup <service name>                     #
+#                                                       #
+#  TODO: extent to backup db data with the files       #
+#                                                       #
+#=======================================================#
 function dpBackup(){
     # Note: Actually this script works only with www websites no Nextcloud yet
     if [ -z $1 ]; then
