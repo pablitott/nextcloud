@@ -48,7 +48,7 @@ docker-compose exec -u www-data quenchinnovations php occ files:scan admin
 List of users
 >  docker exec -u www-data quenchinnovations php occ user:list
 Reset password
-> docker exec -u www-data quenchinnovations php occ user:resetpassword <user name>
+> docker exec -t -u www-data quenchinnovations php occ user:resetpassword <user name>
 ```
 
 ### change nextcloud config values using occ
