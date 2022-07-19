@@ -45,6 +45,8 @@ services:
     depends_on:
       - wordpress
     image: nginx:1.15.12-alpine
+    # image: nginx-proxy-edited
+    # build: ../nginx
     container_name: nginx-$COMPOSE_SERVICE
     networks:
       default:

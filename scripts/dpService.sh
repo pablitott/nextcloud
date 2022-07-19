@@ -1,4 +1,5 @@
 #!/bin/bash
+# use as: source dpService.sh
 #=======================================================#
 #                                                       #
 # Internal functions                                    #
@@ -186,14 +187,15 @@ function dpStart(){
     unset servers
     unset serversLocal
     servicesFile="$_WORK_DIR/scripts/services"
-    services=$(awk -F'.' '{print $1}' $servicesFile | grep -v '#' )
     if [[ -z $2 || $2 = "local" ]]; then
+        services=$(awk -F'.' '{print $1}' $servicesFile | grep -v '#' )
         environment="local"
         servers=()
         for service in ${services[@]}; do
             servers+="$service.local "
         done
     else
+        servers=$(awk '{print $1}' $servicesFile | grep -v '#' )
         environment=$2
     fi
 
@@ -210,17 +212,20 @@ function dpStart(){
     fi
 
     currentdir=$PWD
-    homedir="/home/vagrant/nextcloud"
+    homedir="/home/$USER/nextcloud"
     buildOption=""
-
+    echo $servers
     for server in ${servers[@]}; do
         service="${server%.*}"
-        environmentFile=$service.$environment.env
+        environmentFile=$server.env
+        echo "environmentFile=$environmentFile"
         cd "$homedir/$service"
+        echo "$homedir/$service"
         if [[ -f $environmentFile ]]; then
             echo "turn $1 service $service using $environmentFile"
             docker-compose --env-file $environmentFile $action $buildOption
         else
+            echo $server
             CONTAINER_NAME=$server docker-compose $action
         fi
     done
