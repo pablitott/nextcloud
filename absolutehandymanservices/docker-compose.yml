@@ -7,7 +7,7 @@
 # keep the file absolutehandymanservices.local.env for compatibility with nextcloud
 #
 ##################################################
-version: '3'
+version: '3.2'
 
 services:
   mysql:
@@ -48,12 +48,16 @@ services:
     container_name: nginx-$COMPOSE_SERVICE
     networks:
       default:
-    ports:
-      - 80
-      - 443
+    external_links: 
+      - nginx-proxy
+      - letsencrypt
+    # ports:
+    #   - 80
+    #   - 443
     environment:
       - VIRTUAL_HOST=$VIRTUAL_HOST,www.$VIRTUAL_HOST
       - LETSENCRYPT_HOST=$VIRTUAL_HOST,www.$VIRTUAL_HOST
+      - LETSENCRYPT_SINGLE_DOMAIN_CERTS=true
       - LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL
     volumes:
       - $CONTAINER_HTTP_ROOT:/var/www/html
