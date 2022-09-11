@@ -7,6 +7,7 @@
 #
 #=================================================================
 #               Important notes
+#  export HOMEDIR=~/nextcloud
 #  backup files preserve user rights
 #  list backup file using e.g.:
 #  tar -cvf nc_backup_1.tar ./nextcloud/quenchinnovations.net

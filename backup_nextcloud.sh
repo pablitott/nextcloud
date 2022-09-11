@@ -3,11 +3,13 @@
 #=================================================================
 #
 #                  Syntax
+#    excport HOMEDIR=/home/ubuntu/nextcloud
 #    ./backup_nextcloud.sh <serviceName>
 #    serviceName: quenchinnovations.net, quenchinnovations.local, mydeskweb.com, paveltrujillo.info, paveltrujillo.local
 #
 #=================================================================
 #               Important notes
+#  script variables are stored in backup_nextcloud.env
 #  backup files preserve user rights
 #  list backup file using e.g.:
 #  tar -cvf nc_backup_1.tar ./nextcloud/quenchinnovations.net
