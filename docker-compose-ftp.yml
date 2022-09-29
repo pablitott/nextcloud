@@ -8,17 +8,29 @@ services:
     container_name: pure-ftpd
     ports:
       - "21:21"
-      - "30000-30009:30000-30009"
-    volumes: # remember to replace /folder_on_disk/ with the path to where you want to store the files on the host machine
-      - "/folder_on_disk/data:/home/username/"
-      - "/folder_on_disk/passwd:/etc/pure-ftpd/passwd"
-# uncomment for ssl/tls, see https://github.com/stilliard/docker-pure-ftpd#tls
-      - "/nextcloud/ssl:/etc/ssl/private/"
+      - "30000-30009:30009-30009"
+    volumes:
+      # remember to replace /folder_on_disk/ with the path to where you want to store the files on the host machine
+      #      - "/folder_on_disk/data:/home/username/"
+      - /nextcloud/www/drawingmonos.com:/home/ftpusers/pavelt
+      - /nextcloud/ftpd/pwd:/etc/pure-ftpd/passwd
+      #- /nextcloud/www/paveltrujillo.info:/home/
+      #- "/etc/ssl/private/:/etc/pure-ftpd/passwd"
+      # uncomment for ssl/tls, see https://github.com/stilliard/docker-pure-ftpd#tls
+      - "/nextcloud/ftpd/certs//etc/ssl/private/"
     environment:
-      PUBLICHOST: "questinnovations.net"
-      FTP_USER_NAME: ptrujillo
-      FTP_USER_PASS: Ca11ista#2020!
-      FTP_USER_HOME: /home/ptrujillo
-# also for ssl/tls:
-#      ADDED_FLAGS: "--tls=2"
+      PUBLICHOST: "drawingmonos.com"
+      FTP_USER_NAME: pavelt
+
+      FTP_USER_PASS: batlink1977
+
+      FTP_USER_HOME: /home/ftpusers/pavelt
+      PURE_PASSWDFILE: /etc/pure-ftpd/passwd/pureftpd.passwd
+      # also for ssl/tls:
+      #ADDED_FLAGS: "--tls=2"
+      #TLS_USE_DSAPRAM: "true"
     restart: always
+networks:
+  default:
+    external:
+      name: nginx_nextcloud_network
