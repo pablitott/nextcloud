@@ -32,7 +32,33 @@ services:
     #   - proxy
     restart: unless-stopped
 
-networks: 
+  ftpd_server:
+    image: stilliard/pure-ftpd
+    container_name: pure-ftpd
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+    networks:
+       default:
+    volumes:
+      - /nextcloud/www/${CONTAINER_NAME}:/home/ftpusers/pavelt
+      - /nextcloud/ftpd/pwd:/etc/pure-ftpd/passwd
+      #- /nextcloud/www/paveltrujillo.info:/home/
+      #- "/etc/ssl/private/:/etc/pure-ftpd/passwd"
+      # uncomment for ssl/tls, see https://github.com/stilliard/docker-pure-ftpd#tls
+      - "/nextcloud/ftpd/certs:/etc/ssl/private/"
+    environment:
+      PUBLICHOST: ${CONTAINER_NAME}
+      FTP_USER_NAME: pavelt
+      FTP_USER_PASS: batlink1977
+      FTP_USER_HOME: /home/ftpusers/pavelt
+      PURE_PASSWDFILE: /etc/pure-ftpd/passwd/pureftpd.passwd
+      # also for ssl/tls:
+      ADDED_FLAGS: "--tls=1"
+      #TLS_USE_DSAPRAM: "true"
+    restart: always
+networks:
   default:
     external:
       name: nginx_nextcloud_network
+
