@@ -7,6 +7,8 @@
 # Or using the command:                                     #
 # CONTAINER_NAME=paveltrujillo.local docker-compose up -d   #
 #===========================================================#
+# http://geekyplatypus.com/dockerise-your-php-application-with-nginx-and-php7-fpm/
+
 version: '3.2' 
 
 services:
@@ -25,12 +27,18 @@ services:
       - LETSENCRYPT_SINGLE_DOMAIN_CERTS=true
       - LETSENCRYPT_EMAIL="pablitott@gmail.com"
     volumes:
-        - /nextcloud/www/${CONTAINER_NAME}:/usr/share/nginx/html:ro
+        - /nextcloud/www/${CONTAINER_NAME}:/usr/share/nginx/html
+        - ./nginx-conf:/etc/nginx/conf.d
         - /etc/localtime:/etc/localtime:ro
     # depends_on:
     #   - letsencrypt
     #   - proxy
     restart: unless-stopped
+  php:
+    container_name: ${CONTAINER_NAME}.php
+    build: .
+    volumes: 
+      - /nextcloud/www/${CONTAINER_NAME}:/usr/share/nginx/html
 
 networks: 
   default:
