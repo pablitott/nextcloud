@@ -100,7 +100,7 @@ function dpTurn(){
         echoError  "Full server name must be provided e.g. webnotes.me or webnotes.local"
         return 1
     fi
-    options="up down stop pause unpause"
+    options="up down stop pause unpause restart"
     action=$2
     [[ $options =~ (^| )$action($| ) ]] && isValid=1 || isValid=0
     if [ $isValid != 1 ]; then
