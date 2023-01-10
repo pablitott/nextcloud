@@ -1,0 +1,39 @@
+#===========================================================#
+# Pablo Trujillo                          02/01/2022        # 
+#                                                           #
+# Creates a new container for nginx web site                #
+# Define CONTAINER_NAME either as an encironment cariable   #
+# e.g. export CONTAINER_NAME=paveltrujillo.local            #
+# Or using the command:                                     #
+# CONTAINER_NAME=paveltrujillo.local docker-compose up -d   #
+#===========================================================#
+version: '3.2' 
+
+services:
+
+  nginx:
+    image: nginx
+    container_name: ${CONTAINER_NAME}
+    networks: 
+      default:
+    expose:
+      - 80
+      - 443
+    environment:
+      - VIRTUAL_HOST=${CONTAINER_NAME},www.${CONTAINER_NAME}
+      - LETSENCRYPT_HOST=${CONTAINER_NAME},www.${CONTAINER_NAME}
+      - LETSENCRYPT_SINGLE_DOMAIN_CERTS=true
+      - LETSENCRYPT_EMAIL="pablitott@gmail.com"
+    volumes:
+        - /nextcloud/www/${CONTAINER_NAME}:/usr/share/nginx/html:ro
+        - /etc/localtime:/etc/localtime:ro
+    # depends_on:
+    #   - letsencrypt
+    #   - proxy
+    restart: unless-stopped
+
+networks:
+  default:
+    external:
+      name: nginx_nextcloud_network
+
