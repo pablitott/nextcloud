@@ -62,3 +62,9 @@ networks:
     external:
       name: nginx_nextcloud_network
 
+## errors trying to up because port 21 was in use, resolved as
+# who is using port 21
+# sudo netstat -nlpt |grep 21
+# kill port 21 user
+# sudo kill `sudo lsof -t -i:3306`
+# CONTAINER_NAME=drawingmonos.com docker-compose up -d
