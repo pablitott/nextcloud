@@ -1,0 +1,1 @@
+do not use this folder to start ftp service, ftp service is used on each website
