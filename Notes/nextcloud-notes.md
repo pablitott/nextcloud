@@ -48,7 +48,7 @@ docker-compose exec -u www-data quenchinnovations php occ files:scan admin
 List of users
 >  docker exec -u www-data quenchinnovations php occ user:list
 Reset password
-> docker exec -t -u www-data quenchinnovations php occ user:resetpassword <user name>
+> docker exec -it -u www-data quenchinnovations php occ user:resetpassword <user name>
 ```
 
 ### change nextcloud config values using occ
@@ -64,7 +64,7 @@ after migration or restore is util to run
 > cd /home/ubuntu/nextcloud
 > docker exec -u www-data mydeskweb.local php occ files:scan <br/>
 > docker exec -u www-data mydeskweb.local php occ files:cleanup <br/>
-> docker exec -i -u www-data mydeskweb.local php occ user:resetpassword admin </br>
+> docker exec -it -u www-data mydeskweb.local php occ user:resetpassword admin </br>
 > docker exec -u www-data quenchinnovations.local php occ user:list
 > docker exec -u www-data quenchinnovations.net php occ user:list
 
