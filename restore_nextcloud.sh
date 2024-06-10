@@ -128,7 +128,7 @@ trap showerror exit
 # verify first argument is the service name (include .local | .comn | .net) 
 if [ -z $1 ] ; then
     writeLogLine "$_color_red_ ServiceName to be backup is not defined, please define ServerName accordingly "
-    exit -1
+    return -1
 fi
 serviceName=$1
 serverName="${serviceName%.*}"
@@ -136,17 +136,17 @@ serverName="${serviceName%.*}"
 #check if NICKNAME is defined, True if the length of string is zero
 if [ -z "$NICKNAME" ] ; then
     writeLogLine "$output_red NICKNAME is not defined, please define nickname accordingly $output_reset"
-#    exit -1
+#    return -1
 fi
 #check if USER is defined, True if the length of string is zero
 if [ -z "$USER" ] ; then
     writeLogLine "$output_red USER is not defined, please define $USER accordingly $output_reset"
-    exit -1
+    return -1
 fi
 
 if [ -z $2 ]; then
   writeLogLine "$output_red must define backup number 1-5 $output_reset"
-  exit 1
+  return 1
 fi
 backupToRestore=$2
 logfile="$PWD/restore-$serverName.log"
@@ -212,6 +212,6 @@ fi
 removeFolder $BACKUP_REPOSITORY
 
 writeLogLine "$_color_purple_ end of restore $serverName"
-exit 0
+return 0
 
 

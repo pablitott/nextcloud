@@ -1,7 +1,7 @@
 # Nextcloud migration
 ## Specific tasks
 ### Change database name used in NextCloud
-database name is defined in config.php to change the database name thesescripts must be done
+database name is defined in config.php to change the database name these scripts must be done
 - Change the database name on docker-compose
 - Change the database name in the Backup/Restore scripts
 - Execute following scripts to change the database name in config.php

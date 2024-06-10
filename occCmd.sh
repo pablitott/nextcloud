@@ -15,7 +15,7 @@ function occCmd()
     if [ -z $1 ] ; then
         message="Service name is not provided, Syntax: occCmd <ServiceName> \n Where service Name would either QuestInnovations.net or mydeskweb.com"
         echo $message
-        exit -1
+        return
     fi
     echo $*
     ServiceName=$1

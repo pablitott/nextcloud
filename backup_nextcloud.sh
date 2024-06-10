@@ -146,29 +146,32 @@ source ./writeLogLine.sh  &1>/dev/null     # write fancy output to console
 source ./folderMaintenance.sh              # create/remove folders
 #=================================================
 # exit when an error ocurred
-set -e
+# set -e
 # keep track of the last executed command
-trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
+# trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 # echo an error message before exiting
-trap showerror exit
+#  ####   trap showerror exit
 #Send an email message at the end of the process
 # notifyStatus=0
+
 if [ -z $1 ] ; then
     writeLogLine "ServerName to be backup is not defined, please define ServerName accordingly" $_color_red_
-    exit -1
+    return
 fi
 
 #check if NICKNAME is defined, True if the length of string is zero
 if [ -z "$NICKNAME" ] ; then
     writeLogLine "NICKNAME is not defined, please define nickname accordingly" $_color_red_
-    exit -1
+    return
 fi
+
 #check if USER is defined, True if the length of string is zero
 if [ -z "$USER" ] ; then
     writeLogLine "USER is not defined, please define $USER accordingly" $_color_red_
-    exit -1
+    return
 fi
 [ "$2" == "-full" ] && FULL_BACKUP=1
+
 serviceName=$1
 serverName="${serviceName%.*}"
 writeLogLine "serverName:$serverName" $_color_blue_
@@ -229,6 +232,6 @@ done
 removeFolder $BACKUP_REPOSITORY
 writeLogLine " end of job " $_color_green_
 
-exit 0
+return 0
 
 
