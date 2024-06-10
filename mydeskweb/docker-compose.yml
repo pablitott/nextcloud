@@ -36,7 +36,7 @@ services:
     restart: unless-stopped
 
   mariadb:
-    image: mariadb:latest
+    image: mariadb:10.6
     container_name: ${DATABASE_SERVICE}
     networks:
       default:

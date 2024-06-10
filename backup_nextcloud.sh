@@ -220,6 +220,7 @@ for file in $BACKUP_REPOSITORY/*.tar
 do
     writeLogLine "$(basename $file) Size: $(stat --printf='%s' $file | numfmt --to=iec) " $_color_green_
     writeLogLine "Backup to $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/" $_color_blue_
+    echo "aws s3 cp $file $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/"
     aws s3 cp $file $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/
 #    awsCmd s3 cp $file $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/
 done
