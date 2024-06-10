@@ -1,4 +1,5 @@
-FROM nextcloud:28.0.6
+FROM nextcloud:latest 
+#29.0.2
 # RUN apt-get update && apt-get upgrade -y 
 # RUN apt-get install apt-utils -y
 RUN apt-get install libmagickcore-6.q16-6-extra -y
