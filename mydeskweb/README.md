@@ -1,3 +1,17 @@
+# Mydeskweb project
+## Requirements
+### Framework
+1. docker version 26.1.4
+2. docker compose v2.27.1
+
+### Images
+- nextcloud:latest   currently: 29.0.1
+- mariadb:10.6
+- redis:latest
+
+
+### Docker containers required
+
 # Update nextcloud
 ## Update manually
 Update nextcloud happen time to time, the server shows in [https://mydeskweb.com/settings/admin/overview](administration/overview), there is a new version available as this ![image](../images/version_available.png)
