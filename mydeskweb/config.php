@@ -27,7 +27,7 @@ $CONFIG = array (
   ),
   'datadirectory' => '/var/www/html/data',
   'dbtype' => 'mysql',
-  'version' => '22.0.0.11',
+  'version' => '29.0.1.1',
   'overwrite.cli.url' => 'http://www.mydeskweb.com',
   'overwriteprotocol' => 'https',
   'dbname' => 'mydeskweb',
@@ -38,24 +38,34 @@ $CONFIG = array (
   'dbuser' => 'nextclouduser',
   'dbpassword' => 'MariaMagdalena',
   'installed' => true,
-  'mail_from_address' => 'pablo',
-  'mail_smtphost' => 'email-smtp.us-east-1.amazonaws.com',
-  'mail_domain' => 'mydeskweb.com',
+  'mail_from_address' => 'admin',
+  'mail_smtphost' => 'smtp.mail.us-west-2.awsapps.com',
+  'mail_domain' => 'mydeskweb.awsapps.com',
   'mail_smtpmode' => 'smtp',
   'mail_sendmailmode' => 'smtp',
   'mail_smtpport' => '465',
   'maintenance' => false,
   'theme' => '',
-  'loglevel' => 0,
+  'loglevel' => 3,
   'default_phone_region' => 'US',
   'app_install_overwrite' => 
   array (
     0 => 'files_external_gdrive',
   ),
-  'mail_smtpsecure' => 'ssl',
   'mail_smtpauth' => 1,
   'mail_smtpauthtype' => 'LOGIN',
-  'mail_smtpname' => 'AKIA2BKRFWRAMQVYV2YT',
-  'mail_smtppassword' => 'BC7KImAkjV/1dT2ihVF3Ufaa+OyEFeYj038RIA9zPgHj',
+  'mail_smtpname' => 'admin@mydeskweb.awsapps.com',
+  'mail_smtppassword' => 'Franchesca#2020',
   'updater.release.channel' => 'stable',
+  'maintenance_window_start' => 1,
+  # memcache is used to accelerate access to datafile
+  'memcache.locking' => '\\OC\\Memcache\\Redis',
+  'redis' => 
+  array (
+    'host' => 'mydeskweb.redis',   # docker image for redis, defined in docker-compose.yml
+    'port' => 6379,                # default port by shown here for documentation purposes
+    'timeout' => 0.0,
+    'password' => 'nextcloud_redis_pass',    # redis password, defined in docker-compose.yml
+  ),
+  'mail_smtpsecure' => 'ssl',
 );

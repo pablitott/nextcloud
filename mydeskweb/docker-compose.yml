@@ -2,7 +2,7 @@
 # file to create NextCloud using MariaDB and ngInx
 #================================================================
 # version used for docker-compose version 1.23.2, build 1110ad01
-version: '4.2' 
+# version: '4.2' 
 services:
   nextcloud:
     image: myowncloud
@@ -17,6 +17,7 @@ services:
       #- letsencrypt-proxy-companion
       #- nginx-proxy
       - mariadb
+      - redis
     volumes:
       # use COMPOSE_PROJECT_NAME instead of nextcloud hard name
       - nextcloud:/var/www/html
@@ -31,6 +32,9 @@ services:
       - LETSENCRYPT_HOST=${NEXTCLOUD_SERVICE},www.${NEXTCLOUD_SERVICE}
       - LETSENCRYPT_SINGLE_DOMAIN_CERTS=true
       - LETSENCRYPT_EMAIL=pablitott@gmail.com
+      - REDIST_HOST=mydeskweb.redis
+      - REDIS_HOST_PORT=6379   # default 6379
+      - 'REDIS_HOST_PASSWORD=nextcloud_redis_pass'
     restart: unless-stopped
 
   mariadb:
@@ -48,11 +52,22 @@ services:
       - MYSQL_USER=${MYSQL_USER}
     restart: unless-stopped
 
+  redis:
+    image: redis
+    container_name: mydeskweb.redis
+    restart: unless-stopped
+    command: redis-server --requirepass nextcloud_redis_pass
+    expose: 
+      - 6379
+    networks:
+      - default
+    #  docker run --name mydeskweb-redis -d redis redis-server --save 60 1 --loglevel warning
+
 volumes:
   nextcloud:
   mariadb:
 
 networks: 
   default:
-    external:
-      name: nginx_nextcloud_network
+    name: nginx_nextcloud_network
+    external: true
