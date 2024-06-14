@@ -63,6 +63,19 @@ services:
       - default
     #  docker run --name mydeskweb-redis -d redis redis-server --save 60 1 --loglevel warning
 
+  cron:
+    # https://help.nextcloud.com/t/nextcloud-docker-setup-help-needed-with-cron/188907
+    image: nextcloud
+    container_name: mydeskweb.cron
+    volumes:
+      - ${NEXTCLOUD_HTTP_ROOT}:/var/www/html
+      - ${NEXTCLOUD_HTTP_ROOT}/config:/var/www/html/config
+      - ${NEXTCLOUD_HTTP_ROOT}/data:/var/www/html/data
+    entrypoint: /cron.sh
+    restart: unless-stopped
+    networks:
+      default:
+
 volumes:
   nextcloud:
   mariadb:
