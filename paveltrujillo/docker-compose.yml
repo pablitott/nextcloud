@@ -9,8 +9,6 @@
 #===========================================================#
 # http://geekyplatypus.com/dockerise-your-php-application-with-nginx-and-php7-fpm/
 
-version: '3.2' 
-
 services:
 
   nginx:
@@ -42,5 +40,5 @@ services:
 
 networks: 
   default:
-    external:
-      name: nginx_nextcloud_network
+    name: nginx_nextcloud_network
+    external: true

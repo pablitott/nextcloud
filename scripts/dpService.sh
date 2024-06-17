@@ -67,7 +67,7 @@ function dpCoreTurn(){
     if [[ $1=="up" ]]; then action="up -d"; else action="$1"; fi
     currentdir=$PWD
     cd "$_WORK_DIR/nginx"
-    docker-compose $action
+    docker compose $action
     cd $currentdir
     unset currentdir
     unset action
@@ -127,9 +127,9 @@ function dpTurn(){
     cd "$homedir/$serviceName"
 
     if [[ -f $environmentFile ]]; then
-        docker-compose --env-file $environmentFile $action
+        docker compose --env-file $environmentFile $action
     else
-        CONTAINER_NAME=$serverName docker-compose $action
+        CONTAINER_NAME=$serverName docker compose $action
     fi
     cd $currentpwd
 
@@ -151,7 +151,18 @@ function dpStatus(){
         # no service name [provided]
         docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Size}}"
     else
-        docker ps --filter name=$1 --format "table {{.Names}}\t{{.Status}}"
+        server=$1
+        currentFolder=$PWD
+        homedir="/home/$USER/nextcloud"
+        service="${server%.*}"
+        environmentFile=$server.env
+        cd "$homedir/$service"
+        if [[ -f $environmentFile ]]; then
+            docker compose --env-file=$environmentFile  ps
+        else
+            CONTAINER_NAME=$server docker-compose ps
+        fi
+        cd $currentFolder
     fi
     
 }
@@ -167,70 +178,13 @@ function dpStatus(){
 #                                                       #
 #=======================================================#
 function dpStart(){
-    if [ -z $1 ]; then
-        echoError "Syntax error: Parameters missed"
-        echoWarning "dpStart <action> <location>"
-        echoWarning "e.g. dpStart up local" 
-        echoWarning "e.g. dpStart up aws"
-        echoNote "aws is the production server AWS"
-        return 1
-    fi
-    if [ -z $2 ]; then
-        echoError "Syntax error: Parameters missed"
-        echoWarning "dpStart <action> <location>"
-        echoWarning "e.g. dpStart up local" 
-        echoWarning "e.g. dpStart up aws"
-        echoNote "aws is the production server AWS"
-        return 1
-    fi
-    unset services
-    unset servers
-    unset serversLocal
-    servicesFile="$_WORK_DIR/scripts/services"
-    if [[ -z $2 || $2 = "local" ]]; then
-        services=$(awk -F'.' '{print $1}' $servicesFile | grep -v '#' )
-        environment="local"
-        servers=()
-        for service in ${services[@]}; do
-            servers+="$service.local "
-        done
-    else
-        servers=$(awk '{print $1}' $servicesFile | grep -v '#' )
-        environment=$2
-    fi
-
-    nLenght=${#servers[@]}
-    
-    if [[ -z $1 || $1 = "up" ]]; then
-        action="up -d"
-        # include nginx at the begining of the list
-        servers=( "nginx" "${servers[@]:0:nLenght}"   )
-    else
-        action=$1
-        # Add nginx at the end of the list
-        servers=( "${servers[@]:0:nLenght}" "nginx"  )
-    fi
-
-    currentdir=$PWD
-    homedir="/home/$USER/nextcloud"
-    buildOption=""
-    echo $servers
-    for server in ${servers[@]}; do
-        service="${server%.*}"
-        environmentFile=$server.env
-        echo "environmentFile=$environmentFile"
-        cd "$homedir/$service"
-        echo "$homedir/$service"
-        if [[ -f $environmentFile ]]; then
-            echo "turn $1 service $service using $environmentFile"
-            docker-compose --env-file $environmentFile $action $buildOption
-        else
-            echo $server
-            CONTAINER_NAME=$server docker-compose $action
-        fi
-    done
-    cd $currentdir
-
+    dpTurn $1 up
+}
+function dpStop(){
+    dpTurn $1 stop
+}
+function dpDown(){
+    dpTurn $1 down
 }
 #=======================================================#
 #                 dpRestore                             #
@@ -302,7 +256,7 @@ function dpRestore(){
 #                 dpBackup                             #
 #-------------------------------------------------------#
 # Restore services files                                #
-# Syntax:  dprBackup <service name>                     #
+# Syntax:  dpBackup <service name>                     #
 #                                                       #
 #  TODO: extent to backup db data with the files       #
 #                                                       #
@@ -369,16 +323,16 @@ function dpKill(){
     envFile=$project.$domain.env
 
     if [[ -f $envFile ]]; then
-        projectImages=$(docker-compose --env-file $project.$domain.env images -q)
-        projectContainers=$(docker-compose --env-file $project.$domain.env ps -q)
-        docker-compose --env-file $project.local.env kill
+        projectImages=$(docker compose --env-file $project.$domain.env images -q)
+        projectContainers=$(docker compose --env-file $project.$domain.env ps -q)
+        docker compose --env-file $project.local.env kill
     else
-        projectImages=$(CONTAINER_NAME=$serverName docker-compose images -q)
-        projectContainers=$(CONTAINER_NAME=$serverName  docker-compose ps -q)
-        CONTAINER_NAME=$serverName docker-compose kill
+        projectImages=$(docker --env-file=images compose -q)
+        projectContainers=$(docker compose ps -q)
+        CONTAINER_NAME=$serverName docker compose kill
     fi
     unset CONTAINER_NAME
-    coreImage=$(docker images nginx:latest --format {{.ID}} )
+    coreImage=$(docker images nginx:latest --format {{.ID}} ) 
     docker rm ${projectContainers}
     for image in $projectImages; do
         echo "image: $coreImage"

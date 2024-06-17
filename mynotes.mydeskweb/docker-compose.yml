@@ -7,7 +7,7 @@
 # Or using the command:                                     #
 # CONTAINER_NAME=paveltrujillo.local docker-compose up -d   #
 #===========================================================#
-version: '3.2' 
+# version: '3.2' 
 
 services:
 
@@ -64,6 +64,5 @@ services:
 
 networks:
   default:
-    external:
-      name: nginx_nextcloud_network
-
+    name: nginx_nextcloud_network
+    external: true
