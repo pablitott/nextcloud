@@ -15,13 +15,13 @@ if [ -z "$2" ] ; then
     # echo "no NICKNAME is defined for this computer"
     # echo "you can either define a NICKNAME variable or"
     echo "specify the environment as <local> or <production> as a second argument"
-    exit 1
+    return 1
 elif [[ "$2" = "local" || "$2" = "production" ]]; then
     environment=$2
     echo "environment: $2"
 else
     echo "specify either <local> or <production> environments"
-    exit 1
+    return 1
 fi
 echo "action: $action $environment"
 
@@ -66,11 +66,11 @@ for service in ${services[@]}; do
     cd "$homedir/$serverName"
 
     if [[ -f $environmentFile ]]; then
-        docker-compose --env-file $environmentFile $action $buildOption
+        docker compose --env-file $environmentFile $action $buildOption
     else
-        docker-compose $action $buildOption
+        docker compose $action $buildOption
     fi
 done
-cd $homedir
+# cd $homedir
 #print summary
 docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Size}}\t{{.Image}}"

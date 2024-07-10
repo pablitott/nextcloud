@@ -1,12 +1,12 @@
-readonly _color_grey_="\e[30m"
-readonly _color_red_="\e[31m"
-readonly _color_green_="\e[32m"
-readonly _color_yellow_="\e[33m"
-readonly _color_blue_="\e[0;34m"
-readonly _color_purple_="\e[35m"
-readonly _color_cyan_="\e[36m"
-readonly _color_white_="\e[37m"
-readonly _color_reset_="\e[0m"
+set _color_grey_="\e[30m"
+set _color_red_="\e[31m"
+set _color_green_="\e[32m"
+set _color_yellow_="\e[33m"
+set _color_blue_="\e[0;34m"
+set _color_purple_="\e[35m"
+set _color_cyan_="\e[36m"
+set _color_white_="\e[37m"
+set _color_reset_="\e[0m"
 #=================================================
 function writeLogLine(){
   message=$1

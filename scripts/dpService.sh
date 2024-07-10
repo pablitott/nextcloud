@@ -51,7 +51,7 @@ function ArrayAdd(){
 # Show the status for all containers                    #
 # Syntax:  dps                                          #
 #=======================================================#
-function dps(){ docker ps $* --format "table {{.ID}}\t{{.Names}}\t{{.State}}\t{{.Size}}\t{{.Image}}"; }
+function dps(){ docker ps $* --format "table {{.ID}}\t{{.Names}}\t{{.State}}\t{{.Size}}\t{{.Image}}\t{{.Ports}}"; }
 #=======================================================#
 #                                                       #
 # Show the status for all images                        #
@@ -64,7 +64,7 @@ function dms(){ docker images $* --format "table {{.ID}}\t{{.Repository}}\t{{.Ta
 # Syntax:  dpCore <up>/<down>                           #
 #=======================================================#
 function dpCoreTurn(){
-    if [[ $1=="up" ]]; then action="up -d"; else action="$1"; fi
+    if [ $1 = "up" ]; then action="up -d"; else action="$1"; fi
     currentdir=$PWD
     cd "$_WORK_DIR/nginx"
     docker compose $action
@@ -100,7 +100,7 @@ function dpTurn(){
         echoError  "Full server name must be provided e.g. webnotes.me or webnotes.local"
         return 1
     fi
-    options="up down stop pause unpause restart"
+    options="up down stop pause unpause restart build"
     action=$2
     [[ $options =~ (^| )$action($| ) ]] && isValid=1 || isValid=0
     if [ $isValid != 1 ]; then
