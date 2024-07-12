@@ -59,13 +59,13 @@ $CONFIG = array (
   'updater.release.channel' => 'stable',
   'maintenance_window_start' => 1,
   # memcache is used to accelerate access to datafile
-  'memcache.locking' => '\\OC\\Memcache\\Redis',
-  'redis' => 
-  array (
-    'host' => 'mydeskweb.redis',   # docker image for redis, defined in docker-compose.yml
-    'port' => 6379,                # default port by shown here for documentation purposes
-    'timeout' => 0.0,
-    'password' => 'nextcloud_redis_pass',    # redis password, defined in docker-compose.yml
-  ),
-  'mail_smtpsecure' => 'ssl',
+  // 'memcache.locking' => '\\OC\\Memcache\\Redis',
+  // 'redis' => 
+  // array (
+  //   'host' => 'mydeskweb.redis',   # docker image for redis, defined in docker-compose.yml
+  //   'port' => 6379,                # default port by shown here for documentation purposes
+  //   'timeout' => 0.0,
+  //   'password' => 'nextcloud_redis_pass',    # redis password, defined in docker-compose.yml
+  // ),
+  // 'mail_smtpsecure' => 'ssl',
 );

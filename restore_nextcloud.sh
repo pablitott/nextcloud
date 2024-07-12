@@ -57,6 +57,10 @@ function occCmd(){
 #====================================================================
 function awsCmd(){
 #  amazon/aws-cli is a container with amazon commands
+  if [[ ! -f ~/.aws/credentials  ]]; then 
+    echo "aws credentials does not exists"
+    return 1
+  fi
   echo $*
   docker run --rm -ti -v ~/.aws:/root/.aws -v $(pwd):/aws amazon/aws-cli $*
 }
@@ -118,17 +122,17 @@ source ./folderMaintenance.sh              # create/remove folders
 set -a; source backup_nextcloud.env; set +a
 #====================================================================
 
-# exit when an error ocurred
-set -e
-# keep track of the last executed command
-trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
-# echo an error message before exiting
-trap showerror exit
+# # exit when an error ocurred
+# set -e
+# # keep track of the last executed command
+# trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
+# # echo an error message before exiting
+# trap showerror return
 
 # verify first argument is the service name (include .local | .comn | .net) 
 if [ -z $1 ] ; then
     writeLogLine "$_color_red_ ServiceName to be backup is not defined, please define ServerName accordingly "
-    return -1
+    return 1
 fi
 serviceName=$1
 serverName="${serviceName%.*}"
@@ -136,7 +140,7 @@ serverName="${serviceName%.*}"
 #check if NICKNAME is defined, True if the length of string is zero
 if [ -z "$NICKNAME" ] ; then
     writeLogLine "$output_red NICKNAME is not defined, please define nickname accordingly $output_reset"
-#    return -1
+#    return 1
 fi
 #check if USER is defined, True if the length of string is zero
 if [ -z "$USER" ] ; then
@@ -148,6 +152,7 @@ if [ -z $2 ]; then
   writeLogLine "$output_red must define backup number 1-5 $output_reset"
   return 1
 fi
+
 backupToRestore=$2
 logfile="$PWD/restore-$serverName.log"
 logfile="$PWD/$serverName/backup-$serverName-$backupToRestore.log"
@@ -183,6 +188,8 @@ writeLogLine "to $restoreTarFile" $_color_blue_
 
 if [[ ! -f $BACKUP_REPOSITORY/$restoreTarFile ]]; then
   awsCmd s3 cp $s3Bucket $restoreTarFile
+  error=$?
+  if [ $error == 1]; then return 1; fi
   sudo mv $restoreTarFile $BACKUP_REPOSITORY/$restoreTarFile
 fi
 

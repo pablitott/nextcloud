@@ -1,4 +1,4 @@
-FROM nextcloud:29.0.3
+FROM nextcloud:29.0.1
 #29.0.1
 RUN apt update & apt-get upgrade
 # RUN apt-get install apt-utils -y

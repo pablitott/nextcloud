@@ -10,14 +10,15 @@ services:
     container_name: ${NEXTCLOUD_SERVICE}
     networks: 
       default:
-    external_links: 
-      - nginx-proxy
-      - letsencrypt 
+    # external_links: 
+    #   - nginx-proxy
+    #   - letsencrypt 
     depends_on:
       #- letsencrypt-proxy-companion
       #- nginx-proxy
       - mariadb
       # - redis
+      # - cron
     volumes:
       # use COMPOSE_PROJECT_NAME instead of nextcloud hard name
       - nextcloud:/var/www/html
@@ -52,29 +53,29 @@ services:
       - MYSQL_USER=${MYSQL_USER}
     restart: unless-stopped
 
-  # redis:
-  #   image: redis
-  #   container_name: mydeskweb.redis
-  #   restart: unless-stopped
-  #   command: redis-server --requirepass nextcloud_redis_pass
-  #   expose: 
-  #     - 6379
-  #   networks:
-  #     - default
-  #   #  docker run --name mydeskweb-redis -d redis redis-server --save 60 1 --loglevel warning
+  redis:
+    image: redis
+    container_name: mydeskweb.redis
+    restart: unless-stopped
+    command: redis-server --requirepass nextcloud_redis_pass
+    expose: 
+      - 6379
+    networks:
+      - default
+    #  docker run --name mydeskweb-redis -d redis redis-server --save 60 1 --loglevel warning
 
-  # cron:
-  #   # https://help.nextcloud.com/t/nextcloud-docker-setup-help-needed-with-cron/188907
-  #   image: nextcloud
-  #   container_name: mydeskweb.cron
-  #   volumes:
-  #     - ${NEXTCLOUD_HTTP_ROOT}:/var/www/html
-  #     - ${NEXTCLOUD_HTTP_ROOT}/config:/var/www/html/config
-  #     - ${NEXTCLOUD_HTTP_ROOT}/data:/var/www/html/data
-  #   entrypoint: /cron.sh
-  #   restart: unless-stopped
-  #   networks:
-  #     default:
+  cron:
+    # https://help.nextcloud.com/t/nextcloud-docker-setup-help-needed-with-cron/188907
+    image: nextcloud
+    container_name: mydeskweb.cron
+    volumes:
+      - ${NEXTCLOUD_HTTP_ROOT}:/var/www/html
+      - ${NEXTCLOUD_HTTP_ROOT}/config:/var/www/html/config
+      - ${NEXTCLOUD_HTTP_ROOT}/data:/var/www/html/data
+    entrypoint: /cron.sh
+    restart: unless-stopped
+    networks:
+      default:
 
 volumes:
   nextcloud:
@@ -82,5 +83,5 @@ volumes:
 
 networks: 
   default:
-    name: nginx_nextcloud_network
+    name: mydeskweb_nextcloud_network
     external: true

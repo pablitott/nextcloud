@@ -40,5 +40,5 @@ services:
 
 networks: 
   default:
-    name: nginx_nextcloud_network
+    name: mydeskweb_nextcloud_network
     external: true
