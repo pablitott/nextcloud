@@ -13,5 +13,5 @@ HOMEDIR=/home/ubuntu/nextcloud
 */40  *  *  *  * docker exec -u www-data quenchinnovations.net php occ files:scan-app-data
 
 57  23 *  *  *  /home/ubuntu/nextcloud/backup_nextcloud.sh mydeskweb.com
-50  23 *  *  *  /home/ubuntu/nextcloud/backup_nextcloud.sh quenchinnovations.net
+#50  23 *  *  *  /home/ubuntu/nextcloud/backup_nextcloud.sh quenchinnovations.net
 

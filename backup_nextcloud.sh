@@ -134,7 +134,7 @@ function awsCmd(){
 #define global variables
 if [ -z "$HOMEDIR" ] ; then
     echo "HOMEDIR is not defined, please define HOMEDIR accordingly"
-    exit -1
+    return -1
 fi
 echo "USER: $USER"
 echo "HOMEDIR: $HOMEDIR"
@@ -215,20 +215,23 @@ else
 fi
 backup_home verbose
 backup_files verbose
-
+currentdir=$(pwd)
 if [ $DATABASE_SERVICE ]; then 
   occCmd maintenance:mode --off | tee -a $logfile
 fi
 for file in $BACKUP_REPOSITORY/*.tar
 do
+    backup_file_name=$(basename $file)
     writeLogLine "$(basename $file) Size: $(stat --printf='%s' $file | numfmt --to=iec) " $_color_green_
     writeLogLine "Backup to $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/" $_color_blue_
-    echo "aws s3 cp $file $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/"
-    aws s3 cp $file $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/
-#    awsCmd s3 cp $file $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/
+    writeLogLine "awsCmd s3 cp $BACKUP_REPOSITORY/$backup_file_name $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/$backup_file_name"
+    cd $BACKUP_REPOSITORY
+    awsCmd s3 cp $backup_file_name $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/$backup_file_name
 done
+cd $currentdir
 
 #Remove Archive folder without condition
+writeLogLine "Backup folder: $BACKUP_REPOSITORY"
 removeFolder $BACKUP_REPOSITORY
 writeLogLine " end of job " $_color_green_
 
