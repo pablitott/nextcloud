@@ -25,6 +25,7 @@ $CONFIG = array (
     0 => 'mydeskweb.com',
     1 => 'www.mydeskweb.com',
   ),
+  'trusted_proxies' => ['127.0.0.1'],
   'datadirectory' => '/var/www/html/data',
   'dbtype' => 'mysql',
   'version' => '29.0.1.1',
@@ -58,14 +59,14 @@ $CONFIG = array (
   'mail_smtppassword' => 'Franchesca#2020',
   'updater.release.channel' => 'stable',
   'maintenance_window_start' => 1,
-  # memcache is used to accelerate access to datafile
-  // 'memcache.locking' => '\\OC\\Memcache\\Redis',
-  // 'redis' => 
-  // array (
-  //   'host' => 'mydeskweb.redis',   # docker image for redis, defined in docker-compose.yml
-  //   'port' => 6379,                # default port by shown here for documentation purposes
-  //   'timeout' => 0.0,
-  //   'password' => 'nextcloud_redis_pass',    # redis password, defined in docker-compose.yml
-  // ),
-  // 'mail_smtpsecure' => 'ssl',
+  'memcache.locking' => '\\OC\\Memcache\\Redis',
+  'encryption.legacy_format_support' => false,
+  'redis' => 
+  array (
+    'host' => 'mydeskweb.redis',
+    'port' => 6379,
+    'timeout' => 0.0,
+    'password' => 'nextcloud_redis_pass',
+  ),
+  'mail_smtpsecure' => 'ssl',
 );
