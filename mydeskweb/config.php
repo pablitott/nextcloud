@@ -28,7 +28,7 @@ $CONFIG = array (
   'trusted_proxies' => ['127.0.0.1'],
   'datadirectory' => '/var/www/html/data',
   'dbtype' => 'mysql',
-  'version' => '29.0.1.1',
+  'version' => '29.0.3.4',
   'overwrite.cli.url' => 'http://www.mydeskweb.com',
   'overwriteprotocol' => 'https',
   'dbname' => 'mydeskweb',
@@ -47,7 +47,7 @@ $CONFIG = array (
   'mail_smtpport' => '465',
   'maintenance' => false,
   'theme' => '',
-  'loglevel' => 3,
+  'loglevel' => 2,
   'default_phone_region' => 'US',
   'app_install_overwrite' => 
   array (
