@@ -13,3 +13,4 @@ lightsailNode/aws/**/*.*
 Vagrant/.vagrant/**
 .aws/**
 docker
+nextcloud.code-workspace
