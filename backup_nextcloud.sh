@@ -129,7 +129,7 @@ function occCmd(){
 #================================================================================
 function awsCmd(){
   echo $*
-  docker run --rm -ti -v ~/.aws:/root/.aws -v $(pwd):/aws amazon/aws-cli $*
+  docker run --rm -ti  -v $(pwd):/aws pablitott/myawscmd:latest $*
 }
 #define global variables
 if [ -z "$HOMEDIR" ] ; then
@@ -224,14 +224,18 @@ do
     backup_file_name=$(basename $file)
     writeLogLine "$(basename $file) Size: $(stat --printf='%s' $file | numfmt --to=iec) " $_color_green_
     writeLogLine "Backup to $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/" $_color_blue_
-    writeLogLine "awsCmd s3 cp $BACKUP_REPOSITORY/$backup_file_name $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/$backup_file_name"
+    writeLogLine "Change directory to: $BACKUP_REPOSITORY"
     cd $BACKUP_REPOSITORY
+    writeLogLine "current folder $PWD"
+    writeLogLine "awsCmd s3 cp $backup_file_name $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/$backup_file_name"
     awsCmd s3 cp $backup_file_name $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/$backup_file_name
+    error=$?
+    writeLogLine "backup process error: $error"
 done
 cd $currentdir
 
 #Remove Archive folder without condition
-writeLogLine "Backup folder: $BACKUP_REPOSITORY"
+# writeLogLine "Backup folder: $BACKUP_REPOSITORY"
 removeFolder $BACKUP_REPOSITORY
 writeLogLine " end of job " $_color_green_
 

@@ -39,8 +39,7 @@ function backup_files(){
  }
 #================================================================================
 function awsCmd(){
-  echo $*
-  docker run --rm -ti -v ~/.aws:/root/.aws -v $(pwd):/aws amazon/aws-cli $*
+  docker run --rm -ti  -v $(pwd):/aws pablitott/myawscmd:latest $*
 }
 #define global variables
 if [ -z "$HOMEDIR" ] ; then

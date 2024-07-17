@@ -57,12 +57,7 @@ function occCmd(){
 #====================================================================
 function awsCmd(){
 #  amazon/aws-cli is a container with amazon commands
-  if [[ ! -f ~/.aws/credentials  ]]; then 
-    echo "aws credentials does not exists"
-    return 1
-  fi
-  echo $*
-  docker run --rm -ti -v ~/.aws:/root/.aws -v $(pwd):/aws amazon/aws-cli $*
+  docker run --rm -ti  -v $(pwd):/aws pablitott/myawscmd:latest $*
 }
 #====================================================================
 function restore_files(){
