@@ -12,9 +12,7 @@ Recover images from [docker registry](https://registry.hub.docker.com/)
    ansible-vault decrypt credentials.vault --vault-password-file .vault_pass
    ansible-vault decrypt docker_token.vault --vault-password-file .vault_pass
 
-   docker_token=$(cat docker_token.vault)
-   # login into docker registry
-   docker login  -u pablitott -p $docker_token
+   cat  docker_token.vault | docker login --username pablitott --password-stdin
 
    # build the image
    docker  build -t pablitott/myawscmd:latest .
