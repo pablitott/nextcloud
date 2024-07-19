@@ -129,7 +129,7 @@ function occCmd(){
 #================================================================================
 function awsCmd(){
   echo $*
-  docker run --rm -ti  -v $(pwd):/aws pablitott/myawscmd:latest $*
+  docker run --rm -i  -v $(pwd):/aws pablitott/myawscmd:latest $*
 }
 #define global variables
 if [ -z "$HOMEDIR" ] ; then
@@ -214,7 +214,7 @@ else
   backup_database verbose
 fi
 backup_home verbose
-backup_files verbose
+backup_files 
 currentdir=$(pwd)
 if [ $DATABASE_SERVICE ]; then 
   occCmd maintenance:mode --off | tee -a $logfile
@@ -228,8 +228,15 @@ do
     cd $BACKUP_REPOSITORY
     writeLogLine "current folder $PWD"
     writeLogLine "awsCmd s3 cp $backup_file_name $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/$backup_file_name"
-    awsCmd s3 cp $backup_file_name $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/$backup_file_name
+    awsCmd s3 cp $backup_file_name $BACKUP_S3BUCKET/$NICKNAME/$NEXTCLOUD_TRUSTED_DOMAINS/$backup_file_name >> awscmd.log 2>&1
     error=$?
+    
+    if [ $error == 0 ]; then
+      writeLogLine "awscmd process succeed!" $_color_green_
+    else
+      writeLogLine "awscmd backup error, see awscmd.log" $_color_red_
+      cp awscmd.log $HOMEDIR/$serverName/
+    fi
     writeLogLine "backup process error: $error"
 done
 cd $currentdir
