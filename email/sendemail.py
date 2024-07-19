@@ -5,6 +5,8 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 import os
 import argparse
+import getpass
+
 
 class Password(argparse.Action):
     def __call__(self, parser, namespace, values, option_string):
@@ -25,8 +27,9 @@ def send_email(subject, message, from_email, to_email=[], attachment=[], passwor
     msg['From'] = from_email
     msg['To'] = ", ".join(to_email)
     msg.attach(MIMEText(message, 'html'))
-
+    print(attachment)
     for f in attachment:
+        print(f)
         with open(f, 'rb') as a_file:
             basename = os.path.basename(f)
             part = MIMEApplication(a_file.read(), Name=basename)
@@ -50,26 +53,23 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('result',              type=str, help='Backup end result (succed/fail)')
     parser.add_argument('message',             type=str, help="mail message regarding the backup")
-    parser.add_argument('sender_user_name',           type=str, default="automation@mydeskweb.awsapps.com", help='sender user email')
-    parser.add_argument('sender_password',            action=Password, nargs='?', help='Sender password')
-    parser.add_argument("target_email",        type=list, help='list of email address to send the log')
+    parser.add_argument('sender_user_name',    type=str, default="automation@mydeskweb.awsapps.com", help='sender user email')
+    parser.add_argument('sender_password',             help='Sender password')
+    parser.add_argument("target_email",        type=str, help='list of email address to send the log')
     parser.add_argument('-a', '--attachments', type=list, dest='attachments', help='backup process log', required=False)
     args = parser.parse_args()
     
-        # print('Incorrevt parameters provided')
-        # print('syntax sendemail.py "succeed/fail" "attachment file name"')
-    sender_user      =  os.environ.get('SENDER_USER')
-    sender_password   =  os.environ.get('SENDER_PWD')
-    target_email = ['pablitott@gmail.com', 'pablitott@icloud.com']
-    sender_attachment = []
-    sender_attachment.append(args.attachment)
-
-
-    # target_email = target_email
-    subject = 'mydeskweb backup process message'
-    message = 'mydeskweb backup ' + sys.argv[1]
-
-    send_email(subject, message, sender_user, target_email, sender_attachment, sender_password)
+    sender_user      =  args.sender_user_name
+    sender_password   =  args.sender_password
+    target_email = args.target_email
+    subject = "mydeskweb backup process result: " + args.result
+    message = 'mydeskweb backup process'
+    if args.attachments is not None:
+        sender_attachment = args.attachments
+        send_email(subject, message, sender_user, target_email, sender_attachment, sender_attachment, sender_password)
+    else:
+        send_email(subject, message, sender_user, target_email, attachment=[], password=sender_password)
+        
 
 if __name__ == "__main__":
     main()
