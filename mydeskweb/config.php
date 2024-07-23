@@ -31,7 +31,7 @@ $CONFIG = array (
   ),
   'datadirectory' => '/var/www/html/data',
   'dbtype' => 'mysql',
-  'version' => '29.0.3.4',
+  'version' => '29.0.4.1',
   'overwrite.cli.url' => 'http://www.mydeskweb.com',
   'overwriteprotocol' => 'https',
   'dbname' => 'mydeskweb',
@@ -74,4 +74,5 @@ $CONFIG = array (
   'mail_smtppassword' => 'CapitanAmerica#2020',
   'opcache.validate_timestamps' => 0,
   'opcache.save_comments' => 1,
+  'allow_local_remote_servers' => true,
 );
