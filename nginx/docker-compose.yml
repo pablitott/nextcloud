@@ -6,8 +6,8 @@
 
 services:
   proxy:
-    image: nginx-proxy-edited
-    build: .
+    image: jwilder/nginx-proxy:1.6-alpine
+    # build: .
     container_name: nginx-proxy
     environment:
       - COMPOSE_PROJECT_NAME=nginx
