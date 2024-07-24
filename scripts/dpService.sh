@@ -100,7 +100,7 @@ function dpTurn(){
         echoError  "Full server name must be provided e.g. webnotes.me or webnotes.local"
         return 1
     fi
-    options="up down stop pause unpause restart build"
+    options="up down stop pause unpause restart build pull"
     action=$2
     [[ $options =~ (^| )$action($| ) ]] && isValid=1 || isValid=0
     if [ $isValid != 1 ]; then
@@ -352,4 +352,59 @@ function dpKill(){
     done
     docker volume prune -f
     cd $pwd
+}
+########################################################
+#                                                      #
+# dpTurnAll <<action>>                                 #
+#    valid actions: up down stop restart               #
+#                                                      #
+########################################################
+function dpTurnAll(){
+    services=(paveltrujillo.info mynotes.mydeskweb.com mydeskweb.com )
+    core="nginx"
+    options="up down stop restart"
+    actionfound=0
+    actionprovide=""
+    for action in ${options[@]}
+    do
+        if [[ "$action" = "$1" ]]; then
+            actionfound=1
+            actionprovide=$action
+            break
+        fi
+    done
+
+    if [ $actionfound = 1 ]; then
+        if [ "$actionprovide" = "down" ] || [ "$actionprovide" = "stop" ]; then
+            for service in ${services[@]}
+            do
+                dpTurn "$service" "$actionprovide"
+            done
+            dpCoreTurn "$actionprovide"
+        fi
+        if [[ "$actionprovide" = "up" ]]; then
+            dpCoreTurn "$actionprovide"
+            for service in ${services[@]}
+            do
+                dpTurn $service "$actionprovide"
+            done
+        fi
+
+        if [[ "$actionprovide" = "restart" ]]; then
+            for service in ${services[@]}
+            do
+                dpTurn "$service" stop
+            done
+            dpCoreTurn "restart"
+
+            for service in ${services[@]}
+            do
+                dpTurn "$service" "up"
+            done
+
+        fi
+    else
+        echo "Invalid action: must be one of: <<$options>>"
+    fi
+
 }
