@@ -147,22 +147,29 @@ function dpTurn(){
 #                                                       #
 #=======================================================#
 function dpStatus(){
+    server=$1
+    currentFolder=$PWD
+    format="table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Size}}\t{{.Ports}}"
     if [ -z $1 ]; then
         # no service name [provided]
-        docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Size}}"
+        docker ps --format "${format}"
     else
-        server=$1
-        currentFolder=$PWD
         homedir="/home/$USER/nextcloud"
         service="${server%.*}"
         environmentFile=$server.env
-        cd "$homedir/$service"
-        if [[ -f $environmentFile ]]; then
-            docker compose --env-file=$environmentFile  ps
+        if [[ -d "$homedir/$service" ]]; then
+            cd "$homedir/$service"
+            if [[ -f $environmentFile ]]; then
+                
+                CONTAINER_NAME=$server docker compose --env-file=$environmentFile ps --format "${format}"
+            else
+                echo "Environment file does not exists, aborting..."
+                # docker compose ps --format "${format}"
+            fi
+            cd $currentFolder
         else
-            CONTAINER_NAME=$server docker-compose ps
+            echo "Error: folder for $service does not exists!"
         fi
-        cd $currentFolder
     fi
     
 }
