@@ -75,4 +75,19 @@ $CONFIG = array (
   'opcache.validate_timestamps' => 0,
   'opcache.save_comments' => 1,
   'allow_local_remote_servers' => true,
+  'enable_previews' => true,
+  'enabledPreviewProviders' =>
+  array (
+    'OC\Preview\PNG',
+    'OC\Preview\JPEG',
+    'OC\Preview\GIF',
+    'OC\Preview\BMP',
+    'OC\Preview\XBitmap',
+    'OC\Preview\MP3',
+    'OC\Preview\TXT',
+    'OC\Preview\MarkDown',
+    'OC\Preview\OpenDocument',
+    'OC\Preview\Krita',
+    'OC\Preview\HEIC',
+  ),  
 );
