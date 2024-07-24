@@ -360,7 +360,11 @@ function dpKill(){
 #                                                      #
 ########################################################
 function dpTurnAll(){
-    services=(paveltrujillo.info mynotes.mydeskweb.com mydeskweb.com )
+    if [[ ! -f ~/nextcloud/scripts/services ]]; then
+        echo "error: file services does not exists!"
+        return -1
+    fi
+    services=( $(cat ~/nextcloud/scripts/services))
     core="nginx"
     options="up down stop restart"
     actionfound=0
