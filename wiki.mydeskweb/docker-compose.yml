@@ -1,0 +1,69 @@
+# version: "3"
+#https://docs.requarks.io/install/docker
+# https://markjames.dev/blog/setting-up-wikijs-nginx-docker-ubuntu    NGINX
+# wiki.js behind wildernginxproxy/
+# https://www.reddit.com/r/wikijs/comments/13l06r6/hosting_wikijs_behind_a_jwildernginxproxy/
+
+#version: "3"
+services:
+
+  wiki_db:
+    image: postgres:15-alpine
+    container_name: wiki.db
+    networks:
+      default:
+    environment:
+      POSTGRES_DB: wiki
+      POSTGRES_PASSWORD: wikijsrocks
+      POSTGRES_USER: wikijs
+    logging:
+      driver: "none"
+    restart: unless-stopped
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  wiki:
+    image: ghcr.io/requarks/wiki:2
+    container_name: ${CONTAINER_NAME}
+    networks:
+      default:
+    depends_on:
+      - wiki_db
+    volumes:
+      # - ./nginx-conf:/etc/nginx/conf.d
+      - /nextcloud/proxy/certs/:/etc/nginx/certs
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - VIRTUAL_HOST=${CONTAINER_NAME},www.${CONTAINER_NAME}   # this is the trick to create the https certificates
+      - LETSENCRYPT_HOST=${CONTAINER_NAME},www.${CONTAINER_NAME}
+      - LETSENCRYPT_DOMAIN=${CONTAINER_NAME},www.${CONTAINER_NAME}
+      - SSL_ACTIVE=0              # SSL is managed by nginx container
+      - LETSENCRYPT_SINGLE_DOMAIN_CERTS=true
+      - LETSENCRYPT_EMAIL="pablitott@gmail.com"
+      - DB_TYPE=postgres
+      - DB_HOST=wiki_db
+      - DB_PORT=5432
+      - DB_USER=wikijs
+      - DB_PASS=wikijsrocks
+      - DB_NAME=wiki
+      - LOG_LEVEL=debug
+      - VIRTUAL_PORT=3000
+      - UPGRADE_COMPANION=1
+    restart: unless-stopped
+    ports:
+      - 3000                           # expose the default ports
+      - 3443                           # expose the default ports
+
+# volumes:
+#   db-data:
+
+volumes:               # I have to use as external because was created on intial time
+  db-data:
+    external: true
+    name: wiki_db-data
+
+networks:
+  default:
+    name: nginx_nextcloud_network
+    external: true
+
