@@ -11,7 +11,7 @@ services:
     image: postgres:15-alpine
     container_name: wiki.db
     networks:
-      default:
+      - backend
     environment:
       POSTGRES_DB: wiki
       POSTGRES_PASSWORD: wikijsrocks
@@ -26,7 +26,8 @@ services:
     image: ghcr.io/requarks/wiki:2
     container_name: ${CONTAINER_NAME}
     networks:
-      default:
+      - frontend
+      - backend
     depends_on:
       - wiki_db
     volumes:
@@ -63,7 +64,8 @@ volumes:               # I have to use as external because was created on intial
     name: wiki_db-data
 
 networks:
-  default:
+  frontend:
     name: nginx_nextcloud_network
     external: true
-
+  backend:
+    name: wiki-db
